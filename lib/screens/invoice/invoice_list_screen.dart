@@ -307,7 +307,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
         return 'Overdue';
       case InvoiceStatus.cancelled:
         return 'Cancelled';
-      case InvoiceStatus.void:
+      case InvoiceStatus.voided:
         return 'Void';
       default:
         return 'Unknown';

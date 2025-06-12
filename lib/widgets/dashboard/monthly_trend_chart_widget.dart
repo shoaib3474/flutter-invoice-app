@@ -1,21 +1,22 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: prefer_const_constructors, avoid_redundant_argument_values, deprecated_member_use
+
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/dashboard/reconciliation_dashboard_model.dart';
 
 class MonthlyTrendChartWidget extends StatelessWidget {
-  final List<MonthlyReconciliationMetric> monthlyMetrics;
-  
   const MonthlyTrendChartWidget({
-    Key? key,
     required this.monthlyMetrics,
+    Key? key,
   }) : super(key: key);
+  final List<MonthlyReconciliationMetric> monthlyMetrics;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,13 +38,14 @@ class MonthlyTrendChartWidget extends StatelessWidget {
                               return touchedSpots.map((spot) {
                                 final metric = monthlyMetrics[spot.x.toInt()];
                                 String text;
-                                
+
                                 if (spot.barIndex == 0) {
-                                  text = 'Match: ${metric.matchPercentage.toStringAsFixed(1)}%';
+                                  text =
+                                      'Match: ${metric.matchPercentage.toStringAsFixed(1)}%';
                                 } else {
                                   text = 'Issues: ${metric.issuesCount}';
                                 }
-                                
+
                                 return LineTooltipItem(
                                   '${metric.month}\n$text',
                                   const TextStyle(
@@ -60,11 +62,12 @@ class MonthlyTrendChartWidget extends StatelessWidget {
                             sideTitles: SideTitles(
                               showTitles: true,
                               getTitlesWidget: (value, meta) {
-                                if (value >= monthlyMetrics.length || value < 0) {
+                                if (value >= monthlyMetrics.length ||
+                                    value < 0) {
                                   return const SizedBox.shrink();
                                 }
                                 return Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
+                                  padding: const EdgeInsets.only(top: 8),
                                   child: Text(
                                     monthlyMetrics[value.toInt()].month,
                                     style: const TextStyle(
@@ -131,7 +134,8 @@ class MonthlyTrendChartWidget extends StatelessWidget {
                           // Match percentage line
                           LineChartBarData(
                             spots: monthlyMetrics.asMap().entries.map((entry) {
-                              return FlSpot(entry.key.toDouble(), entry.value.matchPercentage);
+                              return FlSpot(entry.key.toDouble(),
+                                  entry.value.matchPercentage);
                             }).toList(),
                             isCurved: true,
                             color: Colors.blue,
@@ -147,9 +151,15 @@ class MonthlyTrendChartWidget extends StatelessWidget {
                           LineChartBarData(
                             spots: monthlyMetrics.asMap().entries.map((entry) {
                               // Scale issues count to fit on the same chart
-                              final maxIssues = monthlyMetrics.map((m) => m.issuesCount).reduce((a, b) => a > b ? a : b);
-                              final scaleFactor = maxIssues > 0 ? 100 / maxIssues : 1;
-                              return FlSpot(entry.key.toDouble(), entry.value.issuesCount * scaleFactor);
+                              final maxIssues = monthlyMetrics
+                                  .map((m) => m.issuesCount)
+                                  .reduce((a, b) => a > b ? a : b);
+                              final scaleFactor =
+                                  maxIssues > 0 ? 100 / maxIssues : 1;
+                              return FlSpot(
+                                  entry.key.toDouble(),
+                                  (entry.value.issuesCount * scaleFactor)
+                                      .toDouble());
                             }).toList(),
                             isCurved: true,
                             color: Colors.orange,
@@ -175,7 +185,7 @@ class MonthlyTrendChartWidget extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildLegendItem(String label, Color color) {
     return Row(
       children: [

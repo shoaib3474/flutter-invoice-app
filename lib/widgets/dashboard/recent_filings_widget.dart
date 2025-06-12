@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/gst_returns/gst_return_summary.dart';
 import 'package:flutter_invoice_app/utils/date_formatter.dart';
-import 'package:flutter_invoice_app/widgets/gstin/filing_status_indicator_widget.dart';
 
 class RecentFilingsWidget extends StatelessWidget {
-  final List<GstReturnSummary> recentFilings;
-  
   const RecentFilingsWidget({
-    Key? key,
     required this.recentFilings,
+    Key? key,
   }) : super(key: key);
+  final List<GstReturnSummary> recentFilings;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +30,7 @@ class RecentFilingsWidget extends StatelessWidget {
                 itemCount: recentFilings.length,
                 itemBuilder: (context, index) {
                   final filing = recentFilings[index];
-                  
+
                   return ListTile(
                     title: Text(filing.getTypeDisplayName()),
                     subtitle: Text('Period: ${filing.period}'),
@@ -41,16 +39,18 @@ class RecentFilingsWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          DateFormatter.formatDate(filing.filingDate),
+                          filing.filedDate != null
+                              ? DateFormatter.formatDate(filing.filedDate!)
+                              : 'N/A',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 4),
-                        FilingStatusIndicatorWidget(
-                          status: filing.status,
-                          showLabel: true,
-                        ),
+                        // FilingStatusIndicatorWidget(
+                        //   status: filing.status,
+                        //   showLabel: true,
+                        // ),
                       ],
                     ),
                     leading: const Icon(Icons.description),

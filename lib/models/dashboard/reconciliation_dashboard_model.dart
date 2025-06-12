@@ -1,4 +1,11 @@
-enum ReconciliationType { typeA, typeB, typeC }
+enum ReconciliationType {
+  typeA,
+  typeB,
+  typeC,
+  gstr1VsGstr2a,
+  gstr2aVsGstr2b,
+  comprehensive
+}
 
 class ReconciliationDashboardMetrics {
   ReconciliationDashboardMetrics({

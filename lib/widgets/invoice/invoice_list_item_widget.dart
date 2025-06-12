@@ -134,7 +134,7 @@ class InvoiceListItem extends StatelessWidget {
       case InvoiceStatus.overdue:
         return Colors.red;
       case InvoiceStatus.cancelled:
-      case InvoiceStatus.void:
+      case InvoiceStatus.voided:
         return Colors.red;
     }
   }

@@ -1,22 +1,22 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/dashboard/reconciliation_dashboard_model.dart';
-import 'package:flutter_invoice_app/models/reconciliation/reconciliation_result_model.dart';
 
 class ReconciliationTypeChartWidget extends StatelessWidget {
-  final List<ReconciliationTypeMetric> typeMetrics;
-  
   const ReconciliationTypeChartWidget({
-    Key? key,
     required this.typeMetrics,
+    Key? key,
   }) : super(key: key);
+  final List<ReconciliationTypeMetric> typeMetrics;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -47,7 +47,8 @@ class ReconciliationTypeChartWidget extends StatelessWidget {
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: 'Match: ${metric.matchPercentage.toStringAsFixed(1)}%\n',
+                                    text:
+                                        'Match: ${metric.matchPercentage.toStringAsFixed(1)}%\n',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
@@ -78,7 +79,7 @@ class ReconciliationTypeChartWidget extends StatelessWidget {
                                 }
                                 final type = typeMetrics[value.toInt()].type;
                                 return Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
+                                  padding: const EdgeInsets.only(top: 8),
                                   child: Text(
                                     _getReconciliationTypeShortText(type),
                                     style: const TextStyle(
@@ -106,10 +107,10 @@ class ReconciliationTypeChartWidget extends StatelessWidget {
                               reservedSize: 40,
                             ),
                           ),
-                          topTitles: AxisTitles(
+                          topTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false),
                           ),
-                          rightTitles: AxisTitles(
+                          rightTitles: const AxisTitles(
                             sideTitles: SideTitles(showTitles: false),
                           ),
                         ),
@@ -174,7 +175,7 @@ class ReconciliationTypeChartWidget extends StatelessWidget {
       ),
     );
   }
-  
+
   Color _getBarColor(double matchPercentage) {
     if (matchPercentage >= 90) {
       return Colors.green;
@@ -184,34 +185,30 @@ class ReconciliationTypeChartWidget extends StatelessWidget {
       return Colors.red;
     }
   }
-  
+
   String _getReconciliationTypeText(ReconciliationType type) {
     switch (type) {
       case ReconciliationType.gstr1VsGstr2a:
         return 'GSTR-1 vs GSTR-2A';
-      case ReconciliationType.gstr1VsGstr3b:
-        return 'GSTR-1 vs GSTR-3B';
       case ReconciliationType.gstr2aVsGstr2b:
         return 'GSTR-2A vs GSTR-2B';
-      case ReconciliationType.gstr2bVsGstr3b:
-        return 'GSTR-2B vs GSTR-3B';
       case ReconciliationType.comprehensive:
         return 'Comprehensive';
+      default:
+        return 'Unknown';
     }
   }
-  
+
   String _getReconciliationTypeShortText(ReconciliationType type) {
     switch (type) {
       case ReconciliationType.gstr1VsGstr2a:
         return '1 vs 2A';
-      case ReconciliationType.gstr1VsGstr3b:
-        return '1 vs 3B';
       case ReconciliationType.gstr2aVsGstr2b:
         return '2A vs 2B';
-      case ReconciliationType.gstr2bVsGstr3b:
-        return '2B vs 3B';
       case ReconciliationType.comprehensive:
         return 'Comp.';
+      default:
+        return 'Unknown';
     }
   }
 }
