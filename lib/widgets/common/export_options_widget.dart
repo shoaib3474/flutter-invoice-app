@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_invoice_app/services/export/excel_service.dart';
-import 'package:flutter_invoice_app/services/export/json_service.dart';
+import 'package:flutter_invoice_app/models/gst_returns/gstr1_model.dart';
+import 'package:flutter_invoice_app/models/gst_returns/gstr3b_model.dart';
+import 'package:flutter_invoice_app/models/reconciliation/reconciliation_result_model.dart';
 import 'package:flutter_invoice_app/services/export/pdf_service.dart';
 
 enum ExportType {
@@ -10,27 +13,26 @@ enum ExportType {
 }
 
 class ExportOptionsWidget extends StatelessWidget {
+  const ExportOptionsWidget({
+    required this.title,
+    required this.data,
+    required this.fileName,
+    required this.onExport,
+    Key? key,
+    this.showPrint = true,
+  }) : super(key: key);
   final String title;
   final dynamic data;
   final String fileName;
   final Function(ExportType) onExport;
   final bool showPrint;
 
-  const ExportOptionsWidget({
-    Key? key,
-    required this.title,
-    required this.data,
-    required this.fileName,
-    required this.onExport,
-    this.showPrint = true,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -97,6 +99,7 @@ class ExportOptionsWidget extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             shape: const CircleBorder(),
             padding: const EdgeInsets.all(16),
+            // ignore: deprecated_member_use
             backgroundColor: color.withOpacity(0.1),
             foregroundColor: color,
           ),
@@ -116,13 +119,13 @@ class ExportOptionsWidget extends StatelessWidget {
 
   Future<Uint8List> _generatePdfData() async {
     final pdfService = PdfService();
-    
+
     if (data is GSTR1) {
-      return await pdfService.generateGstr1Pdf(data);
+      return pdfService.generateGstr1Pdf(data);
     } else if (data is GSTR3B) {
-      return await pdfService.generateGstr3bPdf(data);
+      return pdfService.generateGstr3bPdf(data);
     } else if (data is ReconciliationResult) {
-      return await pdfService.generateReconciliationPdf(data);
+      return pdfService.generateReconciliationPdf(data);
     } else {
       throw Exception('Unsupported data type for PDF export');
     }
