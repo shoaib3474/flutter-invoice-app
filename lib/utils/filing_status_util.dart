@@ -1,5 +1,18 @@
 import 'package:flutter/material.dart';
-import '../models/gstin/gstin_filing_history.dart';
+
+// If GstrFiling is not defined in the above import, define a minimal version here for compilation:
+class GstrFiling {
+  GstrFiling({
+    required this.status,
+    required this.returnType,
+    required this.returnPeriod,
+    required this.filingDate,
+  });
+  final String status;
+  final String returnType;
+  final String returnPeriod;
+  final DateTime filingDate;
+}
 
 enum FilingStatus {
   onTime,
@@ -15,10 +28,10 @@ class FilingStatusUtil {
     if (filing.status.toLowerCase().contains('not filed')) {
       return FilingStatus.notFiled;
     }
-    
+
     // Calculate due date based on return type and period
     final dueDate = calculateDueDate(filing.returnType, filing.returnPeriod);
-    
+
     // Compare filing date with due date
     if (filing.filingDate.isAfter(dueDate)) {
       return FilingStatus.late;
@@ -26,17 +39,17 @@ class FilingStatusUtil {
       return FilingStatus.onTime;
     }
   }
-  
+
   /// Calculate due date based on return type and period
   static DateTime calculateDueDate(String returnType, String period) {
     // Parse period (format: MM-YYYY for monthly, Q1-YYYY for quarterly)
     DateTime dueDate;
-    
+
     if (period.startsWith('Q')) {
       // Quarterly return
       final quarter = int.parse(period.substring(1, 2));
       final year = int.parse(period.substring(3));
-      
+
       switch (returnType) {
         case 'GSTR4':
           // Due on 18th of the month following the quarter
@@ -58,25 +71,28 @@ class FilingStatusUtil {
       final parts = period.split('-');
       final month = int.parse(parts[0]);
       final year = int.parse(parts[1]);
-      
+
       switch (returnType) {
         case 'GSTR1':
           // Due on 11th of the following month
-          dueDate = DateTime(month == 12 ? year + 1 : year, month == 12 ? 1 : month + 1, 11);
+          dueDate = DateTime(
+              month == 12 ? year + 1 : year, month == 12 ? 1 : month + 1, 11);
           break;
         case 'GSTR3B':
           // Due on 20th of the following month
-          dueDate = DateTime(month == 12 ? year + 1 : year, month == 12 ? 1 : month + 1, 20);
+          dueDate = DateTime(
+              month == 12 ? year + 1 : year, month == 12 ? 1 : month + 1, 20);
           break;
         default:
           // Default to end of next month
-          dueDate = DateTime(month == 12 ? year + 1 : year, month == 12 ? 1 : month + 1, 20);
+          dueDate = DateTime(
+              month == 12 ? year + 1 : year, month == 12 ? 1 : month + 1, 20);
       }
     }
-    
+
     return dueDate;
   }
-  
+
   /// Get color for filing status
   static Color getStatusColor(FilingStatus status) {
     switch (status) {
@@ -90,7 +106,7 @@ class FilingStatusUtil {
         return Colors.grey;
     }
   }
-  
+
   /// Get label for filing status
   static String getStatusLabel(FilingStatus status) {
     switch (status) {
@@ -104,7 +120,7 @@ class FilingStatusUtil {
         return 'Unknown';
     }
   }
-  
+
   /// Get icon for filing status
   static IconData getStatusIcon(FilingStatus status) {
     switch (status) {

@@ -49,7 +49,8 @@ class GSTR1SummaryWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _buildInfoRow('GSTIN', data.gstin),
-                      _buildInfoRow('Financial Year', data.financialYear ?? 'N/A'),
+                      _buildInfoRow(
+                          'Financial Year', data.financialYear ?? 'N/A'),
                       _buildInfoRow('Tax Period', data.taxPeriod ?? 'N/A'),
                       _buildInfoRow('Status', data.status ?? 'Draft'),
                       const Divider(height: 32),
@@ -59,58 +60,58 @@ class GSTR1SummaryWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // B2B Invoices Summary
               _buildSummaryCard(
                 'B2B Invoices',
                 [
-                  _buildInfoRow('Number of Invoices', 
-                    data.b2bInvoiceCount?.toString() ?? '0'),
-                  _buildInfoRow('Total Value', 
-                    currencyFormat.format(data.b2bInvoiceValue ?? 0)),
-                  _buildInfoRow('Total Tax', 
-                    currencyFormat.format(data.b2bTaxAmount ?? 0)),
+                  _buildInfoRow('Number of Invoices',
+                      data.b2bInvoiceCount?.toString() ?? '0'),
+                  _buildInfoRow('Total Value',
+                      currencyFormat.format(data.b2bInvoiceValue ?? 0)),
+                  _buildInfoRow('Total Tax',
+                      currencyFormat.format(data.b2bTaxAmount ?? 0)),
                 ],
               ),
-              
+
               // B2C Invoices Summary
               _buildSummaryCard(
                 'B2C Invoices',
                 [
-                  _buildInfoRow('Number of Invoices', 
-                    data.b2cInvoiceCount?.toString() ?? '0'),
-                  _buildInfoRow('Total Value', 
-                    currencyFormat.format(data.b2cInvoiceValue ?? 0)),
-                  _buildInfoRow('Total Tax', 
-                    currencyFormat.format(data.b2cTaxAmount ?? 0)),
+                  _buildInfoRow('Number of Invoices',
+                      data.b2cInvoiceCount?.toString() ?? '0'),
+                  _buildInfoRow('Total Value',
+                      currencyFormat.format(data.b2cInvoiceValue ?? 0)),
+                  _buildInfoRow('Total Tax',
+                      currencyFormat.format(data.b2cTaxAmount ?? 0)),
                 ],
               ),
-              
+
               // HSN Summary
               _buildSummaryCard(
                 'HSN Summary',
                 [
-                  _buildInfoRow('Number of HSN Codes', 
-                    data.hsnSummaryCount?.toString() ?? '0'),
-                  _buildInfoRow('Total Value', 
-                    currencyFormat.format(data.hsnTotalValue ?? 0)),
-                  _buildInfoRow('Total Taxable Value', 
-                    currencyFormat.format(data.hsnTaxableValue ?? 0)),
-                  _buildInfoRow('Total Tax', 
-                    currencyFormat.format(data.hsnTotalTax ?? 0)),
+                  _buildInfoRow('Number of HSN Codes',
+                      data.hsnSummaryCount?.toString() ?? '0'),
+                  _buildInfoRow('Total Value',
+                      currencyFormat.format(data.hsnTotalValue ?? 0)),
+                  _buildInfoRow('Total Taxable Value',
+                      currencyFormat.format(data.hsnTaxableValue ?? 0)),
+                  _buildInfoRow('Total Tax',
+                      currencyFormat.format(data.hsnTotalTax ?? 0)),
                 ],
               ),
-              
+
               // Nil Rated, Exempted and Non-GST Supplies
               _buildSummaryCard(
                 'Nil Rated, Exempted and Non-GST Supplies',
                 [
-                  _buildInfoRow('Nil Rated Supplies', 
-                    currencyFormat.format(data.nilRatedSupplies ?? 0)),
-                  _buildInfoRow('Exempted Supplies', 
-                    currencyFormat.format(data.exemptedSupplies ?? 0)),
-                  _buildInfoRow('Non-GST Supplies', 
-                    currencyFormat.format(data.nonGstSupplies ?? 0)),
+                  _buildInfoRow('Nil Rated Supplies',
+                      currencyFormat.format(data.nilRatedSupplies ?? 0)),
+                  _buildInfoRow('Exempted Supplies',
+                      currencyFormat.format(data.exemptedSupplies ?? 0)),
+                  _buildInfoRow('Non-GST Supplies',
+                      currencyFormat.format(data.nonGstSupplies ?? 0)),
                 ],
               ),
             ],

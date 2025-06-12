@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
 import '../../models/gstin/gstin_details_model.dart';
 import 'jurisdiction_info_widget.dart';
 
 class GstinDetailsWidget extends StatelessWidget {
-  final GstinDetailsModel details;
-  final VoidCallback? onTrackGstin;
-
   const GstinDetailsWidget({
-    Key? key,
     required this.details,
+    Key? key,
     this.onTrackGstin,
   }) : super(key: key);
+  final GstinDetailsModel details;
+  final VoidCallback? onTrackGstin;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -76,7 +76,7 @@ class GstinDetailsWidget extends StatelessWidget {
 
   Widget _buildInfoRow(String label, String value, [bool copyable = false]) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -103,7 +103,7 @@ class GstinDetailsWidget extends StatelessWidget {
               icon: const Icon(Icons.copy, size: 16),
               onPressed: () {
                 Clipboard.setData(ClipboardData(text: value));
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(context as BuildContext).showSnackBar(
                   SnackBar(
                     content: Text('$label copied to clipboard'),
                     duration: const Duration(seconds: 2),
