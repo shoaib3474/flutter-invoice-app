@@ -1,0 +1,118 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isValidUser() {
+      return isAuthenticated() && request.auth.token.email_verified == true;
+    }
+    
+    // User data - users can only access their own data
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      
+      // User's invoices
+      match /invoices/{invoiceId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's customers
+      match /customers/{customerId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's products
+      match /products/{productId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's GST returns
+      match /gst_returns/{returnId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's settings
+      match /settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's reconciliation data
+      match /reconciliations/{reconciliationId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's alerts
+      match /alerts/{alertId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // User's reminders
+      match /reminders/{reminderId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+    
+    // Public read-only data
+    match /public/{document=**} {
+      allow read: if true;
+      allow write: if false; // Only admins can write (via server)
+    }
+    
+    // HSN/SAC codes - public read access
+    match /hsn_sac_codes/{code} {
+      allow read: if true;
+      allow write: if isValidUser(); // Authenticated users can contribute
+    }
+    
+    // GST rates - public read access
+    match /gst_rates/{rateId} {
+      allow read: if true;
+      allow write: if isValidUser();
+    }
+    
+    // State codes - public read access
+    match /state_codes/{stateId} {
+      allow read: if true;
+      allow write: if false; // Read-only
+    }
+    
+    // Test collection for setup validation
+    match /test/{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Payment intents (managed by Cloud Functions)
+    match /payment_intents/{intentId} {
+      allow read: if isAuthenticated() && 
+        resource.data.user_id == request.auth.uid;
+      allow write: if false; // Only Cloud Functions can write
+    }
+    
+    // Stripe customers (managed by Cloud Functions)
+    match /stripe_customers/{customerId} {
+      allow read: if isAuthenticated() && 
+        resource.data.user_id == request.auth.uid;
+      allow write: if false; // Only Cloud Functions can write
+    }
+    
+    // Analytics data (read-only for users)
+    match /analytics/{document=**} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only server can write
+    }
+    
+    // Audit logs (read-only for users)
+    match /audit_logs/{logId} {
+      allow read: if isAuthenticated() && 
+        resource.data.user_id == request.auth.uid;
+      allow write: if false; // Only server can write
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "gstin": "27AAPFU0939F1ZV",
+  "financialYear": "2022-2023",
+  "legalName": "ABC Enterprises",
+  "tradeName": "ABC",
+  "reconciliation": {
+    "turnoverAsPerAuditedFinancialStatements": 1200000.0,
+    "turnoverAsPerAnnualReturn": 1000000.0,
+    "unReconciled": 200000.0,
+    "reconciliationItems": [
+      {
+        "description": "Credit notes not considered in GST returns",
+        "amount": 75000.0,
+        "reason": "Credit notes issued but not reported in GSTR-1"
+      },
+      {
+        "description": "Advances received but not reported",
+        "amount": 125000.0,
+        "reason": "Advances received for future supplies"
+      }
+    ]
+  },
+  "auditorRecommendation": {
+    "recommendations": [
+      {
+        "description": "Additional tax liability on unreported advances",
+        "amount": 22500.0,
+        "reason": "GST @18% on advances received but not reported"
+      },
+      {
+        "description": "Excess ITC claimed",
+        "amount": 5000.0,
+        "reason": "ITC claimed on inelig  \"Excess ITC claimed",
+        "amount": 5000.0,
+        "reason": "ITC claimed on ineligible expenses"
+      }
+    ]
+  },
+  "taxPayable": {
+    "taxPayableAsPerReconciliation": 22500.0,
+    "taxPaidAsPerAnnualReturn": 0.0,
+    "differentialTaxPayable": 22500.0,
+    "interestPayable": 2700.0
+  },
+  "auditorDetails": "CA John Doe, Membership No. 123456",
+  "certificationDetails": "Certified that the reconciliation statement has been prepared in accordance with the provisions of the GST Act."
+}

@@ -1,0 +1,41 @@
+{
+  "project_name": "Smart Local Billing System (Frontend-Only)",
+  "goal": "Create a privacy-focused billing system that works fully in the browser, without storing any data on a server.",
+  "key_features": {
+    "data_privacy": "No user or customer data is sent to any server. All data stays in the user's browser.",
+    "customer_types": [
+      "B2C - Customers without GSTIN (retail customers)",
+      "B2B - Customers with GSTIN (business customers, requiring GST-compliant invoices)"
+    ],
+    "smart_customer_lookup": "When a mobile number is entered, the app fetches all stored customer details automatically.",
+    "sales_process": [
+      "Add customer via mobile number (auto-fetch details if already saved)",
+      "Add items to bill (optional: fetch from local item list with HSN, GST)",
+      "Choose payment mode (Cash, UPI, Paytm, etc.)",
+      "Generate invoice (downloadable PDF)",
+      "Automatically update local ledger and payment record"
+    ],
+    "purchase_process": [
+      "Enter purchase invoice or scan with OCR (optional)",
+      "Auto-fill supplier info (GSTIN, state, etc.)",
+      "Update item master and stock locally",
+      "Record purchase entry and update ledger"
+    ],
+    "local_storage_usage": ["Customers", "Items and inventory", "Sales and purchases", "Payments and ledger balances"],
+    "outputs": [
+      "Retail or tax invoice in PDF",
+      "Auto-calculated totals with optional GST breakdown",
+      "Customer ledger showing outstanding balances",
+      "Simple reports (daily sales, stock)"
+    ],
+    "installable_option": "Can be turned into a PWA (Progressive Web App) for offline use and install on desktop/mobile."
+  },
+  "technical_note_for_developers": "Use browser-based local storage methods like LocalStorage or IndexedDB to store all information. No backend or cloud sync is required.",
+  "privacy_compliance": "Since data is not stored externally, the system is GDPR and privacy-friendly by design.",
+  "future_scope": [
+    "Optional GST API integration (fetch customer/supplier GSTIN info)",
+    "Optional barcode scanning for items",
+    "Export/import data feature (JSON backup)"
+  ],
+  "deployment_note": "The system can be hosted as a static website and still function fully offline once loaded."
+}

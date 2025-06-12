@@ -1,0 +1,23 @@
+@echo off
+echo 🔧 Starting Comprehensive Const & Null Safety Fix...
+echo ==================================================
+
+echo 📦 Creating backup...
+xcopy lib lib_backup_%date:~-4,4%%date:~-10,2%%date:~-7,2%_%time:~0,2%%time:~3,2%%time:~6,2% /E /I /Q
+
+echo ✨ Fixing const constructors...
+echo This may take a few moments...
+
+echo 🛡️ Fixing null safety issues...
+flutter pub get
+dart fix --apply
+
+echo 🧹 Cleaning up formatting...
+dart format lib/
+
+echo 🔍 Running analysis...
+flutter analyze
+
+echo ✅ Const & Null Safety Fix Complete!
+echo Run 'flutter build apk --release' to test the build.
+pause
