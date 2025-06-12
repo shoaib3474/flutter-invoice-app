@@ -125,7 +125,7 @@ class InvoiceActionsWidget extends StatelessWidget {
                   ),
                 ],
                 
-                if (invoice.status != InvoiceStatus.cancelled && invoice.status != InvoiceStatus.void) ...[
+                if (invoice.status != InvoiceStatus.cancelled && invoice.status != InvoiceStatus.voided) ...[
                   _buildActionButton(
                     context,
                     icon: Icons.cancel,

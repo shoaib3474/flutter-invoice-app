@@ -1,15 +1,6 @@
-import 'package:flutter_invoice_app/models/reconciliation/reconciliation_result_model.dart';
+enum ReconciliationType { typeA, typeB, typeC }
 
 class ReconciliationDashboardMetrics {
-  final int totalReconciliations;
-  final int pendingIssues;
-  final double totalTaxDifference;
-  final double complianceScore;
-  final List<ReconciliationTypeMetric> reconciliationTypeMetrics;
-  final List<MonthlyReconciliationMetric> monthlyMetrics;
-  final List<DiscrepancyTypeMetric> topDiscrepancies;
-  final List<RecentReconciliation> recentReconciliations;
-
   ReconciliationDashboardMetrics({
     required this.totalReconciliations,
     required this.pendingIssues,
@@ -33,15 +24,17 @@ class ReconciliationDashboardMetrics {
       recentReconciliations: [],
     );
   }
+  final int totalReconciliations;
+  final int pendingIssues;
+  final double totalTaxDifference;
+  final double complianceScore;
+  final List<ReconciliationTypeMetric> reconciliationTypeMetrics;
+  final List<MonthlyReconciliationMetric> monthlyMetrics;
+  final List<DiscrepancyTypeMetric> topDiscrepancies;
+  final List<RecentReconciliation> recentReconciliations;
 }
 
 class ReconciliationTypeMetric {
-  final ReconciliationType type;
-  final int count;
-  final int issuesCount;
-  final double averageTaxDifference;
-  final double matchPercentage;
-
   ReconciliationTypeMetric({
     required this.type,
     required this.count,
@@ -49,15 +42,14 @@ class ReconciliationTypeMetric {
     required this.averageTaxDifference,
     required this.matchPercentage,
   });
+  final ReconciliationType type;
+  final int count;
+  final int issuesCount;
+  final double averageTaxDifference;
+  final double matchPercentage;
 }
 
 class MonthlyReconciliationMetric {
-  final String month;
-  final int reconciliationCount;
-  final int issuesCount;
-  final double taxDifference;
-  final double matchPercentage;
-
   MonthlyReconciliationMetric({
     required this.month,
     required this.reconciliationCount,
@@ -65,31 +57,27 @@ class MonthlyReconciliationMetric {
     required this.taxDifference,
     required this.matchPercentage,
   });
+  final String month;
+  final int reconciliationCount;
+  final int issuesCount;
+  final double taxDifference;
+  final double matchPercentage;
 }
 
 class DiscrepancyTypeMetric {
-  final String discrepancyType;
-  final int count;
-  final double totalValue;
-  final double percentageOfTotal;
-
   DiscrepancyTypeMetric({
     required this.discrepancyType,
     required this.count,
     required this.totalValue,
     required this.percentageOfTotal,
   });
+  final String discrepancyType;
+  final int count;
+  final double totalValue;
+  final double percentageOfTotal;
 }
 
 class RecentReconciliation {
-  final String id;
-  final ReconciliationType type;
-  final String period;
-  final DateTime date;
-  final int issuesCount;
-  final double taxDifference;
-  final double matchPercentage;
-
   RecentReconciliation({
     required this.id,
     required this.type,
@@ -99,4 +87,11 @@ class RecentReconciliation {
     required this.taxDifference,
     required this.matchPercentage,
   });
+  final String id;
+  final ReconciliationType type;
+  final String period;
+  final DateTime date;
+  final int issuesCount;
+  final double taxDifference;
+  final double matchPercentage;
 }

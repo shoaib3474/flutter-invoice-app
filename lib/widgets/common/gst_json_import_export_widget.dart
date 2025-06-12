@@ -4,34 +4,35 @@ import 'package:flutter_invoice_app/widgets/common/custom_button.dart';
 import 'package:flutter_invoice_app/widgets/common/loading_indicator.dart';
 
 class GstJsonImportExportWidget extends StatefulWidget {
+  const GstJsonImportExportWidget({
+    required this.returnType,
+    required this.onImportSuccess,
+    Key? key,
+    this.currentData,
+  }) : super(key: key);
   final GstReturnType returnType;
   final dynamic currentData;
   final Function(dynamic) onImportSuccess;
-  
-  const GstJsonImportExportWidget({
-    Key? key,
-    required this.returnType,
-    this.currentData,
-    required this.onImportSuccess,
-  }) : super(key: key);
 
   @override
-  _GstJsonImportExportWidgetState createState() => _GstJsonImportExportWidgetState();
+  // ignore: library_private_types_in_public_api
+  _GstJsonImportExportWidgetState createState() =>
+      _GstJsonImportExportWidgetState();
 }
 
 class _GstJsonImportExportWidgetState extends State<GstJsonImportExportWidget> {
   final GstJsonImportService _importService = GstJsonImportService();
-  
+
   bool _isLoading = false;
   String _statusMessage = '';
   bool _isError = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -40,7 +41,6 @@ class _GstJsonImportExportWidgetState extends State<GstJsonImportExportWidget> {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            
             if (_isLoading)
               const Center(child: LoadingIndicator())
             else
@@ -60,13 +60,13 @@ class _GstJsonImportExportWidgetState extends State<GstJsonImportExportWidget> {
                       Expanded(
                         child: CustomButton(
                           label: 'Export JSON',
-                          onPressed: widget.currentData != null ? _exportJson : null,
+                          onPressed:
+                              widget.currentData != null ? _exportJson : () {},
                           icon: Icons.download,
                         ),
                       ),
                     ],
                   ),
-                  
                   if (_statusMessage.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 16),
@@ -79,7 +79,7 @@ class _GstJsonImportExportWidgetState extends State<GstJsonImportExportWidget> {
       ),
     );
   }
-  
+
   Widget _buildStatusMessage() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -109,7 +109,7 @@ class _GstJsonImportExportWidgetState extends State<GstJsonImportExportWidget> {
       ),
     );
   }
-  
+
   String _getReturnTypeLabel() {
     switch (widget.returnType) {
       case GstReturnType.gstr1:
@@ -122,19 +122,19 @@ class _GstJsonImportExportWidgetState extends State<GstJsonImportExportWidget> {
         return 'GSTR-9C';
     }
   }
-  
+
   Future<void> _importJson() async {
     setState(() {
       _isLoading = true;
       _statusMessage = '';
       _isError = false;
     });
-    
+
     try {
       final data = await _importService.importFromJsonFile(widget.returnType);
-      
+
       widget.onImportSuccess(data);
-      
+
       setState(() {
         _statusMessage = '${_getReturnTypeLabel()} data imported successfully';
         _isError = false;
@@ -150,22 +150,22 @@ class _GstJsonImportExportWidgetState extends State<GstJsonImportExportWidget> {
       });
     }
   }
-  
+
   Future<void> _exportJson() async {
     if (widget.currentData == null) return;
-    
+
     setState(() {
       _isLoading = true;
       _statusMessage = '';
       _isError = false;
     });
-    
+
     try {
       final filePath = await _importService.exportToJsonFile(
         widget.returnType,
         widget.currentData,
       );
-      
+
       setState(() {
         _statusMessage = 'Exported to $filePath';
         _isError = false;

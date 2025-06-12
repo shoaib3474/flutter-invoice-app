@@ -6,7 +6,7 @@ enum InvoiceStatus {
   partiallyPaid,
   overdue,
   cancelled,
-  void,
+  voided,
 }
 
 extension InvoiceStatusExtension on InvoiceStatus {
@@ -26,7 +26,7 @@ extension InvoiceStatusExtension on InvoiceStatus {
         return 'Overdue';
       case InvoiceStatus.cancelled:
         return 'Cancelled';
-      case InvoiceStatus.void:
+      case InvoiceStatus.voided:
         return 'Void';
     }
   }
@@ -47,7 +47,7 @@ extension InvoiceStatusExtension on InvoiceStatus {
         return 'overdue';
       case InvoiceStatus.cancelled:
         return 'cancelled';
-      case InvoiceStatus.void:
+      case InvoiceStatus.voided:
         return 'void';
     }
   }
@@ -69,7 +69,7 @@ extension InvoiceStatusExtension on InvoiceStatus {
       case 'cancelled':
         return InvoiceStatus.cancelled;
       case 'void':
-        return InvoiceStatus.void;
+        return InvoiceStatus.voided;
       default:
         return InvoiceStatus.draft;
     }
