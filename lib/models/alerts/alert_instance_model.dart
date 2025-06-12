@@ -31,6 +31,8 @@ class AlertInstance {
   final AlertMetricType metricType;
   final DateTime createdAt;
   final bool isRead;
+  final bool acknowledged;
+  final DateTime? acknowledgedAt;
   final Map<String, dynamic>? metadata;
 
   const AlertInstance({
@@ -41,6 +43,8 @@ class AlertInstance {
     required this.metricType,
     required this.createdAt,
     this.isRead = false,
+    this.acknowledged = false,
+    this.acknowledgedAt,
     this.metadata,
   });
 
@@ -56,6 +60,10 @@ class AlertInstance {
       ),
       createdAt: DateTime.parse(json['createdAt'] as String),
       isRead: json['isRead'] as bool? ?? false,
+      acknowledged: json['acknowledged'] as bool? ?? false,
+      acknowledgedAt: json['acknowledgedAt'] != null
+          ? DateTime.tryParse(json['acknowledgedAt'])
+          : null,
       metadata: json['metadata'] as Map<String, dynamic>?,
     );
   }
@@ -69,6 +77,8 @@ class AlertInstance {
       'metricType': metricType.name,
       'createdAt': createdAt.toIso8601String(),
       'isRead': isRead,
+      'acknowledged': acknowledged,
+      'acknowledgedAt': acknowledgedAt?.toIso8601String(),
       'metadata': metadata,
     };
   }
@@ -81,6 +91,8 @@ class AlertInstance {
     AlertMetricType? metricType,
     DateTime? createdAt,
     bool? isRead,
+    bool? acknowledged,
+    DateTime? acknowledgedAt,
     Map<String, dynamic>? metadata,
   }) {
     return AlertInstance(
@@ -91,6 +103,8 @@ class AlertInstance {
       metricType: metricType ?? this.metricType,
       createdAt: createdAt ?? this.createdAt,
       isRead: isRead ?? this.isRead,
+      acknowledged: acknowledged ?? this.acknowledged,
+      acknowledgedAt: acknowledgedAt ?? this.acknowledgedAt,
       metadata: metadata ?? this.metadata,
     );
   }
@@ -105,16 +119,28 @@ class AlertInstance {
         other.severity == severity &&
         other.metricType == metricType &&
         other.createdAt == createdAt &&
-        other.isRead == isRead;
+        other.isRead == isRead &&
+        other.acknowledged == acknowledged &&
+        other.acknowledgedAt == acknowledgedAt;
   }
 
   @override
   int get hashCode {
-    return Object.hash(id, title, message, severity, metricType, createdAt, isRead);
+    return Object.hash(
+      id,
+      title,
+      message,
+      severity,
+      metricType,
+      createdAt,
+      isRead,
+      acknowledged,
+      acknowledgedAt,
+    );
   }
 
   @override
   String toString() {
-    return 'AlertInstance(id: $id, title: $title, severity: $severity, metricType: $metricType, createdAt: $createdAt, isRead: $isRead)';
+    return 'AlertInstance(id: $id, title: $title, severity: $severity, metricType: $metricType, createdAt: $createdAt, isRead: $isRead, acknowledged: $acknowledged, acknowledgedAt: $acknowledgedAt)';
   }
 }

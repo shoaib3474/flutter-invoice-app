@@ -49,7 +49,8 @@ class AlertListWidget extends StatelessWidget {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -97,10 +98,10 @@ class AlertListWidget extends StatelessWidget {
   Widget _buildAlertItem(
       BuildContext context, AlertInstance alert, AlertProvider provider) {
     final dateFormat = DateFormat('MMM dd, yyyy HH:mm');
-    final formattedDate = dateFormat.format(alert.triggeredAt);
+    final formattedDate = dateFormat.format(alert.createdAt);
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       color: alert.acknowledged ? null : Colors.grey.shade50,
       child: ListTile(
         leading: Icon(
@@ -119,7 +120,8 @@ class AlertListWidget extends StatelessWidget {
         title: Text(
           alert.message,
           style: TextStyle(
-            fontWeight: alert.acknowledged ? FontWeight.normal : FontWeight.bold,
+            fontWeight:
+                alert.acknowledged ? FontWeight.normal : FontWeight.bold,
           ),
         ),
         subtitle: Column(
