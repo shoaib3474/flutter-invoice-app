@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class GstReturnsStatus extends StatelessWidget {
   const GstReturnsStatus({
-    super.key,
     required this.returnType,
     required this.period,
     required this.financialYear,
     required this.status,
+    super.key,
     this.acknowledgementNumber,
     this.filedDate,
   });
@@ -23,7 +24,7 @@ class GstReturnsStatus extends StatelessWidget {
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -32,21 +33,20 @@ class GstReturnsStatus extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            
+
             // Return details
             _buildInfoRow('Return Type', returnType),
             _buildInfoRow('Period', period),
             _buildInfoRow('Financial Year', financialYear),
             _buildInfoRow('Status', status, isStatus: true),
-            
+
             if (acknowledgementNumber != null)
               _buildInfoRow('Acknowledgement', acknowledgementNumber!),
-              
-            if (filedDate != null)
-              _buildInfoRow('Filed Date', filedDate!),
-              
+
+            if (filedDate != null) _buildInfoRow('Filed Date', filedDate!),
+
             const SizedBox(height: 16),
-            
+
             // Status timeline
             _buildStatusTimeline(context),
           ],
@@ -54,11 +54,11 @@ class GstReturnsStatus extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildInfoRow(String label, String value, {bool isStatus = false}) {
     Color statusColor = Colors.grey;
     IconData statusIcon = Icons.info;
-    
+
     if (isStatus) {
       switch (value.toUpperCase()) {
         case 'FILED':
@@ -82,9 +82,9 @@ class GstReturnsStatus extends StatelessWidget {
           statusIcon = Icons.info;
       }
     }
-    
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
           SizedBox(
@@ -125,10 +125,10 @@ class GstReturnsStatus extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildStatusTimeline(BuildContext context) {
     final statusIndex = _getStatusIndex();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -168,7 +168,7 @@ class GstReturnsStatus extends StatelessWidget {
       ],
     );
   }
-  
+
   Widget _buildTimelineStep(
     BuildContext context,
     String label,
@@ -184,7 +184,9 @@ class GstReturnsStatus extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isCompleted ? Theme.of(context).primaryColor : Colors.grey.shade300,
+              color: isCompleted
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey.shade300,
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -198,7 +200,9 @@ class GstReturnsStatus extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: isCompleted ? FontWeight.bold : FontWeight.normal,
-              color: isCompleted ? Theme.of(context).primaryColor : Colors.grey.shade600,
+              color: isCompleted
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey.shade600,
             ),
             textAlign: TextAlign.center,
           ),
@@ -206,15 +210,17 @@ class GstReturnsStatus extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildTimelineConnector({required bool isCompleted}) {
     return Container(
       width: 40,
       height: 2,
-      color: isCompleted ? Theme.of(context).primaryColor : Colors.grey.shade300,
+      color: isCompleted
+          ? Theme.of(context as BuildContext).primaryColor
+          : Colors.grey.shade300,
     );
   }
-  
+
   int _getStatusIndex() {
     switch (status.toUpperCase()) {
       case 'FILED':

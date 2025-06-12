@@ -1,16 +1,16 @@
+// ignore_for_file: library_private_types_in_public_api, unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/gst_returns_provider.dart';
-import '../../models/api/api_response.dart';
 import '../../utils/api_exception.dart';
 
 class GstReturnsAutomation extends StatefulWidget {
-  final String returnType;
-  
   const GstReturnsAutomation({
-    Key? key,
     required this.returnType,
+    Key? key,
   }) : super(key: key);
+  final String returnType;
 
   @override
   _GstReturnsAutomationState createState() => _GstReturnsAutomationState();
@@ -22,15 +22,29 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
   String _financialYear = '';
   String _status = '';
   String _errorMessage = '';
-  
+
   final _formKey = GlobalKey<FormState>();
   final List<String> _months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
   ];
-  
+
   final List<String> _financialYears = [
-    '2023-24', '2022-23', '2021-22', '2020-21', '2019-20'
+    '2023-24',
+    '2022-23',
+    '2021-22',
+    '2020-21',
+    '2019-20'
   ];
 
   @override
@@ -77,7 +91,7 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Financial Year dropdown
                   DropdownButtonFormField<String>(
                     decoration: const InputDecoration(
@@ -103,7 +117,7 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Action buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -128,16 +142,16 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
                 ],
               ),
             ),
-            
+
             // Status and error display
             if (_isLoading)
               const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16),
                   child: CircularProgressIndicator(),
                 ),
               ),
-              
+
             if (_status.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 16),
@@ -162,7 +176,7 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
                   ),
                 ),
               ),
-              
+
             if (_errorMessage.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 16),
@@ -197,13 +211,13 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
       _status = '';
       _errorMessage = '';
     });
-    
+
     try {
       final provider = Provider.of<GstReturnsProvider>(context, listen: false);
       final response = await provider.fetchReturnData(
@@ -211,9 +225,10 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
         period: _period,
         financialYear: _financialYear,
       );
-      
+
       setState(() {
-        _status = 'Successfully fetched ${widget.returnType} data for $_period $_financialYear';
+        _status =
+            'Successfully fetched ${widget.returnType} data for $_period $_financialYear';
       });
     } on ApiException catch (e) {
       setState(() {
@@ -234,13 +249,13 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
       _status = '';
       _errorMessage = '';
     });
-    
+
     try {
       final provider = Provider.of<GstReturnsProvider>(context, listen: false);
       final response = await provider.prepareReturn(
@@ -248,9 +263,10 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
         period: _period,
         financialYear: _financialYear,
       );
-      
+
       setState(() {
-        _status = 'Successfully prepared ${widget.returnType} for $_period $_financialYear';
+        _status =
+            'Successfully prepared ${widget.returnType} for $_period $_financialYear';
       });
     } on ApiException catch (e) {
       setState(() {
@@ -271,13 +287,13 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
       _status = '';
       _errorMessage = '';
     });
-    
+
     try {
       final provider = Provider.of<GstReturnsProvider>(context, listen: false);
       final response = await provider.fileReturn(
@@ -285,9 +301,10 @@ class _GstReturnsAutomationState extends State<GstReturnsAutomation> {
         period: _period,
         financialYear: _financialYear,
       );
-      
+
       setState(() {
-        _status = 'Successfully filed ${widget.returnType} for $_period $_financialYear';
+        _status =
+            'Successfully filed ${widget.returnType} for $_period $_financialYear';
       });
     } on ApiException catch (e) {
       setState(() {
