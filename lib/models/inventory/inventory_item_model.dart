@@ -1,55 +1,12 @@
-import 'package:hive/hive.dart';
+// ignore_for_file: always_declare_return_types, avoid_equals_and_hash_code_on_mutable_classes
+
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
 part 'inventory_item_model.g.dart';
 
 @HiveType(typeId: 3)
 class InventoryItem extends Equatable {
-  @HiveField(0)
-  final String id;
-  
-  @HiveField(1)
-  final String name;
-  
-  @HiveField(2)
-  final String description;
-  
-  @HiveField(3)
-  final String category;
-  
-  @HiveField(4)
-  final String unit;
-  
-  @HiveField(5)
-  final double sellingPrice;
-  
-  @HiveField(6)
-  final double costPrice;
-  
-  @HiveField(7)
-  final int stockQuantity;
-  
-  @HiveField(8)
-  final int minStockLevel;
-  
-  @HiveField(9)
-  final String? hsnCode;
-  
-  @HiveField(10)
-  final String? sacCode;
-  
-  @HiveField(11)
-  final double taxRate;
-  
-  @HiveField(12)
-  final String? barcode;
-  
-  @HiveField(13)
-  final DateTime createdAt;
-  
-  @HiveField(14)
-  final DateTime updatedAt;
-
   const InventoryItem({
     required this.id,
     required this.name,
@@ -59,13 +16,13 @@ class InventoryItem extends Equatable {
     required this.sellingPrice,
     required this.costPrice,
     required this.stockQuantity,
+    required this.createdAt,
+    required this.updatedAt,
     this.minStockLevel = 10,
     this.hsnCode,
     this.sacCode,
     this.taxRate = 18.0,
     this.barcode,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
   factory InventoryItem.create({
@@ -101,6 +58,70 @@ class InventoryItem extends Equatable {
       updatedAt: now,
     );
   }
+
+  factory InventoryItem.fromJson(Map<String, dynamic> json) {
+    return InventoryItem(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      description: json['description'] as String,
+      category: json['category'] as String,
+      unit: json['unit'] as String,
+      sellingPrice: (json['sellingPrice'] as num).toDouble(),
+      costPrice: (json['costPrice'] as num).toDouble(),
+      stockQuantity: json['stockQuantity'] as int,
+      minStockLevel: json['minStockLevel'] as int? ?? 10,
+      hsnCode: json['hsnCode'] as String?,
+      sacCode: json['sacCode'] as String?,
+      taxRate: (json['taxRate'] as num?)?.toDouble() ?? 18.0,
+      barcode: json['barcode'] as String?,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+    );
+  }
+  @HiveField(0)
+  final String id;
+
+  @HiveField(1)
+  final String name;
+
+  @HiveField(2)
+  final String description;
+
+  @HiveField(3)
+  final String category;
+
+  @HiveField(4)
+  final String unit;
+
+  @HiveField(5)
+  final double sellingPrice;
+
+  @HiveField(6)
+  final double costPrice;
+
+  @HiveField(7)
+  final int stockQuantity;
+
+  @HiveField(8)
+  final int minStockLevel;
+
+  @HiveField(9)
+  final String? hsnCode;
+
+  @HiveField(10)
+  final String? sacCode;
+
+  @HiveField(11)
+  final double taxRate;
+
+  @HiveField(12)
+  final String? barcode;
+
+  @HiveField(13)
+  final DateTime createdAt;
+
+  @HiveField(14)
+  final DateTime updatedAt;
 
   bool get isLowStock => stockQuantity <= minStockLevel;
   bool get isOutOfStock => stockQuantity <= 0;
@@ -182,23 +203,30 @@ class InventoryItem extends Equatable {
     };
   }
 
-  factory InventoryItem.fromJson(Map<String, dynamic> json) {
-    return InventoryItem(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String,
-      category: json['category'] as String,
-      unit: json['unit'] as String,
-      sellingPrice: (json['sellingPrice'] as num).toDouble(),
-      costPrice: (json['costPrice'] as num).toDouble(),
-      stockQuantity: json['stockQuantity'] as int,
-      minStockLevel: json['minStockLevel'] as int? ?? 10,
-      hsnCode: json['hsnCode'] as String?,
-      sacCode: json['sacCode'] as String?,
-      taxRate: (json['taxRate'] as num?)?.toDouble() ?? 18.0,
-      barcode: json['barcode'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
-    );
-  }
+  get price => null;
+
+  get gstRate => null;
+}
+
+class InventoryCategory {
+  InventoryCategory({
+    required this.id,
+    required this.name,
+  });
+  final String id;
+  final String name;
+
+  // Optional: for dropdowns, equality, etc.
+  @override
+  String toString() => name;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is InventoryCategory &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

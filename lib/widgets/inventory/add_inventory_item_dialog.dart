@@ -1,18 +1,20 @@
+// ignore_for_file: use_if_null_to_convert_nulls_to_bools
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../models/inventory/inventory_item_model.dart';
 
+// Ensure that InventoryCategory is defined in inventory_category_model.dart and imported correctly.
+
 class AddInventoryItemDialog extends StatefulWidget {
+  const AddInventoryItemDialog({
+    required this.categories,
+    required this.onSave,
+    super.key,
+    this.item,
+  });
   final List<InventoryCategory> categories;
   final InventoryItem? item;
   final Function(InventoryItem) onSave;
-
-  const AddInventoryItemDialog({
-    super.key,
-    required this.categories,
-    this.item,
-    required this.onSave,
-  });
 
   @override
   State<AddInventoryItemDialog> createState() => _AddInventoryItemDialogState();
@@ -27,10 +29,10 @@ class _AddInventoryItemDialogState extends State<AddInventoryItemDialog> {
   final _descriptionController = TextEditingController();
   final _gstRateController = TextEditingController();
   final _hsnCodeController = TextEditingController();
-  
+
   String _selectedCategory = '';
   String _selectedUnit = 'Piece';
-  
+
   final List<String> _units = ['Piece', 'Kg', 'Liter', 'Meter', 'Box', 'Pack'];
 
   @override
@@ -41,7 +43,7 @@ class _AddInventoryItemDialogState extends State<AddInventoryItemDialog> {
       _priceController.text = widget.item!.price.toString();
       _stockController.text = widget.item!.stockQuantity.toString();
       _barcodeController.text = widget.item!.barcode ?? '';
-      _descriptionController.text = widget.item!.description ?? '';
+      _descriptionController.text = widget.item!.description;
       _gstRateController.text = widget.item!.gstRate?.toString() ?? '';
       _hsnCodeController.text = widget.item!.hsnCode ?? '';
       _selectedCategory = widget.item!.category;
@@ -74,7 +76,8 @@ class _AddInventoryItemDialogState extends State<AddInventoryItemDialog> {
                       _buildTextField(
                         controller: _nameController,
                         label: 'Item Name',
-                        validator: (value) => value?.isEmpty == true ? 'Required' : null,
+                        validator: (value) =>
+                            value?.isEmpty == true ? 'Required' : null,
                       ),
                       const SizedBox(height: 16),
                       _buildCategoryDropdown(),
@@ -87,7 +90,8 @@ class _AddInventoryItemDialogState extends State<AddInventoryItemDialog> {
                               controller: _priceController,
                               label: 'Price (₹)',
                               keyboardType: TextInputType.number,
-                              validator: (value) => value?.isEmpty == true ? 'Required' : null,
+                              validator: (value) =>
+                                  value?.isEmpty == true ? 'Required' : null,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -101,7 +105,8 @@ class _AddInventoryItemDialogState extends State<AddInventoryItemDialog> {
                         controller: _stockController,
                         label: 'Stock Quantity',
                         keyboardType: TextInputType.number,
-                        validator: (value) => value?.isEmpty == true ? 'Required' : null,
+                        validator: (value) =>
+                            value?.isEmpty == true ? 'Required' : null,
                       ),
                       const SizedBox(height: 16),
                       _buildTextField(
@@ -239,17 +244,28 @@ class _AddInventoryItemDialogState extends State<AddInventoryItemDialog> {
         id: widget.item?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
         name: _nameController.text.trim(),
         category: _selectedCategory,
-        price: double.parse(_priceController.text),
+        costPrice: double.tryParse(_priceController.text) ??
+            0.0, // Replace with actual cost price controller if available
+        sellingPrice: double.tryParse(_priceController.text) ??
+            0.0, // Replace with actual selling price controller if available
         unit: _selectedUnit,
         stockQuantity: int.parse(_stockController.text),
-        barcode: _barcodeController.text.trim().isEmpty ? null : _barcodeController.text.trim(),
-        description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
-        gstRate: _gstRateController.text.trim().isEmpty ? null : double.parse(_gstRateController.text),
-        hsnCode: _hsnCodeController.text.trim().isEmpty ? null : _hsnCodeController.text.trim(),
+        barcode: _barcodeController.text.trim().isEmpty
+            ? null
+            : _barcodeController.text.trim(),
+        description: _descriptionController.text.trim().isEmpty
+            ? ''
+            : _descriptionController.text.trim(),
+        taxRate: _gstRateController.text.trim().isEmpty
+            ? 0.0
+            : double.parse(_gstRateController.text),
+        hsnCode: _hsnCodeController.text.trim().isEmpty
+            ? null
+            : _hsnCodeController.text.trim(),
         createdAt: widget.item?.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
       );
-      
+
       widget.onSave(item);
       Navigator.pop(context);
     }
