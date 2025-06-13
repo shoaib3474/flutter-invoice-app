@@ -1,11 +1,13 @@
+// ignore_for_file: prefer_int_literals
+
 import 'package:flutter/material.dart';
 import '../../models/gstr4_model.dart';
 
 class GSTR4SummaryWidget extends StatelessWidget {
   const GSTR4SummaryWidget({
-    super.key,
     required this.data,
     required this.onEdit,
+    super.key,
   });
 
   final GSTR4Model data;
@@ -37,31 +39,37 @@ class GSTR4SummaryWidget extends StatelessWidget {
             ),
             const Divider(),
             _buildInfoRow('GSTIN', data.gstin),
-            _buildInfoRow('Tax Period', data.returnPeriod ?? 'N/A'),
+            _buildInfoRow('Tax Period', data.returnPeriod),
             _buildInfoRow('Financial Year', data.financialYear ?? 'N/A'),
             const SizedBox(height: 16),
-            
+
             // Outward Supplies Summary
             _buildSectionHeader(context, 'Outward Supplies'),
-            _buildInfoRow('B2B Supplies', _formatCurrency(data.b2bInvoices.length.toDouble())),
-            _buildInfoRow('B2C Supplies', _formatCurrency(data.b2burInvoices.length.toDouble())),
+            _buildInfoRow('B2B Supplies',
+                _formatCurrency(data.b2bInvoices.length.toDouble())),
+            _buildInfoRow('B2C Supplies',
+                _formatCurrency(data.b2burInvoices.length.toDouble())),
             _buildInfoRow(
-              'Total Outward Supplies', 
-              _formatCurrency((data.b2bInvoices.length + data.b2burInvoices.length).toDouble()),
+              'Total Outward Supplies',
+              _formatCurrency(
+                  (data.b2bInvoices.length + data.b2burInvoices.length)
+                      .toDouble()),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Inward Supplies Summary
             _buildSectionHeader(context, 'Inward Supplies'),
             _buildInfoRow('Reverse Charge Supplies', _formatCurrency(0.0)),
-            _buildInfoRow('Imports', _formatCurrency(data.importedGoods.length.toDouble())),
-            
+            _buildInfoRow('Imports',
+                _formatCurrency(data.importedGoods.length.toDouble())),
+
             const SizedBox(height: 16),
-            
+
             // Tax Payment Summary
             _buildSectionHeader(context, 'Tax Payment'),
-            _buildInfoRow('Total Tax Paid', _formatCurrency(data.taxesPaid.values.fold(0.0, (sum, tax) => sum + tax))),
+            _buildInfoRow('Total Tax Paid',
+                _formatCurrency(data.taxesPaid.fold(0, (sum, tax) => sum))),
           ],
         ),
       ),
@@ -101,8 +109,8 @@ class GSTR4SummaryWidget extends StatelessWidget {
     return Text(
       title,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.bold,
-      ),
+            fontWeight: FontWeight.bold,
+          ),
     );
   }
 

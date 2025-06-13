@@ -2,25 +2,36 @@
 
 class GSTR4Model {
   GSTR4Model({
-    this.id,
     required this.gstin,
     required this.returnPeriod,
     required this.filingDate,
-    required this.b2bInvoices,
-    required this.b2burInvoices,
-    required this.importedGoods,
-    required this.taxesPaid,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+    this.taxPeriod,
+    this.financialYear,
+    this.outwardSupplies,
+    this.inwardSupplies,
+    this.taxPayment,
+    this.b2bInvoices = const [],
+    this.b2burInvoices = const [],
+    this.importedGoods = const [],
+    this.taxesPaid = const [],
+  });
 
   factory GSTR4Model.fromJson(Map<String, dynamic> json) {
     return GSTR4Model(
-      id: json['id'],
       gstin: json['gstin'],
       returnPeriod: json['return_period'],
       filingDate: DateTime.parse(json['filing_date']),
+      taxPeriod: json['tax_period'],
+      financialYear: json['financial_year'],
+      outwardSupplies: json['outward_supplies'] != null
+          ? GSTR4OutwardSupplies.fromJson(json['outward_supplies'])
+          : null,
+      inwardSupplies: json['inward_supplies'] != null
+          ? GSTR4InwardSupplies.fromJson(json['inward_supplies'])
+          : null,
+      taxPayment: json['tax_payment'] != null
+          ? GSTR4TaxPayment.fromJson(json['tax_payment'])
+          : null,
       b2bInvoices: (json['b2b_invoices'] as List)
           .map((invoice) => B2BInvoice.fromJson(invoice))
           .toList(),
@@ -33,61 +44,173 @@ class GSTR4Model {
       taxesPaid: (json['taxes_paid'] as List)
           .map((tax) => TaxPaid.fromJson(tax))
           .toList(),
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
-  final int? id;
-  final String gstin;
+  late final String gstin;
   final String returnPeriod;
+  late final String? taxPeriod;
+  late final String? financialYear;
   final DateTime filingDate;
+
+  // Outward supplies
+  late final GSTR4OutwardSupplies? outwardSupplies;
+
+  // Inward supplies
+  late final GSTR4InwardSupplies? inwardSupplies;
+
+  // Tax payment
+  late final GSTR4TaxPayment? taxPayment;
+
+  // Other fields from your constructor
   final List<B2BInvoice> b2bInvoices;
   final List<B2BURInvoice> b2burInvoices;
   final List<ImportedGoods> importedGoods;
   final List<TaxPaid> taxesPaid;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'gstin': gstin,
       'return_period': returnPeriod,
       'filing_date': filingDate.toIso8601String(),
+      'tax_period': taxPeriod,
+      'financial_year': financialYear,
+      'outward_supplies': outwardSupplies?.toJson(),
+      'inward_supplies': inwardSupplies?.toJson(),
+      'tax_payment': taxPayment?.toJson(),
       'b2b_invoices': b2bInvoices.map((invoice) => invoice.toJson()).toList(),
       'b2bur_invoices':
           b2burInvoices.map((invoice) => invoice.toJson()).toList(),
       'imported_goods': importedGoods.map((goods) => goods.toJson()).toList(),
       'taxes_paid': taxesPaid.map((tax) => tax.toJson()).toList(),
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
     };
   }
 
   GSTR4Model copyWith({
-    int? id,
     String? gstin,
     String? returnPeriod,
+    String? taxPeriod,
+    String? financialYear,
     DateTime? filingDate,
+    GSTR4OutwardSupplies? outwardSupplies,
+    GSTR4InwardSupplies? inwardSupplies,
+    GSTR4TaxPayment? taxPayment,
     List<B2BInvoice>? b2bInvoices,
     List<B2BURInvoice>? b2burInvoices,
     List<ImportedGoods>? importedGoods,
     List<TaxPaid>? taxesPaid,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   }) {
     return GSTR4Model(
-      id: id ?? this.id,
       gstin: gstin ?? this.gstin,
       returnPeriod: returnPeriod ?? this.returnPeriod,
+      taxPeriod: taxPeriod ?? this.taxPeriod,
+      financialYear: financialYear ?? this.financialYear,
       filingDate: filingDate ?? this.filingDate,
+      outwardSupplies: outwardSupplies ?? this.outwardSupplies,
+      inwardSupplies: inwardSupplies ?? this.inwardSupplies,
+      taxPayment: taxPayment ?? this.taxPayment,
       b2bInvoices: b2bInvoices ?? this.b2bInvoices,
       b2burInvoices: b2burInvoices ?? this.b2burInvoices,
       importedGoods: importedGoods ?? this.importedGoods,
       taxesPaid: taxesPaid ?? this.taxesPaid,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  static GSTR4Model empty() => GSTR4Model(
+        gstin: '',
+        returnPeriod: '',
+        filingDate: DateTime.now(),
+        taxPeriod: '',
+        financialYear: '',
+        outwardSupplies: GSTR4OutwardSupplies(),
+        inwardSupplies: GSTR4InwardSupplies(),
+        taxPayment: GSTR4TaxPayment(),
+        b2bInvoices: const [],
+        b2burInvoices: const [],
+        importedGoods: const [],
+        taxesPaid: const [],
+      );
+}
+
+// Outward Supplies Model
+class GSTR4OutwardSupplies {
+  GSTR4OutwardSupplies({
+    this.b2bSupplies = 0,
+    this.b2cSupplies = 0,
+  });
+
+  factory GSTR4OutwardSupplies.fromJson(Map<String, dynamic> json) {
+    return GSTR4OutwardSupplies(
+      b2bSupplies: json['b2b_supplies']?.toDouble() ?? 0,
+      b2cSupplies: json['b2c_supplies']?.toDouble() ?? 0,
+    );
+  }
+
+  double? b2bSupplies;
+  double? b2cSupplies;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'b2b_supplies': b2bSupplies,
+      'b2c_supplies': b2cSupplies,
+    };
+  }
+}
+
+// Inward Supplies Model
+class GSTR4InwardSupplies {
+  GSTR4InwardSupplies({
+    this.reverseChargeSupplies = 0,
+    this.imports = 0,
+  });
+
+  factory GSTR4InwardSupplies.fromJson(Map<String, dynamic> json) {
+    return GSTR4InwardSupplies(
+      reverseChargeSupplies: json['reverse_charge_supplies']?.toDouble() ?? 0,
+      imports: json['imports']?.toDouble() ?? 0,
+    );
+  }
+
+  double? reverseChargeSupplies;
+  double? imports;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'reverse_charge_supplies': reverseChargeSupplies,
+      'imports': imports,
+    };
+  }
+}
+
+// Tax Payment Model
+class GSTR4TaxPayment {
+  GSTR4TaxPayment({
+    this.cgst = 0,
+    this.sgst = 0,
+    this.igst = 0,
+    this.cess = 0,
+  });
+
+  factory GSTR4TaxPayment.fromJson(Map<String, dynamic> json) {
+    return GSTR4TaxPayment(
+      cgst: json['cgst']?.toDouble() ?? 0,
+      sgst: json['sgst']?.toDouble() ?? 0,
+      igst: json['igst']?.toDouble() ?? 0,
+      cess: json['cess']?.toDouble() ?? 0,
+    );
+  }
+
+  double? cgst;
+  double? sgst;
+  double? igst;
+  double? cess;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'cgst': cgst,
+      'sgst': sgst,
+      'igst': igst,
+      'cess': cess,
+    };
   }
 }
 
