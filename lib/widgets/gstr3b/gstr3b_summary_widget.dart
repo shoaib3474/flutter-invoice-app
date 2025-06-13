@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/gstr3b_model.dart';
-import 'package:flutter_invoice_app/services/gstr3b_service.dart';
-import 'package:flutter_invoice_app/utils/error_handler.dart';
 import 'package:flutter_invoice_app/widgets/error_boundary_widget.dart';
 import 'package:intl/intl.dart';
 
@@ -11,12 +9,13 @@ class GSTR3BSummaryWidget extends StatelessWidget {
   final Function() onExport;
   final Function() onSubmit;
 
+  // ignore: sort_constructors_first
   const GSTR3BSummaryWidget({
-    Key? key,
     required this.data,
     required this.onEdit,
     required this.onExport,
     required this.onSubmit,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -29,14 +28,14 @@ class GSTR3BSummaryWidget extends StatelessWidget {
     return ErrorBoundaryWidget(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Card(
                 elevation: 2,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -49,9 +48,9 @@ class GSTR3BSummaryWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _buildInfoRow('GSTIN', data.gstin),
-                      _buildInfoRow('Financial Year', data.financialYear ?? 'N/A'),
-                      _buildInfoRow('Tax Period', data.taxPeriod ?? 'N/A'),
-                      _buildInfoRow('Status', data.status ?? 'Draft'),
+                      _buildInfoRow('Financial Year', data.financialYear),
+                      _buildInfoRow('Tax Period', data.taxPeriod),
+                      _buildInfoRow('Status', data.status),
                       const Divider(height: 32),
                       _buildActionButtons(context),
                     ],
@@ -59,65 +58,66 @@ class GSTR3BSummaryWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Outward Supplies Summary
               _buildSummaryCard(
                 'Outward Supplies',
                 [
-                  _buildInfoRow('Total Taxable Value', 
-                    currencyFormat.format(data.outwardSuppliesTotal ?? 0)),
-                  _buildInfoRow('Zero Rated Supplies', 
-                    currencyFormat.format(data.outwardSuppliesZeroRated ?? 0)),
-                  _buildInfoRow('Nil Rated, Exempted Supplies', 
-                    currencyFormat.format(data.outwardSuppliesNilRated ?? 0)),
+                  _buildInfoRow('Total Taxable Value',
+                      currencyFormat.format(data.outwardSuppliesTotal)),
+                  _buildInfoRow('Zero Rated Supplies',
+                      currencyFormat.format(data.outwardSuppliesZeroRated)),
+                  _buildInfoRow('Nil Rated, Exempted Supplies',
+                      currencyFormat.format(data.outwardSuppliesNilRated)),
                 ],
               ),
-              
+
               // Inward Supplies Summary
               _buildSummaryCard(
                 'Inward Supplies',
                 [
-                  _buildInfoRow('Reverse Charge', 
-                    currencyFormat.format(data.inwardSuppliesReverseCharge ?? 0)),
-                  _buildInfoRow('Import of Goods', 
-                    currencyFormat.format(data.inwardSuppliesImport ?? 0)),
+                  _buildInfoRow('Reverse Charge',
+                      currencyFormat.format(data.inwardSuppliesReverseCharge)),
+                  _buildInfoRow('Import of Goods',
+                      currencyFormat.format(data.inwardSuppliesImport)),
                 ],
               ),
-              
+
               // ITC Details Summary
               _buildSummaryCard(
                 'Input Tax Credit (ITC)',
                 [
-                  _buildInfoRow('ITC Availed', 
-                    currencyFormat.format(data.itcAvailed ?? 0)),
-                  _buildInfoRow('ITC Reversed', 
-                    currencyFormat.format(data.itcReversed ?? 0)),
-                  _buildInfoRow('Net ITC Available', 
-                    currencyFormat.format((data.itcAvailed ?? 0) - (data.itcReversed ?? 0))),
+                  _buildInfoRow(
+                      'ITC Availed', currencyFormat.format(data.itcAvailed)),
+                  _buildInfoRow(
+                      'ITC Reversed', currencyFormat.format(data.itcReversed)),
+                  _buildInfoRow(
+                      'Net ITC Available',
+                      currencyFormat
+                          .format((data.itcAvailed) - (data.itcReversed))),
                 ],
               ),
-              
+
               // Tax Payable Summary
               _buildSummaryCard(
                 'Tax Payable',
                 [
-                  _buildInfoRow('CGST', 
-                    currencyFormat.format(data.taxPayableCGST ?? 0)),
-                  _buildInfoRow('SGST', 
-                    currencyFormat.format(data.taxPayableSGST ?? 0)),
-                  _buildInfoRow('IGST', 
-                    currencyFormat.format(data.taxPayableIGST ?? 0)),
-                  _buildInfoRow('Cess', 
-                    currencyFormat.format(data.taxPayableCess ?? 0)),
+                  _buildInfoRow(
+                      'CGST', currencyFormat.format(data.taxPayableCGST)),
+                  _buildInfoRow(
+                      'SGST', currencyFormat.format(data.taxPayableCGST)),
+                  _buildInfoRow(
+                      'IGST', currencyFormat.format(data.taxPayableIGST)),
+                  _buildInfoRow(
+                      'Cess', currencyFormat.format(data.taxPayableCess)),
                   const Divider(),
-                  _buildInfoRow('Total Tax Payable', 
-                    currencyFormat.format(
-                      (data.taxPayableCGST ?? 0) +
-                      (data.taxPayableSGST ?? 0) +
-                      (data.taxPayableIGST ?? 0) +
-                      (data.taxPayableCess ?? 0)
-                    ),
-                    isHighlighted: true),
+                  _buildInfoRow(
+                      'Total Tax Payable',
+                      currencyFormat.format((data.taxPayableCGST) +
+                          (data.taxPayableSGST) +
+                          (data.taxPayableIGST) +
+                          (data.taxPayableCess)),
+                      isHighlighted: true),
                 ],
               ),
             ],
@@ -127,9 +127,10 @@ class GSTR3BSummaryWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {bool isHighlighted = false}) {
+  Widget _buildInfoRow(String label, String value,
+      {bool isHighlighted = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -159,10 +160,10 @@ class GSTR3BSummaryWidget extends StatelessWidget {
 
   Widget _buildSummaryCard(String title, List<Widget> children) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16.0),
+      margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

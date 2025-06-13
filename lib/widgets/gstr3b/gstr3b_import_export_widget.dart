@@ -1,23 +1,24 @@
+// ignore_for_file: unused_field
+
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/gstr3b_model.dart';
 import 'package:flutter_invoice_app/services/gstr3b_service.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 class GSTR3BImportExportWidget extends StatefulWidget {
   const GSTR3BImportExportWidget({
-    super.key,
     required this.onImportSuccess,
+    super.key,
   });
 
   final Function(GSTR3BModel) onImportSuccess;
 
   @override
-  State<GSTR3BImportExportWidget> createState() => _GSTR3BImportExportWidgetState();
+  State<GSTR3BImportExportWidget> createState() =>
+      _GSTR3BImportExportWidgetState();
 }
 
 class _GSTR3BImportExportWidgetState extends State<GSTR3BImportExportWidget> {
@@ -45,10 +46,10 @@ class _GSTR3BImportExportWidgetState extends State<GSTR3BImportExportWidget> {
         if (_importFilePath != null) {
           final file = File(_importFilePath!);
           final jsonString = await file.readAsString();
-          
+
           // Parse and validate the JSON data
           final importedData = GSTR3BModel.fromJson(jsonDecode(jsonString));
-          
+
           setState(() {
             _previewData = importedData;
           });
@@ -70,13 +71,13 @@ class _GSTR3BImportExportWidgetState extends State<GSTR3BImportExportWidget> {
       try {
         // Call the callback with the imported data
         widget.onImportSuccess(_previewData!);
-        
+
         // Clear the preview
         setState(() {
           _previewData = null;
           _importFilePath = null;
         });
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('GSTR-3B data imported successfully')),
@@ -93,7 +94,7 @@ class _GSTR3BImportExportWidgetState extends State<GSTR3BImportExportWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -105,11 +106,11 @@ class _GSTR3BImportExportWidgetState extends State<GSTR3BImportExportWidget> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Import Section
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -130,7 +131,8 @@ class _GSTR3BImportExportWidgetState extends State<GSTR3BImportExportWidget> {
                       ElevatedButton.icon(
                         onPressed: _isImporting ? null : _importGSTR3B,
                         icon: const Icon(Icons.upload_file),
-                        label: Text(_isImporting ? 'Importing...' : 'Import JSON'),
+                        label:
+                            Text(_isImporting ? 'Importing...' : 'Import JSON'),
                       ),
                       if (_importFilePath != null) ...[
                         const SizedBox(width: 8),
@@ -143,7 +145,7 @@ class _GSTR3BImportExportWidgetState extends State<GSTR3BImportExportWidget> {
                       ],
                     ],
                   ),
-                  
+
                   // Error message
                   if (_importError != null) ...[
                     const SizedBox(height: 16),
@@ -167,7 +169,7 @@ class _GSTR3BImportExportWidgetState extends State<GSTR3BImportExportWidget> {
                       ),
                     ),
                   ],
-                  
+
                   // Preview data
                   if (_previewData != null) ...[
                     const SizedBox(height: 16),

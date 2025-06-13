@@ -251,7 +251,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.outwardSuppliesTotal?.toString() ?? '0.0',
+              initialValue: _formData.outwardSuppliesTotal.toString(),
               decoration: const InputDecoration(
                 labelText: 'Total Taxable Value',
                 border: OutlineInputBorder(),
@@ -263,8 +263,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue:
-                  _formData.outwardSuppliesZeroRated?.toString() ?? '0.0',
+              initialValue: _formData.outwardSuppliesZeroRated.toString(),
               decoration: const InputDecoration(
                 labelText: 'Zero Rated Supplies',
                 border: OutlineInputBorder(),
@@ -276,8 +275,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue:
-                  _formData.outwardSuppliesNilRated?.toString() ?? '0.0',
+              initialValue: _formData.outwardSuppliesNilRated.toString(),
               decoration: const InputDecoration(
                 labelText: 'Nil Rated, Exempted Supplies',
                 border: OutlineInputBorder(),
@@ -310,8 +308,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue:
-                  _formData.inwardSuppliesReverseCharge?.toString() ?? '0.0',
+              initialValue: _formData.inwardSuppliesReverseCharge.toString(),
               decoration: const InputDecoration(
                 labelText: 'Reverse Charge',
                 border: OutlineInputBorder(),
@@ -323,7 +320,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.inwardSuppliesImport?.toString() ?? '0.0',
+              initialValue: _formData.inwardSuppliesImport.toString(),
               decoration: const InputDecoration(
                 labelText: 'Import of Goods',
                 border: OutlineInputBorder(),
@@ -356,7 +353,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.itcAvailed?.toString() ?? '0.0',
+              initialValue: _formData.itcAvailed.toString(),
               decoration: const InputDecoration(
                 labelText: 'ITC Availed',
                 border: OutlineInputBorder(),
@@ -367,7 +364,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.itcReversed?.toString() ?? '0.0',
+              initialValue: _formData.itcReversed.toString(),
               decoration: const InputDecoration(
                 labelText: 'ITC Reversed',
                 border: OutlineInputBorder(),
@@ -399,7 +396,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.taxPayableCGST?.toString() ?? '0.0',
+              initialValue: _formData.taxPayableCGST.toString(),
               decoration: const InputDecoration(
                 labelText: 'CGST',
                 border: OutlineInputBorder(),
@@ -410,7 +407,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.taxPayableCGST?.toString() ?? '0.0',
+              initialValue: _formData.taxPayableCGST.toString(),
               decoration: const InputDecoration(
                 labelText: 'SGST',
                 border: OutlineInputBorder(),
@@ -421,7 +418,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.taxPayableCGST?.toString() ?? '0.0',
+              initialValue: _formData.taxPayableCGST.toString(),
               decoration: const InputDecoration(
                 labelText: 'IGST',
                 border: OutlineInputBorder(),
@@ -432,7 +429,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.taxPayableCess?.toString() ?? '0.0',
+              initialValue: _formData.taxPayableCess.toString(),
               decoration: const InputDecoration(
                 labelText: 'Cess',
                 border: OutlineInputBorder(),
