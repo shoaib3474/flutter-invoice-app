@@ -1,3 +1,5 @@
+import 'package:flutter_invoice_app/models/customer/customer_model.dart';
+
 extension CustomerExtensions on Customer {
   Map<String, dynamic> toMap() {
     return {
@@ -31,8 +33,10 @@ extension CustomerExtensions on Customer {
       ),
       creditLimit: (map['creditLimit'] ?? 0).toDouble(),
       currentBalance: (map['currentBalance'] ?? 0).toDouble(),
-      createdAt: DateTime.parse(map['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(map['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt:
+          DateTime.parse(map['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt:
+          DateTime.parse(map['updatedAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 }
