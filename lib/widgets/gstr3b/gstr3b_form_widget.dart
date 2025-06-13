@@ -1,3 +1,5 @@
+// ignore_for_file: sort_constructors_first, library_private_types_in_public_api, unused_field, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/gstr3b_model.dart';
 import 'package:flutter_invoice_app/services/gstr3b_service.dart';
@@ -10,9 +12,9 @@ class GSTR3BFormWidget extends StatefulWidget {
   final bool isReadOnly;
 
   const GSTR3BFormWidget({
+    required this.onSave,
     Key? key,
     this.initialData,
-    required this.onSave,
     this.isReadOnly = false,
   }) : super(key: key);
 
@@ -70,10 +72,10 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
           _formData.taxPayableCGST = double.tryParse(value) ?? 0.0;
           break;
         case 'taxPayableSGST':
-          _formData.taxPayableSGST = double.tryParse(value) ?? 0.0;
+          _formData.taxPayableCGST = double.tryParse(value) ?? 0.0;
           break;
         case 'taxPayableIGST':
-          _formData.taxPayableIGST = double.tryParse(value) ?? 0.0;
+          _formData.taxPayableCGST = double.tryParse(value) ?? 0.0;
           break;
         case 'taxPayableCess':
           _formData.taxPayableCess = double.tryParse(value) ?? 0.0;
@@ -114,7 +116,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
     return ErrorBoundaryWidget(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Form(
             key: _formKey,
             child: Column(
@@ -128,7 +130,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                
+
                 // GSTIN Field
                 TextFormField(
                   initialValue: _formData.gstin,
@@ -150,7 +152,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
                   onChanged: (value) => _updateFormField('gstin', value),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Financial Year Dropdown
                 DropdownButtonFormField<String>(
                   value: _formData.financialYear,
@@ -175,7 +177,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
                   },
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Tax Period Dropdown
                 DropdownButtonFormField<String>(
                   value: _formData.taxPeriod,
@@ -200,23 +202,23 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
                   },
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Outward Supplies Section
                 _buildOutwardSuppliesSection(),
-                
+
                 // Inward Supplies Section
                 _buildInwardSuppliesSection(),
-                
+
                 // ITC Details Section
                 _buildITCDetailsSection(),
-                
+
                 // Tax Payable Section
                 _buildTaxPayableSection(),
-                
+
                 // Save Button
                 if (!widget.isReadOnly)
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     child: ElevatedButton(
                       onPressed: _isLoading ? null : _saveForm,
                       child: _isLoading
@@ -234,9 +236,9 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
 
   Widget _buildOutwardSuppliesSection() {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -256,29 +258,34 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
               ),
               enabled: !widget.isReadOnly,
               keyboardType: TextInputType.number,
-              onChanged: (value) => _updateFormField('outwardSuppliesTotal', value),
+              onChanged: (value) =>
+                  _updateFormField('outwardSuppliesTotal', value),
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.outwardSuppliesZeroRated?.toString() ?? '0.0',
+              initialValue:
+                  _formData.outwardSuppliesZeroRated?.toString() ?? '0.0',
               decoration: const InputDecoration(
                 labelText: 'Zero Rated Supplies',
                 border: OutlineInputBorder(),
               ),
               enabled: !widget.isReadOnly,
               keyboardType: TextInputType.number,
-              onChanged: (value) => _updateFormField('outwardSuppliesZeroRated', value),
+              onChanged: (value) =>
+                  _updateFormField('outwardSuppliesZeroRated', value),
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.outwardSuppliesNilRated?.toString() ?? '0.0',
+              initialValue:
+                  _formData.outwardSuppliesNilRated?.toString() ?? '0.0',
               decoration: const InputDecoration(
                 labelText: 'Nil Rated, Exempted Supplies',
                 border: OutlineInputBorder(),
               ),
               enabled: !widget.isReadOnly,
               keyboardType: TextInputType.number,
-              onChanged: (value) => _updateFormField('outwardSuppliesNilRated', value),
+              onChanged: (value) =>
+                  _updateFormField('outwardSuppliesNilRated', value),
             ),
           ],
         ),
@@ -288,9 +295,9 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
 
   Widget _buildInwardSuppliesSection() {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -303,14 +310,16 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.inwardSuppliesReverseCharge?.toString() ?? '0.0',
+              initialValue:
+                  _formData.inwardSuppliesReverseCharge?.toString() ?? '0.0',
               decoration: const InputDecoration(
                 labelText: 'Reverse Charge',
                 border: OutlineInputBorder(),
               ),
               enabled: !widget.isReadOnly,
               keyboardType: TextInputType.number,
-              onChanged: (value) => _updateFormField('inwardSuppliesReverseCharge', value),
+              onChanged: (value) =>
+                  _updateFormField('inwardSuppliesReverseCharge', value),
             ),
             const SizedBox(height: 8),
             TextFormField(
@@ -321,7 +330,8 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
               ),
               enabled: !widget.isReadOnly,
               keyboardType: TextInputType.number,
-              onChanged: (value) => _updateFormField('inwardSuppliesImport', value),
+              onChanged: (value) =>
+                  _updateFormField('inwardSuppliesImport', value),
             ),
           ],
         ),
@@ -331,9 +341,9 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
 
   Widget _buildITCDetailsSection() {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -374,9 +384,9 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
 
   Widget _buildTaxPayableSection() {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -400,7 +410,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.taxPayableSGST?.toString() ?? '0.0',
+              initialValue: _formData.taxPayableCGST?.toString() ?? '0.0',
               decoration: const InputDecoration(
                 labelText: 'SGST',
                 border: OutlineInputBorder(),
@@ -411,7 +421,7 @@ class _GSTR3BFormWidgetState extends State<GSTR3BFormWidget> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              initialValue: _formData.taxPayableIGST?.toString() ?? '0.0',
+              initialValue: _formData.taxPayableCGST?.toString() ?? '0.0',
               decoration: const InputDecoration(
                 labelText: 'IGST',
                 border: OutlineInputBorder(),

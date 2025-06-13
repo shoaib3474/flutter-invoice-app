@@ -29,7 +29,7 @@ class GSTR3BModel {
     );
   }
   final int? id;
-  final String gstin;
+  late final String gstin;
   final String returnPeriod;
   final DateTime filingDate;
   final OutwardSupplies outwardSupplies;
@@ -37,6 +37,41 @@ class GSTR3BModel {
   final List<TaxPayment> taxPayments;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  late String financialYear;
+  late String taxPeriod;
+  late double outwardSuppliesTotal;
+  late double outwardSuppliesZeroRated;
+  late double outwardSuppliesNilRated;
+  late double inwardSuppliesReverseCharge;
+  late double inwardSuppliesImport;
+  late double itcAvailed;
+  late double itcReversed;
+  late double taxPayableCGST;
+  late double taxPayableCess;
+
+  GSTR3BModel.withDetails(
+    this.id,
+    this.gstin,
+    this.returnPeriod,
+    this.filingDate,
+    this.outwardSupplies,
+    this.inwardSupplies,
+    this.taxPayments,
+    this.createdAt,
+    this.updatedAt, {
+    required this.financialYear,
+    required this.taxPeriod,
+    this.outwardSuppliesTotal = 0.0,
+    this.outwardSuppliesZeroRated = 0.0,
+    this.outwardSuppliesNilRated = 0.0,
+    this.inwardSuppliesReverseCharge = 0.0,
+    this.inwardSuppliesImport = 0.0,
+    this.itcAvailed = 0.0,
+    this.itcReversed = 0.0,
+    this.taxPayableCGST = 0.0,
+    this.taxPayableCess = 0.0,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -75,6 +110,10 @@ class GSTR3BModel {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  copy() {}
+
+  static empty() {}
 }
 
 class OutwardSupplies {

@@ -1,11 +1,13 @@
 import 'dart:convert';
+import 'package:flutter_invoice_app/database/database_helper.dart';
+import 'package:sqflite/sqflite.dart';
+
 import '../models/gstr3b_model.dart';
-import '../services/database/database_helper.dart';
 import '../utils/error_handler.dart';
 
 class GSTR3BService {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
-  
+
   Future<GSTR3BModel?> getLatestGSTR3BData() async {
     try {
       final db = await _databaseHelper.database;
@@ -14,18 +16,18 @@ class GSTR3BService {
         orderBy: 'created_at DESC',
         limit: 1,
       );
-      
+
       if (maps.isEmpty) {
         return null;
       }
-      
+
       return GSTR3BModel.fromJson(maps.first);
     } catch (e, stackTrace) {
       ErrorHandler.handleError(e, stackTrace);
       throw Exception('Failed to get latest GSTR-3B data: ${e.toString()}');
     }
   }
-  
+
   Future<List<GSTR3BModel>> getAllGSTR3BData() async {
     try {
       final db = await _databaseHelper.database;
@@ -33,7 +35,7 @@ class GSTR3BService {
         'gstr3b_data',
         orderBy: 'created_at DESC',
       );
-      
+
       return List.generate(maps.length, (i) {
         return GSTR3BModel.fromJson(maps[i]);
       });
@@ -42,7 +44,7 @@ class GSTR3BService {
       throw Exception('Failed to get all GSTR-3B data: ${e.toString()}');
     }
   }
-  
+
   Future<void> saveGSTR3BData(GSTR3BModel data) async {
     try {
       final db = await _databaseHelper.database;
@@ -56,7 +58,7 @@ class GSTR3BService {
       throw Exception('Failed to save GSTR-3B data: ${e.toString()}');
     }
   }
-  
+
   Future<void> updateGSTR3BData(GSTR3BModel data) async {
     try {
       final db = await _databaseHelper.database;
@@ -71,7 +73,7 @@ class GSTR3BService {
       throw Exception('Failed to update GSTR-3B data: ${e.toString()}');
     }
   }
-  
+
   Future<void> deleteGSTR3BData(int id) async {
     try {
       final db = await _databaseHelper.database;
@@ -85,7 +87,7 @@ class GSTR3BService {
       throw Exception('Failed to delete GSTR-3B data: ${e.toString()}');
     }
   }
-  
+
   Future<String> exportToJson(GSTR3BModel data) async {
     try {
       final jsonData = jsonEncode(data.toJson());
@@ -95,7 +97,7 @@ class GSTR3BService {
       throw Exception('Failed to export GSTR-3B data to JSON: ${e.toString()}');
     }
   }
-  
+
   Future<GSTR3BModel> importFromJson(String jsonData) async {
     try {
       final Map<String, dynamic> data = jsonDecode(jsonData);
@@ -104,12 +106,19 @@ class GSTR3BService {
       return gstr3bData;
     } catch (e, stackTrace) {
       ErrorHandler.handleError(e, stackTrace);
-      throw Exception('Failed to import GSTR-3B data from JSON: ${e.toString()}');
+      throw Exception(
+          'Failed to import GSTR-3B data from JSON: ${e.toString()}');
     }
   }
-  
+
   Future<void> validateGSTR3BData(GSTR3BModel data) async {
     // Implement validation logic for GSTR-3B data
     // Throw exceptions for validation errors
   }
+
+  Future<void> validateGSTR3B(GSTR3BModel formData) async {}
+
+  getFinancialYears() {}
+
+  getTaxPeriods() {}
 }
