@@ -1,16 +1,5 @@
-import 'package:flutter/foundation.dart';
-
+// ignore_for_file: always_put_required_named_parameters_first
 class GSTR3BModel {
-  final int? id;
-  final String gstin;
-  final String returnPeriod;
-  final DateTime filingDate;
-  final OutwardSupplies outwardSupplies;
-  final InwardSupplies inwardSupplies;
-  final List<TaxPayment> taxPayments;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
   GSTR3BModel({
     this.id,
     required this.gstin,
@@ -39,6 +28,15 @@ class GSTR3BModel {
       updatedAt: DateTime.parse(json['updated_at']),
     );
   }
+  final int? id;
+  final String gstin;
+  final String returnPeriod;
+  final DateTime filingDate;
+  final OutwardSupplies outwardSupplies;
+  final InwardSupplies inwardSupplies;
+  final List<TaxPayment> taxPayments;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   Map<String, dynamic> toJson() {
     return {
@@ -80,17 +78,6 @@ class GSTR3BModel {
 }
 
 class OutwardSupplies {
-  final double taxableOutwardSupplies;
-  final double taxableOutwardSuppliesZeroRated;
-  final double taxableOutwardSuppliesNil;
-  final double nonGstOutwardSupplies;
-  final double intraStateSupplies;
-  final double interStateSupplies;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-
   OutwardSupplies({
     required this.taxableOutwardSupplies,
     required this.taxableOutwardSuppliesZeroRated,
@@ -107,7 +94,8 @@ class OutwardSupplies {
   factory OutwardSupplies.fromJson(Map<String, dynamic> json) {
     return OutwardSupplies(
       taxableOutwardSupplies: json['taxable_outward_supplies'],
-      taxableOutwardSuppliesZeroRated: json['taxable_outward_supplies_zero_rated'],
+      taxableOutwardSuppliesZeroRated:
+          json['taxable_outward_supplies_zero_rated'],
       taxableOutwardSuppliesNil: json['taxable_outward_supplies_nil'],
       nonGstOutwardSupplies: json['non_gst_outward_supplies'],
       intraStateSupplies: json['intra_state_supplies'],
@@ -118,6 +106,16 @@ class OutwardSupplies {
       cessAmount: json['cess_amount'],
     );
   }
+  final double taxableOutwardSupplies;
+  final double taxableOutwardSuppliesZeroRated;
+  final double taxableOutwardSuppliesNil;
+  final double nonGstOutwardSupplies;
+  final double intraStateSupplies;
+  final double interStateSupplies;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -136,16 +134,6 @@ class OutwardSupplies {
 }
 
 class InwardSupplies {
-  final double reverseChargeSupplies;
-  final double importOfGoods;
-  final double importOfServices;
-  final double ineligibleITC;
-  final double eligibleITC;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-
   InwardSupplies({
     required this.reverseChargeSupplies,
     required this.importOfGoods,
@@ -171,6 +159,15 @@ class InwardSupplies {
       cessAmount: json['cess_amount'],
     );
   }
+  final double reverseChargeSupplies;
+  final double importOfGoods;
+  final double importOfServices;
+  final double ineligibleITC;
+  final double eligibleITC;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -188,13 +185,6 @@ class InwardSupplies {
 }
 
 class TaxPayment {
-  final String? id;
-  final String taxType;
-  final double taxAmount;
-  final String paymentMode;
-  final DateTime paymentDate;
-  final String referenceNumber;
-
   TaxPayment({
     this.id,
     required this.taxType,
@@ -214,6 +204,12 @@ class TaxPayment {
       referenceNumber: json['reference_number'],
     );
   }
+  final String? id;
+  final String taxType;
+  final double taxAmount;
+  final String paymentMode;
+  final DateTime paymentDate;
+  final String referenceNumber;
 
   Map<String, dynamic> toJson() {
     return {

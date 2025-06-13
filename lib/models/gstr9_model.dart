@@ -1,20 +1,8 @@
+// ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
+
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 class GSTR9 {
-  final String gstin;
-  final String financialYear;
-  final String legalName;
-  final String tradeName;
-  final GSTR9Part4 part4;
-  final GSTR9Part5 part5;
-  final GSTR9Part6 part6;
-  
-  // Parts 1-3 are auto-populated from GSTR1 and GSTR3B
-  final GSTR9Part1 part1;
-  final GSTR9Part2 part2;
-  final GSTR9Part3 part3;
-
   GSTR9({
     required this.gstin,
     required this.financialYear,
@@ -42,6 +30,18 @@ class GSTR9 {
       part6: GSTR9Part6.fromJson(json['part6']),
     );
   }
+  final String gstin;
+  final String financialYear;
+  final String legalName;
+  final String tradeName;
+  final GSTR9Part4 part4;
+  final GSTR9Part5 part5;
+  final GSTR9Part6 part6;
+
+  // Parts 1-3 are auto-populated from GSTR1 and GSTR3B
+  final GSTR9Part1 part1;
+  final GSTR9Part2 part2;
+  final GSTR9Part3 part3;
 
   Map<String, dynamic> toJson() {
     return {
@@ -60,12 +60,6 @@ class GSTR9 {
 }
 
 class GSTR9Part1 {
-  final double totalOutwardSupplies;
-  final double zeroRatedSupplies;
-  final double nilRatedSupplies;
-  final double exemptedSupplies;
-  final double nonGSTSupplies;
-
   GSTR9Part1({
     required this.totalOutwardSupplies,
     required this.zeroRatedSupplies,
@@ -83,6 +77,11 @@ class GSTR9Part1 {
       nonGSTSupplies: json['non_gst_supplies'] ?? 0.0,
     );
   }
+  final double totalOutwardSupplies;
+  final double zeroRatedSupplies;
+  final double nilRatedSupplies;
+  final double exemptedSupplies;
+  final double nonGSTSupplies;
 
   Map<String, dynamic> toJson() {
     return {
@@ -96,10 +95,6 @@ class GSTR9Part1 {
 }
 
 class GSTR9Part2 {
-  final double inwardSuppliesAttractingReverseCharge;
-  final double importsOfGoodsAndServices;
-  final double inwardSuppliesLiableToReverseCharge;
-
   GSTR9Part2({
     required this.inwardSuppliesAttractingReverseCharge,
     required this.importsOfGoodsAndServices,
@@ -108,28 +103,29 @@ class GSTR9Part2 {
 
   factory GSTR9Part2.fromJson(Map<String, dynamic> json) {
     return GSTR9Part2(
-      inwardSuppliesAttractingReverseCharge: json['inward_supplies_attracting_reverse_charge'] ?? 0.0,
+      inwardSuppliesAttractingReverseCharge:
+          json['inward_supplies_attracting_reverse_charge'] ?? 0.0,
       importsOfGoodsAndServices: json['imports_of_goods_and_services'] ?? 0.0,
-      inwardSuppliesLiableToReverseCharge: json['inward_supplies_liable_to_reverse_charge'] ?? 0.0,
+      inwardSuppliesLiableToReverseCharge:
+          json['inward_supplies_liable_to_reverse_charge'] ?? 0.0,
     );
   }
+  final double inwardSuppliesAttractingReverseCharge;
+  final double importsOfGoodsAndServices;
+  final double inwardSuppliesLiableToReverseCharge;
 
   Map<String, dynamic> toJson() {
     return {
-      'inward_supplies_attracting_reverse_charge': inwardSuppliesAttractingReverseCharge,
+      'inward_supplies_attracting_reverse_charge':
+          inwardSuppliesAttractingReverseCharge,
       'imports_of_goods_and_services': importsOfGoodsAndServices,
-      'inward_supplies_liable_to_reverse_charge': inwardSuppliesLiableToReverseCharge,
+      'inward_supplies_liable_to_reverse_charge':
+          inwardSuppliesLiableToReverseCharge,
     };
   }
 }
 
 class GSTR9Part3 {
-  final double taxPayableOnOutwardSupplies;
-  final double taxPayableOnReverseCharge;
-  final double interestPayable;
-  final double lateFeePayable;
-  final double penaltyPayable;
-
   GSTR9Part3({
     required this.taxPayableOnOutwardSupplies,
     required this.taxPayableOnReverseCharge,
@@ -140,13 +136,19 @@ class GSTR9Part3 {
 
   factory GSTR9Part3.fromJson(Map<String, dynamic> json) {
     return GSTR9Part3(
-      taxPayableOnOutwardSupplies: json['tax_payable_on_outward_supplies'] ?? 0.0,
+      taxPayableOnOutwardSupplies:
+          json['tax_payable_on_outward_supplies'] ?? 0.0,
       taxPayableOnReverseCharge: json['tax_payable_on_reverse_charge'] ?? 0.0,
       interestPayable: json['interest_payable'] ?? 0.0,
       lateFeePayable: json['late_fee_payable'] ?? 0.0,
       penaltyPayable: json['penalty_payable'] ?? 0.0,
     );
   }
+  final double taxPayableOnOutwardSupplies;
+  final double taxPayableOnReverseCharge;
+  final double interestPayable;
+  final double lateFeePayable;
+  final double penaltyPayable;
 
   Map<String, dynamic> toJson() {
     return {
@@ -161,10 +163,6 @@ class GSTR9Part3 {
 
 /// Part 4 of GSTR9 - Details of advances, inward and outward supplies made during the financial year on which tax is payable
 class GSTR9Part4 {
-  final double itcAvailedOnInvoices;
-  final double itcReversedAndReclaimed;
-  final double itcAvailedButIneligible;
-  
   GSTR9Part4({
     required this.itcAvailedOnInvoices,
     required this.itcReversedAndReclaimed,
@@ -178,6 +176,22 @@ class GSTR9Part4 {
       itcAvailedButIneligible: json['itc_availed_but_ineligible'] ?? 0.0,
     );
   }
+
+  factory GSTR9Part4.fromMap(Map<String, dynamic> map) {
+    return GSTR9Part4(
+      itcAvailedOnInvoices: map['itcAvailedOnInvoices']?.toDouble() ?? 0.0,
+      itcReversedAndReclaimed:
+          map['itcReversedAndReclaimed']?.toDouble() ?? 0.0,
+      itcAvailedButIneligible:
+          map['itcAvailedButIneligible']?.toDouble() ?? 0.0,
+    );
+  }
+
+  factory GSTR9Part4.fromJson2(String source) =>
+      GSTR9Part4.fromMap(json.decode(source));
+  final double itcAvailedOnInvoices;
+  final double itcReversedAndReclaimed;
+  final double itcAvailedButIneligible;
 
   Map<String, dynamic> toJson() {
     return {
@@ -194,8 +208,10 @@ class GSTR9Part4 {
   }) {
     return GSTR9Part4(
       itcAvailedOnInvoices: itcAvailedOnInvoices ?? this.itcAvailedOnInvoices,
-      itcReversedAndReclaimed: itcReversedAndReclaimed ?? this.itcReversedAndReclaimed,
-      itcAvailedButIneligible: itcAvailedButIneligible ?? this.itcAvailedButIneligible,
+      itcReversedAndReclaimed:
+          itcReversedAndReclaimed ?? this.itcReversedAndReclaimed,
+      itcAvailedButIneligible:
+          itcAvailedButIneligible ?? this.itcAvailedButIneligible,
     );
   }
 
@@ -207,17 +223,7 @@ class GSTR9Part4 {
     };
   }
 
-  factory GSTR9Part4.fromMap(Map<String, dynamic> map) {
-    return GSTR9Part4(
-      itcAvailedOnInvoices: map['itcAvailedOnInvoices']?.toDouble() ?? 0.0,
-      itcReversedAndReclaimed: map['itcReversedAndReclaimed']?.toDouble() ?? 0.0,
-      itcAvailedButIneligible: map['itcAvailedButIneligible']?.toDouble() ?? 0.0,
-    );
-  }
-
   String toJson2() => json.encode(toMap());
-
-  factory GSTR9Part4.fromJson2(String source) => GSTR9Part4.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -227,28 +233,23 @@ class GSTR9Part4 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is GSTR9Part4 &&
-      other.itcAvailedOnInvoices == itcAvailedOnInvoices &&
-      other.itcReversedAndReclaimed == itcReversedAndReclaimed &&
-      other.itcAvailedButIneligible == itcAvailedButIneligible;
+        other.itcAvailedOnInvoices == itcAvailedOnInvoices &&
+        other.itcReversedAndReclaimed == itcReversedAndReclaimed &&
+        other.itcAvailedButIneligible == itcAvailedButIneligible;
   }
 
   @override
   int get hashCode {
     return itcAvailedOnInvoices.hashCode ^
-      itcReversedAndReclaimed.hashCode ^
-      itcAvailedButIneligible.hashCode;
+        itcReversedAndReclaimed.hashCode ^
+        itcAvailedButIneligible.hashCode;
   }
 }
 
 /// Part 5 of GSTR9 - Details of ITC availed during the financial year
 class GSTR9Part5 {
-  final double refundClaimed;
-  final double refundSanctioned;
-  final double refundRejected;
-  final double refundPending;
-
   GSTR9Part5({
     required this.refundClaimed,
     required this.refundSanctioned,
@@ -264,6 +265,22 @@ class GSTR9Part5 {
       refundPending: json['refund_pending'] ?? 0.0,
     );
   }
+
+  factory GSTR9Part5.fromMap(Map<String, dynamic> map) {
+    return GSTR9Part5(
+      refundClaimed: map['refundClaimed']?.toDouble() ?? 0.0,
+      refundSanctioned: map['refundSanctioned']?.toDouble() ?? 0.0,
+      refundRejected: map['refundRejected']?.toDouble() ?? 0.0,
+      refundPending: map['refundPending']?.toDouble() ?? 0.0,
+    );
+  }
+
+  factory GSTR9Part5.fromJson2(String source) =>
+      GSTR9Part5.fromMap(json.decode(source));
+  final double refundClaimed;
+  final double refundSanctioned;
+  final double refundRejected;
+  final double refundPending;
 
   Map<String, dynamic> toJson() {
     return {
@@ -297,18 +314,7 @@ class GSTR9Part5 {
     };
   }
 
-  factory GSTR9Part5.fromMap(Map<String, dynamic> map) {
-    return GSTR9Part5(
-      refundClaimed: map['refundClaimed']?.toDouble() ?? 0.0,
-      refundSanctioned: map['refundSanctioned']?.toDouble() ?? 0.0,
-      refundRejected: map['refundRejected']?.toDouble() ?? 0.0,
-      refundPending: map['refundPending']?.toDouble() ?? 0.0,
-    );
-  }
-
   String toJson2() => json.encode(toMap());
-
-  factory GSTR9Part5.fromJson2(String source) => GSTR9Part5.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -318,30 +324,25 @@ class GSTR9Part5 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is GSTR9Part5 &&
-      other.refundClaimed == refundClaimed &&
-      other.refundSanctioned == refundSanctioned &&
-      other.refundRejected == refundRejected &&
-      other.refundPending == refundPending;
+        other.refundClaimed == refundClaimed &&
+        other.refundSanctioned == refundSanctioned &&
+        other.refundRejected == refundRejected &&
+        other.refundPending == refundPending;
   }
 
   @override
   int get hashCode {
     return refundClaimed.hashCode ^
-      refundSanctioned.hashCode ^
-      refundRejected.hashCode ^
-      refundPending.hashCode;
+        refundSanctioned.hashCode ^
+        refundRejected.hashCode ^
+        refundPending.hashCode;
   }
 }
 
 /// Part 6 of GSTR9 - Details of ITC reversed and ineligible ITC as declared in returns filed during the financial year
 class GSTR9Part6 {
-  final double taxPayableAsPerSection73Or74;
-  final double taxPaidAsPerSection73Or74;
-  final double interestPayableAsPerSection73Or74;
-  final double interestPaidAsPerSection73Or74;
-
   GSTR9Part6({
     required this.taxPayableAsPerSection73Or74,
     required this.taxPaidAsPerSection73Or74,
@@ -351,18 +352,43 @@ class GSTR9Part6 {
 
   factory GSTR9Part6.fromJson(Map<String, dynamic> json) {
     return GSTR9Part6(
-      taxPayableAsPerSection73Or74: json['tax_payable_as_per_section_73_or_74'] ?? 0.0,
-      taxPaidAsPerSection73Or74: json['tax_paid_as_per_section_73_or_74'] ?? 0.0,
-      interestPayableAsPerSection73Or74: json['interest_payable_as_per_section_73_or_74'] ?? 0.0,
-      interestPaidAsPerSection73Or74: json['interest_paid_as_per_section_73_or_74'] ?? 0.0,
+      taxPayableAsPerSection73Or74:
+          json['tax_payable_as_per_section_73_or_74'] ?? 0.0,
+      taxPaidAsPerSection73Or74:
+          json['tax_paid_as_per_section_73_or_74'] ?? 0.0,
+      interestPayableAsPerSection73Or74:
+          json['interest_payable_as_per_section_73_or_74'] ?? 0.0,
+      interestPaidAsPerSection73Or74:
+          json['interest_paid_as_per_section_73_or_74'] ?? 0.0,
     );
   }
+
+  factory GSTR9Part6.fromMap(Map<String, dynamic> map) {
+    return GSTR9Part6(
+      taxPayableAsPerSection73Or74:
+          map['taxPayableAsPerSection73Or74']?.toDouble() ?? 0.0,
+      taxPaidAsPerSection73Or74:
+          map['taxPaidAsPerSection73Or74']?.toDouble() ?? 0.0,
+      interestPayableAsPerSection73Or74:
+          map['interestPayableAsPerSection73Or74']?.toDouble() ?? 0.0,
+      interestPaidAsPerSection73Or74:
+          map['interestPaidAsPerSection73Or74']?.toDouble() ?? 0.0,
+    );
+  }
+
+  factory GSTR9Part6.fromJson2(String source) =>
+      GSTR9Part6.fromMap(json.decode(source));
+  final double taxPayableAsPerSection73Or74;
+  final double taxPaidAsPerSection73Or74;
+  final double interestPayableAsPerSection73Or74;
+  final double interestPaidAsPerSection73Or74;
 
   Map<String, dynamic> toJson() {
     return {
       'tax_payable_as_per_section_73_or_74': taxPayableAsPerSection73Or74,
       'tax_paid_as_per_section_73_or_74': taxPaidAsPerSection73Or74,
-      'interest_payable_as_per_section_73_or_74': interestPayableAsPerSection73Or74,
+      'interest_payable_as_per_section_73_or_74':
+          interestPayableAsPerSection73Or74,
       'interest_paid_as_per_section_73_or_74': interestPaidAsPerSection73Or74,
     };
   }
@@ -374,10 +400,14 @@ class GSTR9Part6 {
     double? interestPaidAsPerSection73Or74,
   }) {
     return GSTR9Part6(
-      taxPayableAsPerSection73Or74: taxPayableAsPerSection73Or74 ?? this.taxPayableAsPerSection73Or74,
-      taxPaidAsPerSection73Or74: taxPaidAsPerSection73Or74 ?? this.taxPaidAsPerSection73Or74,
-      interestPayableAsPerSection73Or74: interestPayableAsPerSection73Or74 ?? this.interestPayableAsPerSection73Or74,
-      interestPaidAsPerSection73Or74: interestPaidAsPerSection73Or74 ?? this.interestPaidAsPerSection73Or74,
+      taxPayableAsPerSection73Or74:
+          taxPayableAsPerSection73Or74 ?? this.taxPayableAsPerSection73Or74,
+      taxPaidAsPerSection73Or74:
+          taxPaidAsPerSection73Or74 ?? this.taxPaidAsPerSection73Or74,
+      interestPayableAsPerSection73Or74: interestPayableAsPerSection73Or74 ??
+          this.interestPayableAsPerSection73Or74,
+      interestPaidAsPerSection73Or74:
+          interestPaidAsPerSection73Or74 ?? this.interestPaidAsPerSection73Or74,
     );
   }
 
@@ -390,18 +420,7 @@ class GSTR9Part6 {
     };
   }
 
-  factory GSTR9Part6.fromMap(Map<String, dynamic> map) {
-    return GSTR9Part6(
-      taxPayableAsPerSection73Or74: map['taxPayableAsPerSection73Or74']?.toDouble() ?? 0.0,
-      taxPaidAsPerSection73Or74: map['taxPaidAsPerSection73Or74']?.toDouble() ?? 0.0,
-      interestPayableAsPerSection73Or74: map['interestPayableAsPerSection73Or74']?.toDouble() ?? 0.0,
-      interestPaidAsPerSection73Or74: map['interestPaidAsPerSection73Or74']?.toDouble() ?? 0.0,
-    );
-  }
-
   String toJson2() => json.encode(toMap());
-
-  factory GSTR9Part6.fromJson2(String source) => GSTR9Part6.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -411,32 +430,26 @@ class GSTR9Part6 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is GSTR9Part6 &&
-      other.taxPayableAsPerSection73Or74 == taxPayableAsPerSection73Or74 &&
-      other.taxPaidAsPerSection73Or74 == taxPaidAsPerSection73Or74 &&
-      other.interestPayableAsPerSection73Or74 == interestPayableAsPerSection73Or74 &&
-      other.interestPaidAsPerSection73Or74 == interestPaidAsPerSection73Or74;
+        other.taxPayableAsPerSection73Or74 == taxPayableAsPerSection73Or74 &&
+        other.taxPaidAsPerSection73Or74 == taxPaidAsPerSection73Or74 &&
+        other.interestPayableAsPerSection73Or74 ==
+            interestPayableAsPerSection73Or74 &&
+        other.interestPaidAsPerSection73Or74 == interestPaidAsPerSection73Or74;
   }
 
   @override
   int get hashCode {
     return taxPayableAsPerSection73Or74.hashCode ^
-      taxPaidAsPerSection73Or74.hashCode ^
-      interestPayableAsPerSection73Or74.hashCode ^
-      interestPaidAsPerSection73Or74.hashCode;
+        taxPaidAsPerSection73Or74.hashCode ^
+        interestPayableAsPerSection73Or74.hashCode ^
+        interestPaidAsPerSection73Or74.hashCode;
   }
 }
 
 /// Part 8 of GSTR9 - Other Information
 class GSTR9Part8 {
-  final double hsnSummaryTotalValue;
-  final double hsnSummaryTotalTaxableValue;
-  final double hsnSummaryTotalIGST;
-  final double hsnSummaryTotalCGST;
-  final double hsnSummaryTotalSGST;
-  final double hsnSummaryTotalCess;
-  
   GSTR9Part8({
     required this.hsnSummaryTotalValue,
     required this.hsnSummaryTotalTaxableValue,
@@ -445,6 +458,27 @@ class GSTR9Part8 {
     required this.hsnSummaryTotalSGST,
     required this.hsnSummaryTotalCess,
   });
+
+  factory GSTR9Part8.fromMap(Map<String, dynamic> map) {
+    return GSTR9Part8(
+      hsnSummaryTotalValue: map['hsnSummaryTotalValue']?.toDouble() ?? 0.0,
+      hsnSummaryTotalTaxableValue:
+          map['hsnSummaryTotalTaxableValue']?.toDouble() ?? 0.0,
+      hsnSummaryTotalIGST: map['hsnSummaryTotalIGST']?.toDouble() ?? 0.0,
+      hsnSummaryTotalCGST: map['hsnSummaryTotalCGST']?.toDouble() ?? 0.0,
+      hsnSummaryTotalSGST: map['hsnSummaryTotalSGST']?.toDouble() ?? 0.0,
+      hsnSummaryTotalCess: map['hsnSummaryTotalCess']?.toDouble() ?? 0.0,
+    );
+  }
+
+  factory GSTR9Part8.fromJson2(String source) =>
+      GSTR9Part8.fromMap(json.decode(source));
+  final double hsnSummaryTotalValue;
+  final double hsnSummaryTotalTaxableValue;
+  final double hsnSummaryTotalIGST;
+  final double hsnSummaryTotalCGST;
+  final double hsnSummaryTotalSGST;
+  final double hsnSummaryTotalCess;
 
   GSTR9Part8 copyWith({
     double? hsnSummaryTotalValue,
@@ -456,7 +490,8 @@ class GSTR9Part8 {
   }) {
     return GSTR9Part8(
       hsnSummaryTotalValue: hsnSummaryTotalValue ?? this.hsnSummaryTotalValue,
-      hsnSummaryTotalTaxableValue: hsnSummaryTotalTaxableValue ?? this.hsnSummaryTotalTaxableValue,
+      hsnSummaryTotalTaxableValue:
+          hsnSummaryTotalTaxableValue ?? this.hsnSummaryTotalTaxableValue,
       hsnSummaryTotalIGST: hsnSummaryTotalIGST ?? this.hsnSummaryTotalIGST,
       hsnSummaryTotalCGST: hsnSummaryTotalCGST ?? this.hsnSummaryTotalCGST,
       hsnSummaryTotalSGST: hsnSummaryTotalSGST ?? this.hsnSummaryTotalSGST,
@@ -475,20 +510,7 @@ class GSTR9Part8 {
     };
   }
 
-  factory GSTR9Part8.fromMap(Map<String, dynamic> map) {
-    return GSTR9Part8(
-      hsnSummaryTotalValue: map['hsnSummaryTotalValue']?.toDouble() ?? 0.0,
-      hsnSummaryTotalTaxableValue: map['hsnSummaryTotalTaxableValue']?.toDouble() ?? 0.0,
-      hsnSummaryTotalIGST: map['hsnSummaryTotalIGST']?.toDouble() ?? 0.0,
-      hsnSummaryTotalCGST: map['hsnSummaryTotalCGST']?.toDouble() ?? 0.0,
-      hsnSummaryTotalSGST: map['hsnSummaryTotalSGST']?.toDouble() ?? 0.0,
-      hsnSummaryTotalCess: map['hsnSummaryTotalCess']?.toDouble() ?? 0.0,
-    );
-  }
-
   String toJson2() => json.encode(toMap());
-
-  factory GSTR9Part8.fromJson2(String source) => GSTR9Part8.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -498,38 +520,29 @@ class GSTR9Part8 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is GSTR9Part8 &&
-      other.hsnSummaryTotalValue == hsnSummaryTotalValue &&
-      other.hsnSummaryTotalTaxableValue == hsnSummaryTotalTaxableValue &&
-      other.hsnSummaryTotalIGST == hsnSummaryTotalIGST &&
-      other.hsnSummaryTotalCGST == hsnSummaryTotalCGST &&
-      other.hsnSummaryTotalSGST == hsnSummaryTotalSGST &&
-      other.hsnSummaryTotalCess == hsnSummaryTotalCess;
+        other.hsnSummaryTotalValue == hsnSummaryTotalValue &&
+        other.hsnSummaryTotalTaxableValue == hsnSummaryTotalTaxableValue &&
+        other.hsnSummaryTotalIGST == hsnSummaryTotalIGST &&
+        other.hsnSummaryTotalCGST == hsnSummaryTotalCGST &&
+        other.hsnSummaryTotalSGST == hsnSummaryTotalSGST &&
+        other.hsnSummaryTotalCess == hsnSummaryTotalCess;
   }
 
   @override
   int get hashCode {
     return hsnSummaryTotalValue.hashCode ^
-      hsnSummaryTotalTaxableValue.hashCode ^
-      hsnSummaryTotalIGST.hashCode ^
-      hsnSummaryTotalCGST.hashCode ^
-      hsnSummaryTotalSGST.hashCode ^
-      hsnSummaryTotalCess.hashCode;
+        hsnSummaryTotalTaxableValue.hashCode ^
+        hsnSummaryTotalIGST.hashCode ^
+        hsnSummaryTotalCGST.hashCode ^
+        hsnSummaryTotalSGST.hashCode ^
+        hsnSummaryTotalCess.hashCode;
   }
 }
 
 /// Part 9 of GSTR9 - Details of tax paid as declared in returns filed during the financial year
 class GSTR9Part9 {
-  final double integratedTax;
-  final double centralTax;
-  final double stateTax;
-  final double cess;
-  final double interest;
-  final double penalty;
-  final double lateFee;
-  final double other;
-  
   GSTR9Part9({
     required this.integratedTax,
     required this.centralTax,
@@ -540,6 +553,30 @@ class GSTR9Part9 {
     required this.lateFee,
     required this.other,
   });
+
+  factory GSTR9Part9.fromMap(Map<String, dynamic> map) {
+    return GSTR9Part9(
+      integratedTax: map['integratedTax']?.toDouble() ?? 0.0,
+      centralTax: map['centralTax']?.toDouble() ?? 0.0,
+      stateTax: map['stateTax']?.toDouble() ?? 0.0,
+      cess: map['cess']?.toDouble() ?? 0.0,
+      interest: map['interest']?.toDouble() ?? 0.0,
+      penalty: map['penalty']?.toDouble() ?? 0.0,
+      lateFee: map['lateFee']?.toDouble() ?? 0.0,
+      other: map['other']?.toDouble() ?? 0.0,
+    );
+  }
+
+  factory GSTR9Part9.fromJson2(String source) =>
+      GSTR9Part9.fromMap(json.decode(source));
+  final double integratedTax;
+  final double centralTax;
+  final double stateTax;
+  final double cess;
+  final double interest;
+  final double penalty;
+  final double lateFee;
+  final double other;
 
   GSTR9Part9 copyWith({
     double? integratedTax,
@@ -576,22 +613,7 @@ class GSTR9Part9 {
     };
   }
 
-  factory GSTR9Part9.fromMap(Map<String, dynamic> map) {
-    return GSTR9Part9(
-      integratedTax: map['integratedTax']?.toDouble() ?? 0.0,
-      centralTax: map['centralTax']?.toDouble() ?? 0.0,
-      stateTax: map['stateTax']?.toDouble() ?? 0.0,
-      cess: map['cess']?.toDouble() ?? 0.0,
-      interest: map['interest']?.toDouble() ?? 0.0,
-      penalty: map['penalty']?.toDouble() ?? 0.0,
-      lateFee: map['lateFee']?.toDouble() ?? 0.0,
-      other: map['other']?.toDouble() ?? 0.0,
-    );
-  }
-
   String toJson2() => json.encode(toMap());
-
-  factory GSTR9Part9.fromJson2(String source) => GSTR9Part9.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -601,27 +623,27 @@ class GSTR9Part9 {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is GSTR9Part9 &&
-      other.integratedTax == integratedTax &&
-      other.centralTax == centralTax &&
-      other.stateTax == stateTax &&
-      other.cess == cess &&
-      other.interest == interest &&
-      other.penalty == penalty &&
-      other.lateFee == lateFee &&
-      other.other == this.other;
+        other.integratedTax == integratedTax &&
+        other.centralTax == centralTax &&
+        other.stateTax == stateTax &&
+        other.cess == cess &&
+        other.interest == interest &&
+        other.penalty == penalty &&
+        other.lateFee == lateFee &&
+        other.other == this.other;
   }
 
   @override
   int get hashCode {
     return integratedTax.hashCode ^
-      centralTax.hashCode ^
-      stateTax.hashCode ^
-      cess.hashCode ^
-      interest.hashCode ^
-      penalty.hashCode ^
-      lateFee.hashCode ^
-      other.hashCode;
+        centralTax.hashCode ^
+        stateTax.hashCode ^
+        cess.hashCode ^
+        interest.hashCode ^
+        penalty.hashCode ^
+        lateFee.hashCode ^
+        other.hashCode;
   }
 }

@@ -1,17 +1,6 @@
-import 'package:flutter/foundation.dart';
+// ignore_for_file: always_put_required_named_parameters_first
 
 class GSTR4Model {
-  final int? id;
-  final String gstin;
-  final String returnPeriod;
-  final DateTime filingDate;
-  final List<B2BInvoice> b2bInvoices;
-  final List<B2BURInvoice> b2burInvoices;
-  final List<ImportedGoods> importedGoods;
-  final List<TaxPaid> taxesPaid;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
   GSTR4Model({
     this.id,
     required this.gstin,
@@ -48,6 +37,16 @@ class GSTR4Model {
       updatedAt: DateTime.parse(json['updated_at']),
     );
   }
+  final int? id;
+  final String gstin;
+  final String returnPeriod;
+  final DateTime filingDate;
+  final List<B2BInvoice> b2bInvoices;
+  final List<B2BURInvoice> b2burInvoices;
+  final List<ImportedGoods> importedGoods;
+  final List<TaxPaid> taxesPaid;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   Map<String, dynamic> toJson() {
     return {
@@ -56,7 +55,8 @@ class GSTR4Model {
       'return_period': returnPeriod,
       'filing_date': filingDate.toIso8601String(),
       'b2b_invoices': b2bInvoices.map((invoice) => invoice.toJson()).toList(),
-      'b2bur_invoices': b2burInvoices.map((invoice) => invoice.toJson()).toList(),
+      'b2bur_invoices':
+          b2burInvoices.map((invoice) => invoice.toJson()).toList(),
       'imported_goods': importedGoods.map((goods) => goods.toJson()).toList(),
       'taxes_paid': taxesPaid.map((tax) => tax.toJson()).toList(),
       'created_at': createdAt.toIso8601String(),
@@ -92,19 +92,6 @@ class GSTR4Model {
 }
 
 class B2BInvoice {
-  final String? id;
-  final String supplierGstin;
-  final String supplierName;
-  final String invoiceNumber;
-  final DateTime invoiceDate;
-  final double invoiceValue;
-  final String placeOfSupply;
-  final double taxableValue;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-
   B2BInvoice({
     this.id,
     required this.supplierGstin,
@@ -136,6 +123,18 @@ class B2BInvoice {
       cessAmount: json['cess_amount'].toDouble(),
     );
   }
+  final String? id;
+  final String supplierGstin;
+  final String supplierName;
+  final String invoiceNumber;
+  final DateTime invoiceDate;
+  final double invoiceValue;
+  final String placeOfSupply;
+  final double taxableValue;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -156,19 +155,6 @@ class B2BInvoice {
 }
 
 class B2BURInvoice {
-  final String? id;
-  final String supplierGstin;
-  final String supplierName;
-  final String invoiceNumber;
-  final DateTime invoiceDate;
-  final double invoiceValue;
-  final String placeOfSupply;
-  final double taxableValue;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-
   B2BURInvoice({
     this.id,
     required this.supplierGstin,
@@ -200,6 +186,18 @@ class B2BURInvoice {
       cessAmount: json['cess_amount'].toDouble(),
     );
   }
+  final String? id;
+  final String supplierGstin;
+  final String supplierName;
+  final String invoiceNumber;
+  final DateTime invoiceDate;
+  final double invoiceValue;
+  final String placeOfSupply;
+  final double taxableValue;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -220,18 +218,6 @@ class B2BURInvoice {
 }
 
 class ImportedGoods {
-  final String? id;
-  final String portCode;
-  final String billOfEntryNumber;
-  final DateTime billOfEntryDate;
-  final double billOfEntryValue;
-  final String description;
-  final double quantity;
-  final String unit;
-  final double taxableValue;
-  final double igstAmount;
-  final double cessAmount;
-
   ImportedGoods({
     this.id,
     required this.portCode,
@@ -261,6 +247,17 @@ class ImportedGoods {
       cessAmount: json['cess_amount'].toDouble(),
     );
   }
+  final String? id;
+  final String portCode;
+  final String billOfEntryNumber;
+  final DateTime billOfEntryDate;
+  final double billOfEntryValue;
+  final String description;
+  final double quantity;
+  final String unit;
+  final double taxableValue;
+  final double igstAmount;
+  final double cessAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -280,17 +277,6 @@ class ImportedGoods {
 }
 
 class TaxPaid {
-  final String? id;
-  final String description;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-  final double interestAmount;
-  final double penaltyAmount;
-  final double feeAmount;
-  final double otherAmount;
-
   TaxPaid({
     this.id,
     required this.description,
@@ -318,6 +304,16 @@ class TaxPaid {
       otherAmount: json['other_amount'].toDouble(),
     );
   }
+  final String? id;
+  final String description;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
+  final double interestAmount;
+  final double penaltyAmount;
+  final double feeAmount;
+  final double otherAmount;
 
   Map<String, dynamic> toJson() {
     return {
