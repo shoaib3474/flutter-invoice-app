@@ -1,19 +1,20 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
+import 'package:flutter_invoice_app/models/hsn_sac/hsn_sac_model.dart';
 import 'package:provider/provider.dart';
 import '../../providers/hsn_sac_provider.dart';
-import '../../models/hsn_sac/hsn_sac_model.dart';
 
 class HsnSacSearchWidget extends StatefulWidget {
-  final Function(HsnSacModel) onCodeSelected;
-  final bool showHistory;
-  final bool isSacMode;
-
   const HsnSacSearchWidget({
-    Key? key,
     required this.onCodeSelected,
+    Key? key,
     this.showHistory = true,
     this.isSacMode = false,
   }) : super(key: key);
+  final Function(HsnSacCode) onCodeSelected;
+  final bool showHistory;
+  final bool isSacMode;
 
   @override
   _HsnSacSearchWidgetState createState() => _HsnSacSearchWidgetState();
@@ -23,7 +24,7 @@ class _HsnSacSearchWidgetState extends State<HsnSacSearchWidget> {
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   String? _errorText;
-  List<HsnSacModel> _searchResults = [];
+  List<HsnSacCode> _searchResults = [];
   bool _isSearching = false;
   bool _hasSearched = false;
 
@@ -35,7 +36,7 @@ class _HsnSacSearchWidgetState extends State<HsnSacSearchWidget> {
   void _searchCode() async {
     final code = _codeController.text.trim();
     final description = _descriptionController.text.trim();
-    
+
     if (code.isEmpty && description.isEmpty) {
       setState(() {
         _errorText = 'Please enter a code or description';
@@ -52,11 +53,11 @@ class _HsnSacSearchWidgetState extends State<HsnSacSearchWidget> {
     try {
       final provider = Provider.of<HsnSacProvider>(context, listen: false);
       final results = await provider.searchCodes(
-        code: code.isNotEmpty ? code : null,
-        description: description.isNotEmpty ? description : null,
-        isSac: widget.isSacMode,
+        code,
+        description,
+        widget.isSacMode,
       );
-      
+
       setState(() {
         _searchResults = results;
         _isSearching = false;
@@ -91,7 +92,7 @@ class _HsnSacSearchWidgetState extends State<HsnSacSearchWidget> {
               },
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
           keyboardType: TextInputType.number,
@@ -112,19 +113,17 @@ class _HsnSacSearchWidgetState extends State<HsnSacSearchWidget> {
             prefixIcon: const Icon(Icons.description),
             suffixIcon: IconButton(
               icon: const Icon(Icons.clear),
-              onPressed: () {
-                _descriptionController.clear();
-              },
+              onPressed: _descriptionController.clear,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),
         const SizedBox(height: 16),
         ElevatedButton.icon(
           onPressed: _isSearching ? null : _searchCode,
-          icon: _isSearching 
+          icon: _isSearching
               ? const SizedBox(
                   width: 16,
                   height: 16,
@@ -165,8 +164,8 @@ class _HsnSacSearchWidgetState extends State<HsnSacSearchWidget> {
                   margin: const EdgeInsets.only(bottom: 8),
                   child: ListTile(
                     title: Text(
-                      widget.isSacMode 
-                          ? 'SAC: ${item.code}' 
+                      widget.isSacMode
+                          ? 'SAC: ${item.code}'
                           : 'HSN: ${item.code}',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
