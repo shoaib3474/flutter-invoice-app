@@ -1,18 +1,19 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/alerts/alert_configuration_model.dart';
-import 'package:flutter_invoice_app/models/reconciliation/reconciliation_result_model.dart';
+import 'package:flutter_invoice_app/models/dashboard/reconciliation_dashboard_model.dart';
 import 'package:flutter_invoice_app/providers/alert_provider.dart';
 import 'package:provider/provider.dart';
 
 class AlertConfigurationFormWidget extends StatefulWidget {
-  final AlertConfiguration? initialConfig;
-  final Function() onSaved;
-
   const AlertConfigurationFormWidget({
+    required this.onSaved,
     Key? key,
     this.initialConfig,
-    required this.onSaved,
   }) : super(key: key);
+  final AlertConfiguration? initialConfig;
+  final Function() onSaved;
 
   @override
   State<AlertConfigurationFormWidget> createState() =>

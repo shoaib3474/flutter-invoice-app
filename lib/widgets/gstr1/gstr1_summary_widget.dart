@@ -47,8 +47,8 @@ class GSTR1SummaryWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _buildInfoRow('GSTIN', data.gstin),
-                      _buildInfoRow('Tax Period', data.taxPeriod ?? 'N/A'),
-                      _buildInfoRow('Status', data.status ?? 'Draft'),
+                      _buildInfoRow('Tax Period', data.taxPeriod),
+                      _buildInfoRow('Status', data.status),
                       const Divider(height: 32),
                       _buildActionButtons(context),
                     ],
@@ -61,12 +61,12 @@ class GSTR1SummaryWidget extends StatelessWidget {
               _buildSummaryCard(
                 'B2B Invoices',
                 [
-                  _buildInfoRow('Number of Invoices',
-                      data.b2bInvoiceCount?.toString() ?? '0'),
+                  _buildInfoRow(
+                      'Number of Invoices', data.b2bInvoiceCount.toString()),
                   _buildInfoRow('Total Value',
-                      currencyFormat.format(data.b2bInvoiceValue ?? 0)),
-                  _buildInfoRow('Total Tax',
-                      currencyFormat.format(data.b2bTaxAmount ?? 0)),
+                      currencyFormat.format(data.b2bInvoiceValue)),
+                  _buildInfoRow(
+                      'Total Tax', currencyFormat.format(data.b2bTaxAmount)),
                 ],
               ),
 
@@ -74,12 +74,12 @@ class GSTR1SummaryWidget extends StatelessWidget {
               _buildSummaryCard(
                 'B2C Invoices',
                 [
-                  _buildInfoRow('Number of Invoices',
-                      data.b2bInvoiceCount?.toString() ?? '0'),
+                  _buildInfoRow(
+                      'Number of Invoices', data.b2bInvoiceCount.toString()),
                   _buildInfoRow('Total Value',
-                      currencyFormat.format(data.b2bInvoiceValue ?? 0)),
-                  _buildInfoRow('Total Tax',
-                      currencyFormat.format(data.b2bTaxAmount ?? 0)),
+                      currencyFormat.format(data.b2bInvoiceValue)),
+                  _buildInfoRow(
+                      'Total Tax', currencyFormat.format(data.b2bTaxAmount)),
                 ],
               ),
 

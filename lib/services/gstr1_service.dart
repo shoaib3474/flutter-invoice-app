@@ -1,3 +1,5 @@
+// ignore_for_file: always_declare_return_types
+
 import 'dart:convert';
 import 'package:flutter_invoice_app/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
@@ -123,5 +125,5 @@ class GSTR1Service {
 
   Future<void> validateGSTR1(GSTR1Model gstr1model) async {}
 
-  void getAllGSTR1Returns() {}
+  getAllGSTR1Returns() {}
 }

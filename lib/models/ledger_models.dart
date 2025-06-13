@@ -1,12 +1,5 @@
 // Base class for all ledger entries
 abstract class LedgerEntry {
-  final String id;
-  final DateTime date;
-  final String description;
-  final double amount;
-  final String referenceNumber;
-  final String status;
-
   LedgerEntry({
     required this.id,
     required this.date,
@@ -15,23 +8,18 @@ abstract class LedgerEntry {
     required this.referenceNumber,
     required this.status,
   });
+  final String id;
+  final DateTime date;
+  final String description;
+  final double amount;
+  final String referenceNumber;
+  final String status;
 
   Map<String, dynamic> toJson();
 }
 
 // Cash Ledger Model
 class CashLedger {
-  final String gstin;
-  final double cgstBalance;
-  final double sgstBalance;
-  final double igstBalance;
-  final double cessBalance;
-  final double interestBalance;
-  final double penaltyBalance;
-  final double feeBalance;
-  final double othersBalance;
-  final List<CashLedgerEntry> entries;
-
   CashLedger({
     required this.gstin,
     required this.cgstBalance,
@@ -66,6 +54,16 @@ class CashLedger {
       entries: entries,
     );
   }
+  final String gstin;
+  final double cgstBalance;
+  final double sgstBalance;
+  final double igstBalance;
+  final double cessBalance;
+  final double interestBalance;
+  final double penaltyBalance;
+  final double feeBalance;
+  final double othersBalance;
+  final List<CashLedgerEntry> entries;
 
   Map<String, dynamic> toJson() {
     return {
@@ -96,6 +94,34 @@ class CashLedgerEntry {
     required this.closingBalance,
   });
 
+  factory CashLedgerEntry.fromJson(Map<String, dynamic> json) {
+    return CashLedgerEntry(
+      id: json['id'] as String,
+      date: DateTime.parse(json['date'] as String),
+      description: json['description'] as String,
+      taxType: json['taxType'] as String,
+      amount: (json['amount'] as num).toDouble(),
+      paymentMode: json['paymentMode'] as String,
+      referenceNumber: json['referenceNumber'] as String,
+      openingBalance: (json['openingBalance'] as num?)?.toDouble() ?? 0.0,
+      closingBalance: (json['closingBalance'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date': date.toIso8601String(),
+      'description': description,
+      'taxType': taxType,
+      'amount': amount,
+      'paymentMode': paymentMode,
+      'referenceNumber': referenceNumber,
+      'openingBalance': openingBalance,
+      'closingBalance': closingBalance,
+    };
+  }
+
   final String id;
   final DateTime date;
   final String description;
@@ -109,13 +135,6 @@ class CashLedgerEntry {
 
 // RCM (Reverse Charge Mechanism) Ledger Model
 class RCMLedger {
-  final String gstin;
-  final double cgstBalance;
-  final double sgstBalance;
-  final double igstBalance;
-  final double cessBalance;
-  final List<RCMLedgerEntry> entries;
-
   RCMLedger({
     required this.gstin,
     required this.cgstBalance,
@@ -142,6 +161,12 @@ class RCMLedger {
       entries: entries,
     );
   }
+  final String gstin;
+  final double cgstBalance;
+  final double sgstBalance;
+  final double igstBalance;
+  final double cessBalance;
+  final List<RCMLedgerEntry> entries;
 
   Map<String, dynamic> toJson() {
     return {
@@ -156,25 +181,6 @@ class RCMLedger {
 }
 
 class RCMLedgerEntry {
-  final String id;
-  final String description;
-  final double amount;
-  final DateTime date;
-  final String taxType;
-  final String status;
-  final String category;
-  final String supplierGstin;
-  final String supplierName;
-  final String invoiceNumber;
-  final DateTime invoiceDate;
-  final double taxableValue;
-  final double igstAmount;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double cessAmount;
-  final String paymentStatus;
-  final Map<String, dynamic> metadata;
-
   const RCMLedgerEntry({
     required this.id,
     required this.description,
@@ -208,7 +214,7 @@ class RCMLedgerEntry {
       supplierGstin: json['supplierGstin'] as String? ?? '',
       supplierName: json['supplierName'] as String? ?? '',
       invoiceNumber: json['invoiceNumber'] as String? ?? '',
-      invoiceDate: json['invoiceDate'] != null 
+      invoiceDate: json['invoiceDate'] != null
           ? DateTime.parse(json['invoiceDate'] as String)
           : DateTime.now(),
       taxableValue: (json['taxableValue'] as num?)?.toDouble() ?? 0.0,
@@ -216,10 +222,29 @@ class RCMLedgerEntry {
       cgstAmount: (json['cgstAmount'] as num?)?.toDouble() ?? 0.0,
       sgstAmount: (json['sgstAmount'] as num?)?.toDouble() ?? 0.0,
       cessAmount: (json['cessAmount'] as num?)?.toDouble() ?? 0.0,
-      paymentStatus: json['paymentStatus'] as String? ?? json['status'] as String,
+      paymentStatus:
+          json['paymentStatus'] as String? ?? json['status'] as String,
       metadata: json['metadata'] as Map<String, dynamic>? ?? {},
     );
   }
+  final String id;
+  final String description;
+  final double amount;
+  final DateTime date;
+  final String taxType;
+  final String status;
+  final String category;
+  final String supplierGstin;
+  final String supplierName;
+  final String invoiceNumber;
+  final DateTime invoiceDate;
+  final double taxableValue;
+  final double igstAmount;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double cessAmount;
+  final String paymentStatus;
+  final Map<String, dynamic> metadata;
 
   Map<String, dynamic> toJson() {
     return {
@@ -289,17 +314,6 @@ class RCMLedgerEntry {
 
 // Liabilities Ledger Model
 class LiabilitiesLedger {
-  final String gstin;
-  final double cgstBalance;
-  final double sgstBalance;
-  final double igstBalance;
-  final double cessBalance;
-  final double interestBalance;
-  final double penaltyBalance;
-  final double feeBalance;
-  final double othersBalance;
-  final List<LiabilitiesLedgerEntry> entries;
-
   LiabilitiesLedger({
     required this.gstin,
     required this.cgstBalance,
@@ -334,6 +348,16 @@ class LiabilitiesLedger {
       entries: entries,
     );
   }
+  final String gstin;
+  final double cgstBalance;
+  final double sgstBalance;
+  final double igstBalance;
+  final double cessBalance;
+  final double interestBalance;
+  final double penaltyBalance;
+  final double feeBalance;
+  final double othersBalance;
+  final List<LiabilitiesLedgerEntry> entries;
 
   Map<String, dynamic> toJson() {
     return {
@@ -352,15 +376,6 @@ class LiabilitiesLedger {
 }
 
 class LiabilitiesLedgerEntry {
-  final String id;
-  final String description;
-  final double amount;
-  final DateTime date;
-  final String taxType;
-  final String status;
-  final String category;
-  final Map<String, dynamic> metadata;
-
   const LiabilitiesLedgerEntry({
     required this.id,
     required this.description,
@@ -384,6 +399,14 @@ class LiabilitiesLedgerEntry {
       metadata: json['metadata'] as Map<String, dynamic>? ?? {},
     );
   }
+  final String id;
+  final String description;
+  final double amount;
+  final DateTime date;
+  final String taxType;
+  final String status;
+  final String category;
+  final Map<String, dynamic> metadata;
 
   Map<String, dynamic> toJson() {
     return {
@@ -400,13 +423,6 @@ class LiabilitiesLedgerEntry {
 }
 
 class LiabilityEntry {
-  final String description;
-  final String taxPeriod;
-  final double amount;
-  final double interest;
-  final double penalty;
-  final String status;
-
   const LiabilityEntry({
     required this.description,
     required this.taxPeriod,
@@ -415,8 +431,6 @@ class LiabilityEntry {
     required this.penalty,
     required this.status,
   });
-
-  double get total => amount + interest + penalty;
 
   factory LiabilityEntry.fromJson(Map<String, dynamic> json) {
     return LiabilityEntry(
@@ -428,6 +442,14 @@ class LiabilityEntry {
       status: json['status'] as String? ?? 'Unknown',
     );
   }
+  final String description;
+  final String taxPeriod;
+  final double amount;
+  final double interest;
+  final double penalty;
+  final String status;
+
+  double get total => amount + interest + penalty;
 
   Map<String, dynamic> toJson() {
     return {
@@ -443,13 +465,6 @@ class LiabilityEntry {
 
 // Electronic Ledger Model
 class ElectronicLedger {
-  final String gstin;
-  final double cgstBalance;
-  final double sgstBalance;
-  final double igstBalance;
-  final double cessBalance;
-  final List<ElectronicLedgerEntry> entries;
-
   ElectronicLedger({
     required this.gstin,
     required this.cgstBalance,
@@ -476,6 +491,12 @@ class ElectronicLedger {
       entries: entries,
     );
   }
+  final String gstin;
+  final double cgstBalance;
+  final double sgstBalance;
+  final double igstBalance;
+  final double cessBalance;
+  final List<ElectronicLedgerEntry> entries;
 
   Map<String, dynamic> toJson() {
     return {
@@ -503,6 +524,38 @@ class ElectronicLedgerEntry {
     required this.closingBalance,
     required this.status,
   });
+
+  factory ElectronicLedgerEntry.fromJson(Map<String, dynamic> json) {
+    return ElectronicLedgerEntry(
+      id: json['id'] as String,
+      date: DateTime.parse(json['date'] as String),
+      description: json['description'] as String,
+      transactionType: json['transactionType'] as String,
+      taxType: json['taxType'] as String,
+      source: json['source'] as String,
+      amount: (json['amount'] as num).toDouble(),
+      referenceNumber: json['referenceNumber'] as String,
+      openingBalance: (json['openingBalance'] as num?)?.toDouble() ?? 0.0,
+      closingBalance: (json['closingBalance'] as num?)?.toDouble() ?? 0.0,
+      status: json['status'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date': date.toIso8601String(),
+      'description': description,
+      'transactionType': transactionType,
+      'taxType': taxType,
+      'source': source,
+      'amount': amount,
+      'referenceNumber': referenceNumber,
+      'openingBalance': openingBalance,
+      'closingBalance': closingBalance,
+      'status': status,
+    };
+  }
 
   final String id;
   final DateTime date;

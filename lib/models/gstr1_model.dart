@@ -81,6 +81,20 @@ class GSTR1Model {
   // Example status getter (customize as needed)
   String get status => 'Filed';
 
+  get hsnSummaryCount => null;
+
+  get hsnTotalValue => null;
+
+  get hsnTaxableValue => null;
+
+  get hsnTotalTax => null;
+
+  get nilRatedSupplies => null;
+
+  get exemptedSupplies => null;
+
+  get nonGstSupplies => null;
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -145,8 +159,6 @@ class B2BInvoice {
     this.id,
   });
 
-  double get taxAmount => cgstAmount + sgstAmount + igstAmount + cessAmount;
-
   factory B2BInvoice.fromJson(Map<String, dynamic> json) {
     return B2BInvoice(
       id: json['id'],
@@ -166,6 +178,8 @@ class B2BInvoice {
       cessAmount: json['cess_amount'],
     );
   }
+
+  double get taxAmount => cgstAmount + sgstAmount + igstAmount + cessAmount;
   final String? id;
   final String customerGstin;
   final String customerName;

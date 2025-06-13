@@ -355,8 +355,7 @@ class _GSTR1ImportExportWidgetState extends State<GSTR1ImportExportWidget> {
               ),
               const SizedBox(height: 8),
               _buildPreviewInfo('GSTIN', _previewData!.gstin),
-              _buildPreviewInfo(
-                  'Financial Year', _previewData!.financialYear ?? 'N/A'),
+              _buildPreviewInfo('Financial Year', _previewData!.financialYear),
               _buildPreviewInfo('Tax Period', _previewData!.returnPeriod),
               _buildPreviewInfo(
                   'B2B Invoices', _previewData!.b2bInvoices.length.toString()),
