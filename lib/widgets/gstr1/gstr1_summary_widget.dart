@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/gstr1_model.dart';
-import 'package:flutter_invoice_app/services/gstr1_service.dart';
-import 'package:flutter_invoice_app/utils/error_handler.dart';
+
 import 'package:flutter_invoice_app/widgets/error_boundary_widget.dart';
 import 'package:intl/intl.dart';
 
 class GSTR1SummaryWidget extends StatelessWidget {
-  final GSTR1Model data;
-  final Function() onEdit;
-  final Function() onExport;
-  final Function() onSubmit;
-
   const GSTR1SummaryWidget({
-    Key? key,
     required this.data,
     required this.onEdit,
     required this.onExport,
     required this.onSubmit,
+    Key? key,
   }) : super(key: key);
+  final GSTR1Model data;
+  final Function() onEdit;
+  final Function() onExport;
+  final Function() onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +27,14 @@ class GSTR1SummaryWidget extends StatelessWidget {
     return ErrorBoundaryWidget(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Card(
                 elevation: 2,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -49,8 +47,6 @@ class GSTR1SummaryWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _buildInfoRow('GSTIN', data.gstin),
-                      _buildInfoRow(
-                          'Financial Year', data.financialYear ?? 'N/A'),
                       _buildInfoRow('Tax Period', data.taxPeriod ?? 'N/A'),
                       _buildInfoRow('Status', data.status ?? 'Draft'),
                       const Divider(height: 32),
@@ -79,11 +75,11 @@ class GSTR1SummaryWidget extends StatelessWidget {
                 'B2C Invoices',
                 [
                   _buildInfoRow('Number of Invoices',
-                      data.b2cInvoiceCount?.toString() ?? '0'),
+                      data.b2bInvoiceCount?.toString() ?? '0'),
                   _buildInfoRow('Total Value',
-                      currencyFormat.format(data.b2cInvoiceValue ?? 0)),
+                      currencyFormat.format(data.b2bInvoiceValue ?? 0)),
                   _buildInfoRow('Total Tax',
-                      currencyFormat.format(data.b2cTaxAmount ?? 0)),
+                      currencyFormat.format(data.b2bTaxAmount ?? 0)),
                 ],
               ),
 
@@ -123,7 +119,7 @@ class GSTR1SummaryWidget extends StatelessWidget {
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -152,10 +148,10 @@ class GSTR1SummaryWidget extends StatelessWidget {
 
   Widget _buildSummaryCard(String title, List<Widget> children) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 16.0),
+      margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 import '../../models/gst_returns/gstr1_model.dart';
@@ -5,14 +7,13 @@ import '../../services/gstr1_service.dart';
 import '../import/data_import_widget.dart';
 
 class GSTR1FormWidget extends StatefulWidget {
-  final String gstin;
-  final String returnPeriod;
-
   const GSTR1FormWidget({
-    Key? key,
     required this.gstin,
     required this.returnPeriod,
+    Key? key,
   }) : super(key: key);
+  final String gstin;
+  final String returnPeriod;
 
   @override
   _GSTR1FormWidgetState createState() => _GSTR1FormWidgetState();
@@ -20,29 +21,29 @@ class GSTR1FormWidget extends StatefulWidget {
 
 class _GSTR1FormWidgetState extends State<GSTR1FormWidget> {
   final GSTR1Service _gstr1Service = GSTR1Service();
-  
+
   GSTR1Model? _gstr1Model;
   bool _isLoading = false;
   String? _errorMessage;
-  
+
   @override
   void initState() {
     super.initState();
     _loadGSTR1Data();
   }
-  
+
   Future<void> _loadGSTR1Data() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
-    
+
     try {
       final gstr1Model = await _gstr1Service.getGSTR1(
         gstin: widget.gstin,
         returnPeriod: widget.returnPeriod,
       );
-      
+
       setState(() {
         _gstr1Model = gstr1Model;
       });
@@ -56,7 +57,7 @@ class _GSTR1FormWidgetState extends State<GSTR1FormWidget> {
       });
     }
   }
-  
+
   void _handleImportComplete(GSTR1Model importedModel) {
     setState(() {
       _gstr1Model = importedModel;

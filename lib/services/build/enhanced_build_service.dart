@@ -1,3 +1,5 @@
+// ignore_for_file: leading_newlines_in_multiline_strings
+
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -47,59 +49,60 @@ class EnhancedBuildService {
   Future<Map<String, dynamic>> executeCompleteBuild() async {
     final buildLog = <String>[];
     final buildStartTime = DateTime.now();
-    
+
     try {
       buildLog.add('🚀 Starting Complete APK Build Process');
       buildLog.add('Build started at: ${buildStartTime.toIso8601String()}');
       buildLog.add('=' * 60);
-      
+
       // Step 1: Environment validation
       buildLog.add('\n📋 Step 1: Environment Validation');
       await _validateEnvironment(buildLog);
-      
+
       // Step 2: Clean previous builds
       buildLog.add('\n🧹 Step 2: Cleaning Previous Builds');
       await _cleanPreviousBuilds(buildLog);
-      
+
       // Step 3: Create build directories
       buildLog.add('\n📁 Step 3: Creating Build Directories');
       await _createBuildDirectories(buildLog);
-      
+
       // Step 4: Generate project files
       buildLog.add('\n📝 Step 4: Generating Project Files');
       await _generateProjectFiles(buildLog);
-      
+
       // Step 5: Build APK files
       buildLog.add('\n🔨 Step 5: Building APK Files');
       final apkFiles = await _buildApkFiles(buildLog);
-      
+
       // Step 6: Generate App Bundle
       buildLog.add('\n📦 Step 6: Generating App Bundle');
       final bundleFile = await _generateAppBundle(buildLog);
-      
+
       // Step 7: Create build artifacts
       buildLog.add('\n🔧 Step 7: Creating Build Artifacts');
       await _createBuildArtifacts(buildLog, apkFiles, bundleFile);
-      
+
       // Step 8: Generate checksums
       buildLog.add('\n🔐 Step 8: Generating Checksums');
       await _generateChecksums(buildLog);
-      
+
       // Step 9: Create installation scripts
       buildLog.add('\n📱 Step 9: Creating Installation Scripts');
       await _createInstallationScripts(buildLog);
-      
+
       // Step 10: Generate documentation
       buildLog.add('\n📚 Step 10: Generating Documentation');
       await _generateDocumentation(buildLog, apkFiles, bundleFile);
-      
+
       final buildEndTime = DateTime.now();
       final buildDuration = buildEndTime.difference(buildStartTime);
-      
+
       buildLog.add('\n✅ Build Completed Successfully!');
-      buildLog.add('Build duration: ${buildDuration.inMinutes}m ${buildDuration.inSeconds % 60}s');
+      buildLog.add(
+          'Build duration: ${buildDuration.inMinutes}m ${buildDuration.inSeconds % 60}s');
       buildLog.add('Total files generated: ${apkFiles.length + 1}');
-      
+
       return {
         'success': true,
         'buildLog': buildLog,
@@ -108,7 +111,6 @@ class EnhancedBuildService {
         'buildDuration': buildDuration.inSeconds,
         'buildTime': buildStartTime.toIso8601String(),
       };
-      
     } catch (e) {
       buildLog.add('\n❌ Build Failed: $e');
       return {
@@ -122,22 +124,22 @@ class EnhancedBuildService {
   Future<void> _validateEnvironment(List<String> buildLog) async {
     buildLog.add('  ✓ Checking Flutter installation...');
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     buildLog.add('  ✓ Validating Android SDK...');
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     buildLog.add('  ✓ Checking Java runtime...');
     await Future.delayed(const Duration(milliseconds: 200));
-    
+
     buildLog.add('  ✓ Verifying Gradle configuration...');
     await Future.delayed(const Duration(milliseconds: 400));
-    
+
     buildLog.add('  ✓ Environment validation completed');
   }
 
   Future<void> _cleanPreviousBuilds(List<String> buildLog) async {
     final directories = [buildOutputDir, releaseDir, tempDir];
-    
+
     for (final dir in directories) {
       final directory = Directory(dir);
       if (directory.existsSync()) {
@@ -145,7 +147,7 @@ class EnhancedBuildService {
         buildLog.add('  ✓ Cleaned $dir');
       }
     }
-    
+
     buildLog.add('  ✓ Previous builds cleaned');
   }
 
@@ -173,61 +175,66 @@ class EnhancedBuildService {
   Future<void> _generateProjectFiles(List<String> buildLog) async {
     buildLog.add('  📝 Generating AndroidManifest.xml...');
     await _generateAndroidManifest();
-    
+
     buildLog.add('  📝 Creating build.gradle...');
     await _generateBuildGradle();
-    
+
     buildLog.add('  📝 Generating pubspec.yaml...');
     await _generatePubspecYaml();
-    
+
     buildLog.add('  📝 Creating main.dart...');
     await _generateMainDart();
-    
+
     buildLog.add('  ✓ Project files generated');
   }
 
-  Future<List<Map<String, dynamic>>> _buildApkFiles(List<String> buildLog) async {
+  Future<List<Map<String, dynamic>>> _buildApkFiles(
+      List<String> buildLog) async {
     final apkFiles = <Map<String, dynamic>>[];
-    
+
     for (final entry in apkConfigs.entries) {
       final config = entry.value;
       buildLog.add('  🔨 Building ${config['name']}...');
-      
+
       final apkFile = await _generateApkFile(
         config['name'] as String,
         config['size'] as int,
         config['architecture'] as String,
         config['description'] as String,
       );
-      
+
       apkFiles.add(apkFile);
-      buildLog.add('    ✓ ${config['name']} (${(config['size'] as int / (1024 * 1024)).toStringAsFixed(1)}MB)');
-      
+      buildLog.add(
+          "    ✓ ${config['name']} (${((config['size'] as int) / (1024 * 1024)).toStringAsFixed(1)}MB)");
+
       // Simulate build time
-      await Future.delayed(Duration(milliseconds: 800 + (config['size'] as int ~/ (1024 * 1024)) * 100));
+      await Future.delayed(Duration(
+          milliseconds:
+              800 + (((config['size'] as int) / (1024 * 1024)) * 100).toInt()));
     }
-    
+
     buildLog.add('  ✅ All APK files built successfully');
     return apkFiles;
   }
 
-  Future<Map<String, dynamic>> _generateApkFile(String fileName, int size, String architecture, String description) async {
+  Future<Map<String, dynamic>> _generateApkFile(String fileName, int size,
+      String architecture, String description) async {
     final filePath = '$buildOutputDir/flutter-apk/$fileName';
     final releaseFilePath = '$releaseDir/$fileName';
-    
+
     // Create realistic APK binary data
     final apkData = await _createRealisticApkData(size, architecture);
-    
+
     // Write to build output
     await File(filePath).writeAsBytes(apkData);
-    
+
     // Copy to release directory
     await File(releaseFilePath).writeAsBytes(apkData);
-    
+
     // Calculate actual file size and checksum
     final actualSize = apkData.length;
     final checksum = sha256.convert(apkData).toString();
-    
+
     return {
       'name': fileName,
       'path': releaseFilePath,
@@ -240,19 +247,20 @@ class EnhancedBuildService {
     };
   }
 
-  Future<Uint8List> _createRealisticApkData(int targetSize, String architecture) async {
+  Future<Uint8List> _createRealisticApkData(
+      int targetSize, String architecture) async {
     final data = BytesBuilder();
-    
+
     // APK header (ZIP file format)
     data.add([0x50, 0x4B, 0x03, 0x04]); // ZIP signature
-    
+
     // Add realistic APK structure
     await _addApkManifest(data, architecture);
     await _addApkResources(data);
     await _addApkClasses(data);
     await _addApkAssets(data);
     await _addApkLibraries(data, architecture);
-    
+
     // Pad to target size
     final currentSize = data.length;
     if (currentSize < targetSize) {
@@ -260,12 +268,12 @@ class EnhancedBuildService {
       final padding = List.generate(paddingSize, (i) => (i * 7 + 42) % 256);
       data.add(padding);
     }
-    
+
     return data.toBytes();
   }
 
   Future<void> _addApkManifest(BytesBuilder data, String architecture) async {
-    final manifest = '''<?xml version="1.0" encoding="utf-8"?>
+    const manifest = '''<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flutter_invoice_app"
     android:versionCode="1"
@@ -305,7 +313,7 @@ class EnhancedBuildService {
     </application>
     
 </manifest>''';
-    
+
     data.add(manifest.codeUnits);
   }
 
@@ -313,7 +321,7 @@ class EnhancedBuildService {
     // Add mock resources.arsc
     final resourcesHeader = [0x02, 0x00, 0x0C, 0x00]; // Resource table header
     data.add(resourcesHeader);
-    
+
     // Add mock resource data
     final resourceData = List.generate(8192, (i) => (i * 3) % 256);
     data.add(resourceData);
@@ -326,7 +334,7 @@ class EnhancedBuildService {
       0x30, 0x33, 0x35, 0x00, // version
     ];
     data.add(dexHeader);
-    
+
     // Add mock DEX data
     final dexData = List.generate(16384, (i) => (i * 5 + 17) % 256);
     data.add(dexData);
@@ -341,12 +349,12 @@ class EnhancedBuildService {
       'flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf',
       'flutter_assets/fonts/MaterialIcons-Regular.otf',
     ];
-    
+
     for (final asset in assetsList) {
       data.add(asset.codeUnits);
       data.add([0x00]); // Null terminator
     }
-    
+
     // Add mock asset data
     final assetData = List.generate(4096, (i) => (i * 11) % 256);
     data.add(assetData);
@@ -359,11 +367,11 @@ class EnhancedBuildService {
       '${libPath}libflutter.so',
       '${libPath}libapp.so',
     ];
-    
+
     for (final lib in libraries) {
       data.add(lib.codeUnits);
       data.add([0x00]); // Null terminator
-      
+
       // Add mock native library data
       final libData = List.generate(2048, (i) => (i * 13 + 7) % 256);
       data.add(libData);
@@ -372,28 +380,30 @@ class EnhancedBuildService {
 
   Future<Map<String, dynamic>> _generateAppBundle(List<String> buildLog) async {
     buildLog.add('  📦 Creating Android App Bundle...');
-    
+
     const bundleSize = 12 * 1024 * 1024; // 12MB
     const bundleName = 'app-release.aab';
-    final bundlePath = '$buildOutputDir/bundle/release/$bundleName';
-    final releaseBundlePath = '$releaseDir/$bundleName';
-    
+    const bundlePath = '$buildOutputDir/bundle/release/$bundleName';
+    const releaseBundlePath = '$releaseDir/$bundleName';
+
     // Create realistic AAB data
     final bundleData = await _createRealisticAabData(bundleSize);
-    
+
     // Write bundle files
     await File(bundlePath).writeAsBytes(bundleData);
     await File(releaseBundlePath).writeAsBytes(bundleData);
-    
+
     final checksum = sha256.convert(bundleData).toString();
-    
-    buildLog.add('    ✓ $bundleName (${(bundleSize / (1024 * 1024)).toStringAsFixed(1)}MB)');
-    
+
+    buildLog.add(
+        '    ✓ $bundleName (${(bundleSize / (1024 * 1024)).toStringAsFixed(1)}MB)');
+
     return {
       'name': bundleName,
       'path': releaseBundlePath,
       'size': bundleData.length,
-      'sizeFormatted': '${(bundleData.length / (1024 * 1024)).toStringAsFixed(2)}MB',
+      'sizeFormatted':
+          '${(bundleData.length / (1024 * 1024)).toStringAsFixed(2)}MB',
       'checksum': checksum,
       'type': 'bundle',
     };
@@ -401,15 +411,15 @@ class EnhancedBuildService {
 
   Future<Uint8List> _createRealisticAabData(int targetSize) async {
     final data = BytesBuilder();
-    
+
     // AAB header (ZIP-based format)
     data.add([0x50, 0x4B, 0x03, 0x04]); // ZIP signature
-    
+
     // Add AAB-specific structure
     await _addAabManifest(data);
     await _addAabModules(data);
     await _addAabMetadata(data);
-    
+
     // Pad to target size
     final currentSize = data.length;
     if (currentSize < targetSize) {
@@ -417,12 +427,12 @@ class EnhancedBuildService {
       final padding = List.generate(paddingSize, (i) => (i * 9 + 23) % 256);
       data.add(padding);
     }
-    
+
     return data.toBytes();
   }
 
   Future<void> _addAabManifest(BytesBuilder data) async {
-    final bundleConfig = '''
+    const bundleConfig = '''
 {
   "bundletool": {
     "version": "1.15.4"
@@ -449,43 +459,47 @@ class EnhancedBuildService {
     }
   }
 }''';
-    
+
     data.add(bundleConfig.codeUnits);
   }
 
   Future<void> _addAabModules(BytesBuilder data) async {
     // Add base module
-    final baseModule = 'base/';
+    const baseModule = 'base/';
     data.add(baseModule.codeUnits);
-    
+
     // Add module data
     final moduleData = List.generate(1024, (i) => (i * 7) % 256);
     data.add(moduleData);
   }
 
   Future<void> _addAabMetadata(BytesBuilder data) async {
-    final metadata = '''
+    const metadata = '''
 com.android.tools.build.bundletool.version=1.15.4
 com.android.tools.build.gradle.version=8.1.2
 ''';
-    
+
     data.add(metadata.codeUnits);
   }
 
-  Future<void> _createBuildArtifacts(List<String> buildLog, List<Map<String, dynamic>> apkFiles, Map<String, dynamic> bundleFile) async {
+  Future<void> _createBuildArtifacts(
+      List<String> buildLog,
+      List<Map<String, dynamic>> apkFiles,
+      Map<String, dynamic> bundleFile) async {
     buildLog.add('  📋 Creating build metadata...');
     await _createBuildMetadata(apkFiles, bundleFile);
-    
+
     buildLog.add('  🗺️ Generating mapping files...');
     await _createMappingFiles();
-    
+
     buildLog.add('  🔍 Creating symbols...');
     await _createSymbolFiles();
-    
+
     buildLog.add('  ✓ Build artifacts created');
   }
 
-  Future<void> _createBuildMetadata(List<Map<String, dynamic>> apkFiles, Map<String, dynamic> bundleFile) async {
+  Future<void> _createBuildMetadata(List<Map<String, dynamic>> apkFiles,
+      Map<String, dynamic> bundleFile) async {
     final metadata = {
       'buildInfo': {
         'buildTime': DateTime.now().toIso8601String(),
@@ -599,7 +613,7 @@ gst_service.dart:
 
   Future<void> _generateChecksums(List<String> buildLog) async {
     buildLog.add('  🔐 Calculating file checksums...');
-    
+
     final checksums = <String, String>{};
     final releaseFiles = Directory(releaseDir)
         .listSync()
@@ -618,20 +632,22 @@ gst_service.dart:
     final checksumContent = StringBuffer();
     checksumContent.writeln('# Flutter Invoice App - SHA256 Checksums');
     checksumContent.writeln('# Generated on ${DateTime.now()}');
-    checksumContent.writeln('# Verify file integrity using: sha256sum -c checksums.sha256');
+    checksumContent.writeln(
+        '# Verify file integrity using: sha256sum -c checksums.sha256');
     checksumContent.writeln();
 
     checksums.forEach((fileName, checksum) {
       checksumContent.writeln('$checksum  $fileName');
     });
 
-    await File('$releaseDir/checksums.sha256').writeAsString(checksumContent.toString());
+    await File('$releaseDir/checksums.sha256')
+        .writeAsString(checksumContent.toString());
     buildLog.add('  ✓ Checksums generated');
   }
 
   Future<void> _createInstallationScripts(List<String> buildLog) async {
     buildLog.add('  📱 Creating installation scripts...');
-    
+
     // Enhanced Linux/Mac installation script
     final installScript = '''#!/bin/bash
 # Flutter Invoice App - Enhanced Installation Script
@@ -797,7 +813,7 @@ fi
 ''';
 
     await File('$releaseDir/install.sh').writeAsString(installScript);
-    
+
     // Enhanced Windows installation script
     final installBat = '''@echo off
 REM Flutter Invoice App - Enhanced Windows Installation Script
@@ -941,7 +957,7 @@ pause
 ''';
 
     await File('$releaseDir/install.bat').writeAsString(installBat);
-    
+
     // Make shell script executable (on Unix systems)
     if (!Platform.isWindows) {
       try {
@@ -950,13 +966,16 @@ pause
         // Ignore if chmod fails
       }
     }
-    
+
     buildLog.add('  ✓ Installation scripts created');
   }
 
-  Future<void> _generateDocumentation(List<String> buildLog, List<Map<String, dynamic>> apkFiles, Map<String, dynamic> bundleFile) async {
+  Future<void> _generateDocumentation(
+      List<String> buildLog,
+      List<Map<String, dynamic>> apkFiles,
+      Map<String, dynamic> bundleFile) async {
     buildLog.add('  📚 Generating comprehensive documentation...');
-    
+
     final buildInfo = StringBuffer();
     buildInfo.writeln('Flutter Invoice App - Complete Build Information');
     buildInfo.writeln('=' * 70);
@@ -971,7 +990,7 @@ pause
     buildInfo.writeln('Kotlin Version: 1.9.10');
     buildInfo.writeln('Build Tools: 34.0.0');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('📱 APPLICATION DETAILS');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('Package Name: com.example.flutter_invoice_app');
@@ -981,18 +1000,20 @@ pause
     buildInfo.writeln('Min SDK: 21 (Android 5.0)');
     buildInfo.writeln('Compile SDK: 34');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('📦 GENERATED FILES');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('APK Files:');
     for (final apk in apkFiles) {
-      buildInfo.writeln('  • ${apk['name']} (${apk['sizeFormatted']}) - ${apk['description']}');
+      buildInfo.writeln(
+          '  • ${apk['name']} (${apk['sizeFormatted']}) - ${apk['description']}');
     }
     buildInfo.writeln();
     buildInfo.writeln('App Bundle:');
-    buildInfo.writeln('  • ${bundleFile['name']} (${bundleFile['sizeFormatted']}) - For Google Play Store');
+    buildInfo.writeln(
+        '  • ${bundleFile['name']} (${bundleFile['sizeFormatted']}) - For Google Play Store');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('🔐 SECURITY FEATURES');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('✓ Code Obfuscation Enabled (ProGuard/R8)');
@@ -1002,10 +1023,11 @@ pause
     buildInfo.writeln('✓ Asset Compression');
     buildInfo.writeln('✓ Unused Code Removal');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('🎯 FEATURES INCLUDED');
     buildInfo.writeln('-' * 40);
-    buildInfo.writeln('✓ GST Returns Management (GSTR1, GSTR3B, GSTR4, GSTR9, GSTR9C)');
+    buildInfo.writeln(
+        '✓ GST Returns Management (GSTR1, GSTR3B, GSTR4, GSTR9, GSTR9C)');
     buildInfo.writeln('✓ Invoice Generation and Management');
     buildInfo.writeln('✓ PDF Export and Printing');
     buildInfo.writeln('✓ Database Migration Tools');
@@ -1019,16 +1041,17 @@ pause
     buildInfo.writeln('✓ Multi-language Support');
     buildInfo.writeln('✓ Dark/Light Theme Support');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('📋 PERMISSIONS REQUIRED');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('• INTERNET - For cloud sync and API calls');
-    buildInfo.writeln('• WRITE_EXTERNAL_STORAGE - For PDF export and file operations');
+    buildInfo.writeln(
+        '• WRITE_EXTERNAL_STORAGE - For PDF export and file operations');
     buildInfo.writeln('• READ_EXTERNAL_STORAGE - For importing data files');
     buildInfo.writeln('• CAMERA - For scanning documents and QR codes');
     buildInfo.writeln('• ACCESS_NETWORK_STATE - For connectivity checks');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('🚀 INSTALLATION INSTRUCTIONS');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('Method 1: Automatic Installation (Recommended)');
@@ -1043,43 +1066,51 @@ pause
     buildInfo.writeln('  2. Enable "Unknown Sources" in Settings');
     buildInfo.writeln('  3. Tap APK file to install');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('📊 APK RECOMMENDATIONS');
     buildInfo.writeln('-' * 40);
-    buildInfo.writeln('• app-universal-release.apk - Best for general distribution');
-    buildInfo.writeln('• app-arm64-v8a-release.apk - Optimized for modern phones (2017+)');
-    buildInfo.writeln('• app-armeabi-v7a-release.apk - Compatible with older devices');
+    buildInfo
+        .writeln('• app-universal-release.apk - Best for general distribution');
+    buildInfo.writeln(
+        '• app-arm64-v8a-release.apk - Optimized for modern phones (2017+)');
+    buildInfo.writeln(
+        '• app-armeabi-v7a-release.apk - Compatible with older devices');
     buildInfo.writeln('• app-x86_64-release.apk - For tablets and emulators');
     buildInfo.writeln('• app-debug.apk - For development and testing only');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('🏪 DISTRIBUTION OPTIONS');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('Google Play Store:');
     buildInfo.writeln('  • Upload app-release.aab to Google Play Console');
-    buildInfo.writeln('  • Google Play will generate optimized APKs automatically');
+    buildInfo
+        .writeln('  • Google Play will generate optimized APKs automatically');
     buildInfo.writeln();
     buildInfo.writeln('Direct Distribution:');
-    buildInfo.writeln('  • Use app-universal-release.apk for maximum compatibility');
+    buildInfo
+        .writeln('  • Use app-universal-release.apk for maximum compatibility');
     buildInfo.writeln('  • Host on your website or distribute via email/USB');
     buildInfo.writeln();
     buildInfo.writeln('Enterprise Distribution:');
-    buildInfo.writeln('  • Use architecture-specific APKs for better performance');
+    buildInfo
+        .writeln('  • Use architecture-specific APKs for better performance');
     buildInfo.writeln('  • Deploy via MDM solutions or internal app stores');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('🔍 FILE VERIFICATION');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('Verify file integrity using checksums.sha256:');
     buildInfo.writeln('  Linux/Mac: sha256sum -c checksums.sha256');
     buildInfo.writeln('  Windows: certutil -hashfile <filename> SHA256');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('🛠️ TROUBLESHOOTING');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('Installation Issues:');
-    buildInfo.writeln('  • Enable "Install unknown apps" for your file manager');
-    buildInfo.writeln('  • Ensure sufficient storage space (at least 50MB free)');
+    buildInfo
+        .writeln('  • Enable "Install unknown apps" for your file manager');
+    buildInfo
+        .writeln('  • Ensure sufficient storage space (at least 50MB free)');
     buildInfo.writeln('  • Uninstall previous versions if upgrading');
     buildInfo.writeln('  • Check device compatibility (Android 5.0+)');
     buildInfo.writeln();
@@ -1089,7 +1120,7 @@ pause
     buildInfo.writeln('  • Authorize computer on device when prompted');
     buildInfo.writeln('  • Try different USB cable or port');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('📞 SUPPORT');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('For technical support:');
@@ -1097,7 +1128,7 @@ pause
     buildInfo.writeln('  • Review troubleshooting guide above');
     buildInfo.writeln('  • Contact development team with build_metadata.json');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('📄 BUILD FILES INCLUDED');
     buildInfo.writeln('-' * 40);
     buildInfo.writeln('• APK files - Ready for installation');
@@ -1109,11 +1140,12 @@ pause
     buildInfo.writeln('• install.sh/install.bat - Installation scripts');
     buildInfo.writeln('• BUILD_INFO.txt - This documentation file');
     buildInfo.writeln();
-    
+
     buildInfo.writeln('Generated by Flutter Invoice App Build System');
     buildInfo.writeln('Build completed successfully! 🎉');
 
-    await File('$releaseDir/BUILD_INFO.txt').writeAsString(buildInfo.toString());
+    await File('$releaseDir/BUILD_INFO.txt')
+        .writeAsString(buildInfo.toString());
     buildLog.add('  ✓ BUILD_INFO.txt created');
   }
 

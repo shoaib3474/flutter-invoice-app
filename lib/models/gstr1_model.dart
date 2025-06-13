@@ -1,20 +1,5 @@
-import 'package:flutter/foundation.dart';
-
 class GSTR1Model {
-  final int? id;
-  final String gstin;
-  final String returnPeriod;
-  final DateTime filingDate;
-  final List<B2BInvoice> b2bInvoices;
-  final List<B2CLInvoice> b2clInvoices;
-  final List<B2CSInvoice> b2csInvoices;
-  final List<HSNSummary> hsnSummary;
-  final List<DocIssued> docsIssued;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-
   GSTR1Model({
-    this.id,
     required this.gstin,
     required this.returnPeriod,
     required this.filingDate,
@@ -23,6 +8,7 @@ class GSTR1Model {
     required this.b2csInvoices,
     required this.hsnSummary,
     required this.docsIssued,
+    this.id,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -53,6 +39,47 @@ class GSTR1Model {
       updatedAt: DateTime.parse(json['updated_at']),
     );
   }
+  final int? id;
+  final String gstin;
+  final String returnPeriod;
+  final DateTime filingDate;
+  final List<B2BInvoice> b2bInvoices;
+  final List<B2CLInvoice> b2clInvoices;
+  final List<B2CSInvoice> b2csInvoices;
+  final List<HSNSummary> hsnSummary;
+  final List<DocIssued> docsIssued;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  String get financialYear {
+    // Example: derive financial year from returnPeriod (format MM-YYYY)
+    try {
+      final parts = returnPeriod.split('-');
+      if (parts.length == 2) {
+        final month = int.parse(parts[0]);
+        final year = int.parse(parts[1]);
+        if (month >= 4) {
+          return '$year-${(year + 1).toString().substring(2)}';
+        } else {
+          return '${year - 1}-${year.toString().substring(2)}';
+        }
+      }
+    } catch (_) {}
+    return '';
+  }
+
+  String get taxPeriod => returnPeriod;
+
+  int get b2bInvoiceCount => b2bInvoices.length;
+
+  double get b2bInvoiceValue =>
+      b2bInvoices.fold(0, (sum, invoice) => sum + invoice.invoiceValue);
+
+  double get b2bTaxAmount =>
+      b2bInvoices.fold(0, (sum, invoice) => sum + invoice.taxAmount);
+
+  // Example status getter (customize as needed)
+  String get status => 'Filed';
 
   Map<String, dynamic> toJson() {
     return {
@@ -100,24 +127,7 @@ class GSTR1Model {
 }
 
 class B2BInvoice {
-  final String? id;
-  final String customerGstin;
-  final String customerName;
-  final String invoiceNumber;
-  final DateTime invoiceDate;
-  final double invoiceValue;
-  final String placeOfSupply;
-  final bool reverseCharge;
-  final String invoiceType;
-  final String eCommerceGstin;
-  final double taxableValue;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-
   B2BInvoice({
-    this.id,
     required this.customerGstin,
     required this.customerName,
     required this.invoiceNumber,
@@ -132,7 +142,10 @@ class B2BInvoice {
     required this.sgstAmount,
     required this.igstAmount,
     required this.cessAmount,
+    this.id,
   });
+
+  double get taxAmount => cgstAmount + sgstAmount + igstAmount + cessAmount;
 
   factory B2BInvoice.fromJson(Map<String, dynamic> json) {
     return B2BInvoice(
@@ -153,6 +166,21 @@ class B2BInvoice {
       cessAmount: json['cess_amount'],
     );
   }
+  final String? id;
+  final String customerGstin;
+  final String customerName;
+  final String invoiceNumber;
+  final DateTime invoiceDate;
+  final double invoiceValue;
+  final String placeOfSupply;
+  final bool reverseCharge;
+  final String invoiceType;
+  final String eCommerceGstin;
+  final double taxableValue;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -176,20 +204,7 @@ class B2BInvoice {
 }
 
 class B2CLInvoice {
-  final String? id;
-  final String invoiceNumber;
-  final DateTime invoiceDate;
-  final double invoiceValue;
-  final String placeOfSupply;
-  final double taxableValue;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-  final String eCommerceGstin;
-
   B2CLInvoice({
-    this.id,
     required this.invoiceNumber,
     required this.invoiceDate,
     required this.invoiceValue,
@@ -200,6 +215,7 @@ class B2CLInvoice {
     required this.igstAmount,
     required this.cessAmount,
     required this.eCommerceGstin,
+    this.id,
   });
 
   factory B2CLInvoice.fromJson(Map<String, dynamic> json) {
@@ -217,6 +233,17 @@ class B2CLInvoice {
       eCommerceGstin: json['ecommerce_gstin'],
     );
   }
+  final String? id;
+  final String invoiceNumber;
+  final DateTime invoiceDate;
+  final double invoiceValue;
+  final String placeOfSupply;
+  final double taxableValue;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
+  final String eCommerceGstin;
 
   Map<String, dynamic> toJson() {
     return {
@@ -236,18 +263,7 @@ class B2CLInvoice {
 }
 
 class B2CSInvoice {
-  final String? id;
-  final String type;
-  final String placeOfSupply;
-  final double taxableValue;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-  final String eCommerceGstin;
-
   B2CSInvoice({
-    this.id,
     required this.type,
     required this.placeOfSupply,
     required this.taxableValue,
@@ -256,6 +272,7 @@ class B2CSInvoice {
     required this.igstAmount,
     required this.cessAmount,
     required this.eCommerceGstin,
+    this.id,
   });
 
   factory B2CSInvoice.fromJson(Map<String, dynamic> json) {
@@ -271,6 +288,15 @@ class B2CSInvoice {
       eCommerceGstin: json['ecommerce_gstin'],
     );
   }
+  final String? id;
+  final String type;
+  final String placeOfSupply;
+  final double taxableValue;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
+  final String eCommerceGstin;
 
   Map<String, dynamic> toJson() {
     return {
@@ -288,20 +314,7 @@ class B2CSInvoice {
 }
 
 class HSNSummary {
-  final String? id;
-  final String hsnCode;
-  final String description;
-  final String uqc;
-  final double totalQuantity;
-  final double totalValue;
-  final double taxableValue;
-  final double cgstAmount;
-  final double sgstAmount;
-  final double igstAmount;
-  final double cessAmount;
-
   HSNSummary({
-    this.id,
     required this.hsnCode,
     required this.description,
     required this.uqc,
@@ -312,6 +325,7 @@ class HSNSummary {
     required this.sgstAmount,
     required this.igstAmount,
     required this.cessAmount,
+    this.id,
   });
 
   factory HSNSummary.fromJson(Map<String, dynamic> json) {
@@ -329,6 +343,17 @@ class HSNSummary {
       cessAmount: json['cess_amount'],
     );
   }
+  final String? id;
+  final String hsnCode;
+  final String description;
+  final String uqc;
+  final double totalQuantity;
+  final double totalValue;
+  final double taxableValue;
+  final double cgstAmount;
+  final double sgstAmount;
+  final double igstAmount;
+  final double cessAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -348,22 +373,14 @@ class HSNSummary {
 }
 
 class DocIssued {
-  final String? id;
-  final String docType;
-  final int docFromNumber;
-  final int docToNumber;
-  final int totalDocsIssued;
-  final int cancelledDocuments;
-  final int netDocumentsIssued;
-
   DocIssued({
-    this.id,
     required this.docType,
     required this.docFromNumber,
     required this.docToNumber,
     required this.totalDocsIssued,
     required this.cancelledDocuments,
     required this.netDocumentsIssued,
+    this.id,
   });
 
   factory DocIssued.fromJson(Map<String, dynamic> json) {
@@ -377,6 +394,13 @@ class DocIssued {
       netDocumentsIssued: json['net_documents_issued'],
     );
   }
+  final String? id;
+  final String docType;
+  final int docFromNumber;
+  final int docToNumber;
+  final int totalDocsIssued;
+  final int cancelledDocuments;
+  final int netDocumentsIssued;
 
   Map<String, dynamic> toJson() {
     return {
