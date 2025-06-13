@@ -237,7 +237,7 @@ class GstrFilingChartWidget extends StatelessWidget {
                             index]; // Show most recent first
                         return ListTile(
                           leading: FilingStatusIndicator(
-                            status: filing.filedDate,
+                            status: filing.filingStatus,
                             showIcon: true,
                             size: 16,
                           ),
@@ -246,7 +246,7 @@ class GstrFilingChartWidget extends StatelessWidget {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                            'Filed on: ${DateFormat('dd MMM yyyy').format(filing.filingDate)}',
+                            'Filed on: ${filing.filingDate != null ? DateFormat('dd MMM yyyy').format(filing.filingDate!) : 'N/A'}',
                           ),
                           trailing: Text(
                             FilingStatusUtil.getStatusLabel(
@@ -284,7 +284,7 @@ class GstrFilingChartWidget extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            FilingStatusLegend(horizontal: false),
+            // FilingStatusLegend(horizontal: false),
             const SizedBox(height: 16),
             const Text('Due dates by return type:'),
             const SizedBox(height: 8),

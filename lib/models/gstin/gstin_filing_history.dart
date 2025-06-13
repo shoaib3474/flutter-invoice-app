@@ -29,4 +29,10 @@ class FilingRecord {
   bool get isFiled => filedDate != null;
   bool get isOverdue => !isFiled && DateTime.now().isAfter(dueDate);
   bool get isFiledLate => isFiled && filedDate!.isAfter(dueDate);
+
+  get returnPeriod => null;
+
+  get filingStatus => null;
+
+  DateTime? get filingDate => null;
 }
