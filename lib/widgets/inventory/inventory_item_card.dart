@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import '../../models/inventory/inventory_item_model.dart';
 
 class InventoryItemCard extends StatelessWidget {
+  const InventoryItemCard({
+    required this.item,
+    super.key,
+    this.onEdit,
+    this.onDelete,
+  });
   final InventoryItem item;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const InventoryItemCard({
-    super.key,
-    required this.item,
-    this.onEdit,
-    this.onDelete,
-  });
-
   @override
   Widget build(BuildContext context) {
     final isLowStock = item.stockQuantity < 10;
-    
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
@@ -50,7 +49,8 @@ class InventoryItemCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: isLowStock ? Colors.orange[100] : Colors.green[100],
                     borderRadius: BorderRadius.circular(12),
@@ -58,7 +58,8 @@ class InventoryItemCard extends StatelessWidget {
                   child: Text(
                     '${item.stockQuantity} ${item.unit}',
                     style: TextStyle(
-                      color: isLowStock ? Colors.orange[800] : Colors.green[800],
+                      color:
+                          isLowStock ? Colors.orange[800] : Colors.green[800],
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -94,7 +95,8 @@ class InventoryItemCard extends StatelessWidget {
                 ),
                 if (item.hsnCode != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.blue[100],
                       borderRadius: BorderRadius.circular(8),
@@ -110,10 +112,10 @@ class InventoryItemCard extends StatelessWidget {
                   ),
               ],
             ),
-            if (item.description != null) ...[
+            ...[
               const SizedBox(height: 8),
               Text(
-                item.description!,
+                item.description,
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 12,

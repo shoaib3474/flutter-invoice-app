@@ -1,20 +1,23 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_invoice_app/models/invoice/invoice_model.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
-import '../../models/invoice/invoice_model.dart';
 import '../../services/pdf/invoice_pdf_service.dart';
 
 class InvoicePdfPreviewWidget extends StatefulWidget {
   const InvoicePdfPreviewWidget({
-    super.key,
     required this.invoice,
+    super.key,
   });
 
-  final InvoiceModel invoice;
+  final Invoice invoice;
 
   @override
-  State<InvoicePdfPreviewWidget> createState() => _InvoicePdfPreviewWidgetState();
+  State<InvoicePdfPreviewWidget> createState() =>
+      _InvoicePdfPreviewWidgetState();
 }
 
 class _InvoicePdfPreviewWidgetState extends State<InvoicePdfPreviewWidget> {
@@ -37,7 +40,7 @@ class _InvoicePdfPreviewWidgetState extends State<InvoicePdfPreviewWidget> {
         ],
       ),
       body: PdfPreview(
-        build: (format) => _generatePdf(format),
+        build: _generatePdf,
         allowPrinting: true,
         allowSharing: true,
         canChangePageFormat: false,
@@ -47,7 +50,7 @@ class _InvoicePdfPreviewWidgetState extends State<InvoicePdfPreviewWidget> {
   }
 
   Future<Uint8List> _generatePdf(PdfPageFormat format) async {
-    return await _pdfService.generateInvoicePdf(
+    return _pdfService.generateInvoicePdf(
       widget.invoice,
       format: format,
     );

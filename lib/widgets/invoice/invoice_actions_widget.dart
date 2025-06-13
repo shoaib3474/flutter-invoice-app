@@ -1,27 +1,29 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/models/invoice/invoice_model.dart';
+import 'package:flutter_invoice_app/models/invoice/invoice_status.dart';
 import 'package:flutter_invoice_app/services/pdf/invoice_pdf_service.dart';
 import 'package:flutter_invoice_app/widgets/common/custom_button.dart';
 
 class InvoiceActionsWidget extends StatelessWidget {
-  final Invoice invoice;
-  final Function? onShare;
-  
   const InvoiceActionsWidget({
-    Key? key,
     required this.invoice,
+    Key? key,
     this.onShare,
   }) : super(key: key);
+  final Invoice invoice;
+  final Function? onShare;
 
   @override
   Widget build(BuildContext context) {
     final pdfService = InvoicePdfService();
-    
+
     return Card(
       elevation: 2,
       margin: const EdgeInsets.all(16),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -50,7 +52,6 @@ class InvoiceActionsWidget extends StatelessWidget {
                     }
                   },
                 ),
-                
                 _buildActionButton(
                   context,
                   icon: Icons.share,
@@ -67,7 +68,6 @@ class InvoiceActionsWidget extends StatelessWidget {
                     }
                   },
                 ),
-                
                 _buildActionButton(
                   context,
                   icon: Icons.print,
@@ -81,7 +81,6 @@ class InvoiceActionsWidget extends StatelessWidget {
                     }
                   },
                 ),
-                
                 _buildActionButton(
                   context,
                   icon: Icons.save_alt,
@@ -91,14 +90,14 @@ class InvoiceActionsWidget extends StatelessWidget {
                     try {
                       final filePath = await pdfService.saveInvoicePdf(invoice);
                       if (context.mounted) {
-                        _showSuccessSnackbar(context, 'PDF saved to: $filePath');
+                        _showSuccessSnackbar(
+                            context, 'PDF saved to: $filePath');
                       }
                     } catch (e) {
                       _showErrorSnackbar(context, 'Failed to save PDF: $e');
                     }
                   },
                 ),
-                
                 if (invoice.status == InvoiceStatus.draft) ...[
                   _buildActionButton(
                     context,
@@ -111,8 +110,8 @@ class InvoiceActionsWidget extends StatelessWidget {
                     },
                   ),
                 ],
-                
-                if (invoice.status == InvoiceStatus.issued || invoice.status == InvoiceStatus.overdue) ...[
+                if (invoice.status == InvoiceStatus.issued ||
+                    invoice.status == InvoiceStatus.overdue) ...[
                   _buildActionButton(
                     context,
                     icon: Icons.payment,
@@ -124,8 +123,8 @@ class InvoiceActionsWidget extends StatelessWidget {
                     },
                   ),
                 ],
-                
-                if (invoice.status != InvoiceStatus.cancelled && invoice.status != InvoiceStatus.voided) ...[
+                if (invoice.status != InvoiceStatus.cancelled &&
+                    invoice.status != InvoiceStatus.voided) ...[
                   _buildActionButton(
                     context,
                     icon: Icons.cancel,
@@ -144,7 +143,7 @@ class InvoiceActionsWidget extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildActionButton(
     BuildContext context, {
     required IconData icon,
@@ -159,7 +158,7 @@ class InvoiceActionsWidget extends StatelessWidget {
       onPressed: onPressed,
     );
   }
-  
+
   void _showErrorSnackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -168,7 +167,7 @@ class InvoiceActionsWidget extends StatelessWidget {
       ),
     );
   }
-  
+
   void _showSuccessSnackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -177,7 +176,7 @@ class InvoiceActionsWidget extends StatelessWidget {
       ),
     );
   }
-  
+
   void _showInfoDialog(BuildContext context, String title) {
     showDialog(
       context: context,
@@ -193,7 +192,7 @@ class InvoiceActionsWidget extends StatelessWidget {
       ),
     );
   }
-  
+
   void _showWarningDialog(BuildContext context, String title) {
     showDialog(
       context: context,
@@ -210,8 +209,8 @@ class InvoiceActionsWidget extends StatelessWidget {
               Navigator.pop(context);
               _showSuccessSnackbar(context, 'Operation completed');
             },
-            child: const Text('Confirm'),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Confirm'),
           ),
         ],
       ),
