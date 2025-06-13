@@ -1,28 +1,31 @@
+// ignore_for_file: always_put_required_named_parameters_first, library_private_types_in_public_api, use_build_context_synchronously
+
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_invoice_app/services/validation/invoice_validation_service.dart';
 import '../../models/gstr1_model.dart';
 import '../../services/import/tally_import_service.dart';
 import '../../utils/error_handler.dart';
 
 class TallyImportWidget extends StatefulWidget {
-  final Function(GSTR1Model) onImportSuccess;
-  final String gstin;
-  final String returnPeriod;
-
   const TallyImportWidget({
     Key? key,
     required this.onImportSuccess,
     required this.gstin,
     required this.returnPeriod,
   }) : super(key: key);
+  final Function(GSTR1Model) onImportSuccess;
+  final String gstin;
+  final String returnPeriod;
 
   @override
   _TallyImportWidgetState createState() => _TallyImportWidgetState();
 }
 
 class _TallyImportWidgetState extends State<TallyImportWidget> {
-  final TallyImportService _tallyImportService = TallyImportService();
+  final TallyImportService _tallyImportService =
+      TallyImportService(validationService: InvoiceValidationService());
   bool _isImporting = false;
   String? _importFilePath;
   String? _importError;
@@ -43,17 +46,17 @@ class _TallyImportWidgetState extends State<TallyImportWidget> {
         _importFilePath = result.files.single.path;
         if (_importFilePath != null) {
           final file = File(_importFilePath!);
-          
+
           // Import Tally data
           final gstr1Data = await _tallyImportService.importFromFile(
             file,
             widget.gstin,
             widget.returnPeriod,
           );
-          
+
           // Call the callback with the imported data
           widget.onImportSuccess(gstr1Data);
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Tally data imported successfully')),
           );
@@ -75,7 +78,7 @@ class _TallyImportWidgetState extends State<TallyImportWidget> {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -96,7 +99,8 @@ class _TallyImportWidgetState extends State<TallyImportWidget> {
                 ElevatedButton.icon(
                   onPressed: _isImporting ? null : _importTallyData,
                   icon: const Icon(Icons.upload_file),
-                  label: Text(_isImporting ? 'Importing...' : 'Import Tally XML'),
+                  label:
+                      Text(_isImporting ? 'Importing...' : 'Import Tally XML'),
                 ),
                 if (_importFilePath != null) ...[
                   const SizedBox(width: 8),
@@ -109,7 +113,7 @@ class _TallyImportWidgetState extends State<TallyImportWidget> {
                 ],
               ],
             ),
-            
+
             // Error message
             if (_importError != null) ...[
               const SizedBox(height: 16),
