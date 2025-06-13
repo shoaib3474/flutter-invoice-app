@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, avoid_slow_async_io
+
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -93,7 +95,7 @@ class ErrorLoggerService {
   Future<void> _collectDeviceInfo() async {
     try {
       final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      
+
       if (Platform.isAndroid) {
         final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
         _deviceInfo = 'Android ${androidInfo.version.release} '
@@ -213,19 +215,19 @@ class ErrorLoggerService {
     // Log to console and file
     switch (level) {
       case LogLevel.debug:
-        _logger.d(message, error: error, stackTrace: stackTrace);
+        _logger.d(message);
         break;
       case LogLevel.info:
-        _logger.i(message, error: error, stackTrace: stackTrace);
+        _logger.i(message);
         break;
       case LogLevel.warning:
-        _logger.w(message, error: error, stackTrace: stackTrace);
+        _logger.w(message);
         break;
       case LogLevel.error:
-        _logger.e(message, error: error, stackTrace: stackTrace);
+        _logger.e(message, error, stackTrace);
         break;
       case LogLevel.critical:
-        _logger.f(message, error: error, stackTrace: stackTrace);
+        _logger.v(message, error, stackTrace);
         break;
     }
   }
@@ -296,7 +298,7 @@ class ErrorLoggerService {
       final logs = await getLogContent();
       final deviceInfo = _deviceInfo ?? 'Unknown device';
       final appVersion = _appVersion ?? 'Unknown version';
-      
+
       return '''
 === GST Invoice App Error Report ===
 Generated: ${DateTime.now().toIso8601String()}
@@ -315,14 +317,13 @@ $logs
 
 // Custom file output for logger
 class FileOutput extends LogOutput {
-  final File file;
-  
   FileOutput(this.file);
-  
+  final File file;
+
   @override
   void output(OutputEvent event) async {
     try {
-      final logString = event.lines.join('\n') + '\n';
+      final logString = '${event.lines.join('\n')}\n';
       await file.writeAsString(logString, mode: FileMode.append);
     } catch (e) {
       debugPrint('Failed to write to log file: $e');
@@ -332,13 +333,12 @@ class FileOutput extends LogOutput {
 
 // Multi-output for logger
 class MultiOutput extends LogOutput {
-  final List<LogOutput> outputs;
-  
   MultiOutput(this.outputs);
-  
+  final List<LogOutput> outputs;
+
   @override
   void output(OutputEvent event) {
-    for (var output in outputs) {
+    for (final output in outputs) {
       try {
         output.output(event);
       } catch (e) {
