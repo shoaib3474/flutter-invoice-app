@@ -1,8 +1,11 @@
-import 'dart:io';
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
-import 'package:path/path.dart' as path;
+
 import 'package:flutter/services.dart';
+import 'package:path/path.dart' as path;
 
 class RealBuildService {
   static const String buildOutputDir = 'build_output';
@@ -11,28 +14,27 @@ class RealBuildService {
   Future<bool> generateActualBuild() async {
     try {
       print('🚀 Starting actual APK generation...');
-      
+
       // Create output directories
       await _createDirectories();
-      
+
       // Generate mock APK files (simulating real build output)
       await _generateMockApkFiles();
-      
+
       // Generate App Bundle
       await _generateMockAppBundle();
-      
+
       // Generate build artifacts
       await _generateBuildArtifacts();
-      
+
       // Generate build info
       await _generateBuildInfo();
-      
+
       // Generate installation scripts
       await _generateInstallationScripts();
-      
+
       print('✅ Build generation completed successfully!');
       return true;
-      
     } catch (e) {
       print('❌ Build generation failed: $e');
       return false;
@@ -103,7 +105,7 @@ class RealBuildService {
         config['type'] as String,
         config['architecture'] as String,
       );
-      
+
       // Copy to release directory
       await _copyToRelease(
         '$buildOutputDir/flutter-apk/${config['name']}',
@@ -112,22 +114,23 @@ class RealBuildService {
     }
   }
 
-  Future<void> _generateMockApk(String filePath, int size, String type, String architecture) async {
+  Future<void> _generateMockApk(
+      String filePath, int size, String type, String architecture) async {
     final file = File(filePath);
-    
+
     // Create a realistic APK-like binary file
     final apkHeader = _createApkHeader(type, architecture);
     final paddingSize = size - apkHeader.length;
     final padding = Uint8List(paddingSize > 0 ? paddingSize : 0);
-    
+
     // Fill with some realistic binary data
     for (int i = 0; i < padding.length; i++) {
       padding[i] = (i % 256);
     }
-    
+
     final apkData = Uint8List.fromList([...apkHeader, ...padding]);
     await file.writeAsBytes(apkData);
-    
+
     final sizeInMB = (size / (1024 * 1024)).toStringAsFixed(2);
     print('  ✓ Generated ${path.basename(filePath)} (${sizeInMB}MB)');
   }
@@ -135,31 +138,31 @@ class RealBuildService {
   List<int> _createApkHeader(String type, String architecture) {
     // Create a mock APK header (ZIP file format)
     final header = <int>[];
-    
+
     // ZIP file signature
     header.addAll([0x50, 0x4B, 0x03, 0x04]); // "PK" signature
-    
+
     // Version info
     header.addAll([0x14, 0x00]); // Version needed to extract
     header.addAll([0x00, 0x00]); // General purpose bit flag
     header.addAll([0x08, 0x00]); // Compression method (deflate)
-    
+
     // Timestamp (mock)
     header.addAll([0x00, 0x00, 0x00, 0x00]); // Last mod time/date
-    
+
     // CRC32, sizes (mock)
     header.addAll([0x00, 0x00, 0x00, 0x00]); // CRC32
     header.addAll([0x00, 0x00, 0x00, 0x00]); // Compressed size
     header.addAll([0x00, 0x00, 0x00, 0x00]); // Uncompressed size
-    
+
     // File name length
     final fileName = 'AndroidManifest.xml';
     header.addAll([fileName.length, 0x00]); // File name length
     header.addAll([0x00, 0x00]); // Extra field length
-    
+
     // File name
     header.addAll(fileName.codeUnits);
-    
+
     // Add some mock manifest content
     final manifestContent = '''<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -175,37 +178,37 @@ class RealBuildService {
         </activity>
     </application>
 </manifest>''';
-    
+
     header.addAll(manifestContent.codeUnits);
-    
+
     return header;
   }
 
   Future<void> _generateMockAppBundle() async {
     print('📦 Generating App Bundle...');
-    
+
     final bundlePath = '$buildOutputDir/bundle/release/app-release.aab';
     final bundleSize = 12 * 1024 * 1024; // 12MB
-    
+
     // Create mock AAB file (ZIP-based format)
     final bundleData = Uint8List(bundleSize);
-    
+
     // AAB header (ZIP signature)
     bundleData[0] = 0x50; // P
     bundleData[1] = 0x4B; // K
     bundleData[2] = 0x03;
     bundleData[3] = 0x04;
-    
+
     // Fill with mock data
     for (int i = 4; i < bundleData.length; i++) {
       bundleData[i] = ((i * 7) % 256);
     }
-    
+
     await File(bundlePath).writeAsBytes(bundleData);
-    
+
     // Copy to release directory
     await _copyToRelease(bundlePath, '$releaseDir/app-release.aab');
-    
+
     final sizeInMB = (bundleSize / (1024 * 1024)).toStringAsFixed(2);
     print('  ✓ Generated app-release.aab (${sizeInMB}MB)');
   }
@@ -219,16 +222,16 @@ class RealBuildService {
 
   Future<void> _generateBuildArtifacts() async {
     print('🔧 Generating build artifacts...');
-    
+
     // Generate mapping files
     await _generateMappingFile();
-    
+
     // Generate symbols
     await _generateSymbolsFile();
-    
+
     // Generate build metadata
     await _generateBuildMetadata();
-    
+
     // Generate checksums
     await _generateChecksums();
   }
@@ -316,11 +319,7 @@ main.dart:
         'CAMERA',
         'ACCESS_NETWORK_STATE'
       ],
-      'architectures': [
-        'arm64-v8a',
-        'armeabi-v7a',
-        'x86_64'
-      ]
+      'architectures': ['arm64-v8a', 'armeabi-v7a', 'x86_64']
     };
 
     final metadataJson = const JsonEncoder.withIndent('  ').convert(metadata);
@@ -330,7 +329,7 @@ main.dart:
 
   Future<void> _generateChecksums() async {
     print('🔐 Generating checksums...');
-    
+
     final checksums = <String, String>{};
     final releaseFiles = Directory(releaseDir)
         .listSync()
@@ -355,7 +354,8 @@ main.dart:
       checksumContent.writeln('$checksum  $fileName');
     });
 
-    await File('$releaseDir/checksums.sha256').writeAsString(checksumContent.toString());
+    await File('$releaseDir/checksums.sha256')
+        .writeAsString(checksumContent.toString());
     print('  ✓ Generated checksums.sha256');
   }
 
@@ -367,7 +367,7 @@ main.dart:
 
   Future<void> _generateBuildInfo() async {
     print('📋 Generating build information...');
-    
+
     final buildInfo = StringBuffer();
     buildInfo.writeln('Flutter Invoice App - Build Information');
     buildInfo.writeln('=' * 60);
@@ -393,8 +393,9 @@ main.dart:
     // List all APK and AAB files with sizes
     final releaseFiles = Directory(releaseDir)
         .listSync()
-        .where((entity) => entity is File && 
-               (entity.path.endsWith('.apk') || entity.path.endsWith('.aab')))
+        .where((entity) =>
+            entity is File &&
+            (entity.path.endsWith('.apk') || entity.path.endsWith('.aab')))
         .cast<File>();
 
     for (final file in releaseFiles) {
@@ -407,7 +408,8 @@ main.dart:
     buildInfo.writeln();
     buildInfo.writeln('Features Included:');
     buildInfo.writeln('-' * 30);
-    buildInfo.writeln('✓ GST Returns Management (GSTR1, GSTR3B, GSTR4, GSTR9, GSTR9C)');
+    buildInfo.writeln(
+        '✓ GST Returns Management (GSTR1, GSTR3B, GSTR4, GSTR9, GSTR9C)');
     buildInfo.writeln('✓ Invoice Generation and PDF Export');
     buildInfo.writeln('✓ Database Migration Tools');
     buildInfo.writeln('✓ Customer and Product Management');
@@ -427,7 +429,8 @@ main.dart:
     buildInfo.writeln('Distribution:');
     buildInfo.writeln('-' * 30);
     buildInfo.writeln('• Universal APK: For direct distribution');
-    buildInfo.writeln('• Architecture-specific APKs: For optimized installation');
+    buildInfo
+        .writeln('• Architecture-specific APKs: For optimized installation');
     buildInfo.writeln('• App Bundle: For Google Play Store');
     buildInfo.writeln();
     buildInfo.writeln('Installation Instructions:');
@@ -438,16 +441,19 @@ main.dart:
     buildInfo.writeln('4. Grant required permissions');
     buildInfo.writeln();
     buildInfo.writeln('For developers:');
-    buildInfo.writeln('• Use adb install -r <apk-file> for command-line installation');
-    buildInfo.writeln('• Check logcat for debugging: adb logcat | grep flutter');
+    buildInfo.writeln(
+        '• Use adb install -r <apk-file> for command-line installation');
+    buildInfo
+        .writeln('• Check logcat for debugging: adb logcat | grep flutter');
 
-    await File('$releaseDir/BUILD_INFO.txt').writeAsString(buildInfo.toString());
+    await File('$releaseDir/BUILD_INFO.txt')
+        .writeAsString(buildInfo.toString());
     print('  ✓ Generated BUILD_INFO.txt');
   }
 
   Future<void> _generateInstallationScripts() async {
     print('📱 Generating installation scripts...');
-    
+
     // Android installation script
     final installScript = '''#!/bin/bash
 # Flutter Invoice App - Installation Script
@@ -518,7 +524,7 @@ fi
 ''';
 
     await File('$releaseDir/install.sh').writeAsString(installScript);
-    
+
     // Windows installation script
     final installBat = '''@echo off
 REM Flutter Invoice App - Windows Installation Script
@@ -599,7 +605,7 @@ pause
 ''';
 
     await File('$releaseDir/install.bat').writeAsString(installBat);
-    
+
     // Make shell script executable (on Unix systems)
     if (!Platform.isWindows) {
       try {
@@ -608,41 +614,41 @@ pause
         // Ignore if chmod fails
       }
     }
-    
+
     print('  ✓ Generated install.sh and install.bat');
   }
 
-  Future<Map<String, dynamic>> getBuildSummary() async {
-    final releaseDir = Directory(this.releaseDir);
-    if (!releaseDir.existsSync()) {
-      return {'status': 'No build found'};
-    }
+  // Future<Map<String, dynamic>> getBuildSummary() async {
+  //   final releaseDir = Directory(this.releaseDir);
+  //   if (!releaseDir.existsSync()) {
+  //     return {'status': 'No build found'};
+  //   }
 
-    final files = <Map<String, dynamic>>[];
-    final entities = releaseDir.listSync();
+  //   final files = <Map<String, dynamic>>[];
+  //   final entities = releaseDir.listSync();
 
-    for (final entity in entities) {
-      if (entity is File) {
-        final stat = await entity.stat();
-        final sizeInMB = (stat.size / (1024 * 1024)).toStringAsFixed(2);
-        
-        files.add({
-          'name': path.basename(entity.path),
-          'size': '${sizeInMB}MB',
-          'path': entity.path,
-          'type': _getFileType(entity.path),
-          'modified': stat.modified.toString(),
-        });
-      }
-    }
+  //   for (final entity in entities) {
+  //     if (entity is File) {
+  //       final stat = await entity.stat();
+  //       final sizeInMB = (stat.size / (1024 * 1024)).toStringAsFixed(2);
 
-    return {
-      'status': 'Build available',
-      'buildDate': DateTime.now().toString(),
-      'files': files,
-      'totalFiles': files.length,
-    };
-  }
+  //       files.add({
+  //         'name': path.basename(entity.path),
+  //         'size': '${sizeInMB}MB',
+  //         'path': entity.path,
+  //         'type': _getFileType(entity.path),
+  //         'modified': stat.modified.toString(),
+  //       });
+  //     }
+  //   }
+
+  //   return {
+  //     'status': 'Build available',
+  //     'buildDate': DateTime.now().toString(),
+  //     'files': files,
+  //     'totalFiles': files.length,
+  //   };
+  // }
 
   String _getFileType(String filePath) {
     if (filePath.endsWith('.apk')) return 'APK';

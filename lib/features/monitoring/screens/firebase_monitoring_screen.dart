@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,7 +13,8 @@ class FirebaseMonitoringScreen extends StatefulWidget {
   const FirebaseMonitoringScreen({Key? key}) : super(key: key);
 
   @override
-  State<FirebaseMonitoringScreen> createState() => _FirebaseMonitoringScreenState();
+  State<FirebaseMonitoringScreen> createState() =>
+      _FirebaseMonitoringScreenState();
 }
 
 class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
@@ -35,7 +38,7 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.firebaseMonitoring),
@@ -47,10 +50,10 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           tabs: [
-            Tab(icon: Icon(Icons.bug_report), text: l10n.crashlytics),
-            Tab(icon: Icon(Icons.analytics), text: l10n.analytics),
-            Tab(icon: Icon(Icons.science), text: l10n.testTools),
-            Tab(icon: Icon(Icons.link), text: l10n.quickLinks),
+            Tab(icon: const Icon(Icons.bug_report), text: l10n.crashlytics),
+            Tab(icon: const Icon(Icons.analytics), text: l10n.analytics),
+            Tab(icon: const Icon(Icons.science), text: l10n.testTools),
+            Tab(icon: const Icon(Icons.link), text: l10n.quickLinks),
           ],
         ),
         actions: [
@@ -77,7 +80,7 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
 
   Widget _buildCrashlyticsTab(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -90,14 +93,14 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
             children: [
               Text(l10n.crashReportsDescription),
               const SizedBox(height: 16),
-              _buildMetricRow(l10n.crashFreeUsers, '99.2%', Colors.green),
-              _buildMetricRow(l10n.totalCrashes, '12', Colors.orange),
-              _buildMetricRow(l10n.affectedUsers, '3', Colors.red),
+              _buildMetricRow(l10n.crashFreeUsers!, '99.2%', Colors.green),
+              _buildMetricRow(l10n.totalCrashes!, '12', Colors.orange),
+              _buildMetricRow(l10n.affectedUsers!, '3', Colors.red),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () => _openFirebaseConsole('crashlytics'),
                 icon: const Icon(Icons.open_in_new),
-                label: Text(l10n.openCrashlytics),
+                label: Text(l10n.openCrashlytics!),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
@@ -116,7 +119,7 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
 
   Widget _buildAnalyticsTab(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -127,16 +130,16 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
             icon: Icons.analytics,
             color: Colors.blue,
             children: [
-              Text(l10n.analyticsDescription),
+              Text(l10n.analyticsDescription!),
               const SizedBox(height: 16),
-              _buildMetricRow(l10n.activeUsers, '1,234', Colors.blue),
-              _buildMetricRow(l10n.sessions, '5,678', Colors.green),
-              _buildMetricRow(l10n.screenViews, '12,345', Colors.purple),
+              _buildMetricRow(l10n.activeUsers!, '1,234', Colors.blue),
+              _buildMetricRow(l10n.sessions!, '5,678', Colors.green),
+              _buildMetricRow(l10n.screenView, '12,345', Colors.purple),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () => _openFirebaseConsole('analytics'),
                 icon: const Icon(Icons.open_in_new),
-                label: Text(l10n.openAnalytics),
+                label: Text(l10n.openAnalytics!),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
@@ -154,12 +157,12 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
   }
 
   Widget _buildTestToolsTab(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(16),
       child: Column(
         children: [
           CrashReportSimulatorWidget(),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           AnalyticsTestWidget(),
         ],
       ),
@@ -240,7 +243,7 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
 
   Widget _buildRecentCrashesCard(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return _buildInfoCard(
       title: l10n.recentCrashes,
       icon: Icons.history,
@@ -327,7 +330,7 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
 
   Widget _buildCrashTrendsCard(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return _buildInfoCard(
       title: l10n.crashTrends,
       icon: Icons.trending_up,
@@ -360,7 +363,7 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
 
   Widget _buildTopEventsCard(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return _buildInfoCard(
       title: l10n.topEvents,
       icon: Icons.event,
@@ -423,7 +426,7 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
 
   Widget _buildUserJourneyCard(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    
+
     return _buildInfoCard(
       title: l10n.userJourney,
       icon: Icons.timeline,
@@ -463,9 +466,11 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
   }
 
   Future<void> _openFirebaseConsole(String section) async {
-    final projectId = 'your-firebase-project-id'; // Replace with your project ID
-    final url = 'https://console.firebase.google.com/project/$projectId/$section';
-    
+    const projectId =
+        'your-firebase-project-id'; // Replace with your project ID
+    final url =
+        'https://console.firebase.google.com/project/$projectId/$section';
+
     try {
       if (await canLaunchUrl(Uri.parse(url))) {
         await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
@@ -474,7 +479,7 @@ class _FirebaseMonitoringScreenState extends State<FirebaseMonitoringScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Could not open Firebase Console'),
+              content: const Text('Could not open Firebase Console'),
               action: SnackBarAction(
                 label: 'Copy URL',
                 onPressed: () {

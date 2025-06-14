@@ -19,37 +19,37 @@ enum CustomerType {
 class Customer extends Equatable {
   @HiveField(0)
   final String id;
-  
+
   @HiveField(1)
   final String name;
-  
+
   @HiveField(2)
   final String? mobile;
-  
+
   @HiveField(3)
   final String? email;
-  
+
   @HiveField(4)
   final String? address;
-  
+
   @HiveField(5)
   final String? gstin;
-  
+
   @HiveField(6)
   final String? panNumber;
-  
+
   @HiveField(7)
   final CustomerType type;
-  
+
   @HiveField(8)
   final double creditLimit;
-  
+
   @HiveField(9)
   final double currentBalance;
-  
+
   @HiveField(10)
   final DateTime createdAt;
-  
+
   @HiveField(11)
   final DateTime updatedAt;
 
@@ -178,6 +178,8 @@ class Customer extends Equatable {
       updatedAt: DateTime.parse(json['updatedAt']),
     );
   }
+
+  static Customer? fromMap(Map<String, dynamic> customerData) {}
 }
 
 extension CustomerTypeExtension on CustomerType {

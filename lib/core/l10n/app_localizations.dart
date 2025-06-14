@@ -60,7 +60,8 @@ import 'app_localizations_hi.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -68,7 +69,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -80,7 +82,8 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -224,9 +227,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom Event'**
   String get customEvent;
+
+  String? get crashFreeUsers => null;
+
+  String? get totalCrashes => null;
+
+  String? get affectedUsers => null;
+
+  String? get openCrashlytics => null;
+
+  get analyticsOverview => null;
+
+  String? get analyticsDescription => null;
+
+  String? get activeUsers => null;
+
+  String? get sessions => null;
+
+  String? get openAnalytics => null;
+
+  get recentCrashes => null;
+
+  get crashTrends => null;
+
+  get topEvents => null;
+
+  get userJourney => null;
+
+  String? get firebaseQuickLinks => null;
+
+  get crashlyticsConsole => null;
+
+  get crashlyticsDescription => null;
+
+  get analyticsConsole => null;
+
+  get analyticsConsoleDescription => null;
+
+  get performanceConsole => null;
+
+  get performanceDescription => null;
+
+  get remoteConfigConsole => null;
+
+  get remoteConfigDescription => null;
+
+  get firestoreConsole => null;
+
+  get firestoreDescription => null;
+
+  String? get firebaseProjectNote => null;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -235,7 +289,8 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'hi'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'hi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -244,13 +299,14 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'hi': return AppLocalizationsHi();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'hi':
+      return AppLocalizationsHi();
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue on GitHub with a '
-    'reproducible example of the issue and the full stacktrace.'
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue on GitHub with a '
+      'reproducible example of the issue and the full stacktrace.');
 }

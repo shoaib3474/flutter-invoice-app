@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_web_libraries_in_flutter
+
 import 'dart:convert';
 import 'dart:html' as html;
 import 'package:flutter/foundation.dart';
@@ -115,7 +117,7 @@ class LocalStorageService {
     setJson('$_itemPrefix$itemId', item);
   }
 
-  static Map<String, dynamic>? getItem(String itemId) {
+  static Map<String, dynamic>? getItems(String itemId) {
     return getJson('$_itemPrefix$itemId');
   }
 
@@ -194,7 +196,8 @@ class LocalStorageService {
 
   // Payment methods
   static void savePayment(Map<String, dynamic> payment) {
-    final paymentId = payment['id'] ?? DateTime.now().millisecondsSinceEpoch.toString();
+    final paymentId =
+        payment['id'] ?? DateTime.now().millisecondsSinceEpoch.toString();
     setJson('$_paymentPrefix$paymentId', payment);
   }
 
@@ -214,7 +217,8 @@ class LocalStorageService {
   }
 
   // Ledger methods
-  static void updateCustomerLedger(String customerId, Map<String, dynamic> ledgerEntry) {
+  static void updateCustomerLedger(
+      String customerId, Map<String, dynamic> ledgerEntry) {
     final ledgerKey = '$_ledgerPrefix$customerId';
     final existingLedger = getJsonList(ledgerKey);
     existingLedger.add(ledgerEntry);

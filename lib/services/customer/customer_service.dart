@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_invoice_app/services/storage/local_storage_mock.dart';
+
 import '../../models/customer/customer_model.dart';
-import '../../utils/local_storage_mock.dart';
 
 class CustomerService {
   static const String _customersKey = 'customers';
@@ -85,12 +86,15 @@ class CustomerService {
     }
 
     final List<dynamic> customersList = json.decode(customersJson);
-    return customersList.map((customer) => Customer.fromJson(customer)).toList();
+    return customersList
+        .map((customer) => Customer.fromJson(customer))
+        .toList();
   }
 
   Future<void> _initializeSampleData() async {
     final prefs = await LocalStorageMock.getInstance();
-    final customersJson = json.encode(_sampleCustomers.map((customer) => customer.toJson()).toList());
+    final customersJson = json
+        .encode(_sampleCustomers.map((customer) => customer.toJson()).toList());
     await prefs.setString(_customersKey, customersJson);
   }
 
@@ -117,18 +121,22 @@ class CustomerService {
 
   Future<void> _saveCustomers(List<Customer> customers) async {
     final prefs = await LocalStorageMock.getInstance();
-    final customersJson = json.encode(customers.map((customer) => customer.toJson()).toList());
+    final customersJson =
+        json.encode(customers.map((customer) => customer.toJson()).toList());
     await prefs.setString(_customersKey, customersJson);
   }
 
   Future<List<Customer>> searchCustomers(String query) async {
     final customers = await getAllCustomers();
-    return customers.where((customer) =>
-        customer.name.toLowerCase().contains(query.toLowerCase()) ||
-        (customer.mobile?.contains(query) ?? false) ||
-        (customer.email?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
-        (customer.gstin?.toLowerCase().contains(query.toLowerCase()) ?? false)
-    ).toList();
+    return customers
+        .where((customer) =>
+            customer.name.toLowerCase().contains(query.toLowerCase()) ||
+            (customer.mobile?.contains(query) ?? false) ||
+            (customer.email?.toLowerCase().contains(query.toLowerCase()) ??
+                false) ||
+            (customer.gstin?.toLowerCase().contains(query.toLowerCase()) ??
+                false))
+        .toList();
   }
 
   Future<Customer?> getCustomerByMobile(String mobile) async {
@@ -149,7 +157,8 @@ class CustomerService {
     }
   }
 
-  Future<void> updateCustomerBalance(String customerId, double newBalance) async {
+  Future<void> updateCustomerBalance(
+      String customerId, double newBalance) async {
     final customers = await getAllCustomers();
     final index = customers.indexWhere((customer) => customer.id == customerId);
     if (index != -1) {

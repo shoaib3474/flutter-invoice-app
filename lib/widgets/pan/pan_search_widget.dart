@@ -84,7 +84,7 @@ class _PanSearchWidgetState extends State<PanSearchWidget> {
               },
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
           textCapitalization: TextCapitalization.characters,

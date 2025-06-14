@@ -38,7 +38,8 @@ class FirebaseLinksWidget extends StatelessWidget {
               description: l10n.crashlyticsDescription,
               icon: Icons.bug_report,
               color: Colors.red,
-              url: 'https://console.firebase.google.com/project/your-project-id/crashlytics',
+              url:
+                  'https://console.firebase.google.com/project/your-project-id/crashlytics',
             ),
             _buildLinkItem(
               context,
@@ -46,7 +47,8 @@ class FirebaseLinksWidget extends StatelessWidget {
               description: l10n.analyticsConsoleDescription,
               icon: Icons.analytics,
               color: Colors.blue,
-              url: 'https://console.firebase.google.com/project/your-project-id/analytics',
+              url:
+                  'https://console.firebase.google.com/project/your-project-id/analytics',
             ),
             _buildLinkItem(
               context,
@@ -54,7 +56,8 @@ class FirebaseLinksWidget extends StatelessWidget {
               description: l10n.performanceDescription,
               icon: Icons.speed,
               color: Colors.green,
-              url: 'https://console.firebase.google.com/project/your-project-id/performance',
+              url:
+                  'https://console.firebase.google.com/project/your-project-id/performance',
             ),
             _buildLinkItem(
               context,
@@ -62,7 +65,8 @@ class FirebaseLinksWidget extends StatelessWidget {
               description: l10n.remoteConfigDescription,
               icon: Icons.settings_remote,
               color: Colors.purple,
-              url: 'https://console.firebase.google.com/project/your-project-id/config',
+              url:
+                  'https://console.firebase.google.com/project/your-project-id/config',
             ),
             _buildLinkItem(
               context,
@@ -70,7 +74,8 @@ class FirebaseLinksWidget extends StatelessWidget {
               description: l10n.firestoreDescription,
               icon: Icons.storage,
               color: Colors.orange,
-              url: 'https://console.firebase.google.com/project/your-project-id/firestore',
+              url:
+                  'https://console.firebase.google.com/project/your-project-id/firestore',
             ),
             const SizedBox(height: 16),
             Container(
@@ -154,7 +159,7 @@ class FirebaseLinksWidget extends StatelessWidget {
 
   Future<void> _openUrl(BuildContext context, String url) async {
     final errorLogger = ErrorLoggerService();
-    
+
     try {
       if (await canLaunchUrl(Uri.parse(url))) {
         await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);

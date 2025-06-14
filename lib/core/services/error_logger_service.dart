@@ -313,6 +313,8 @@ $logs
       return 'Failed to export logs: $e';
     }
   }
+
+  void addBreadcrumb(String s, {Map<String, dynamic>? data}) {}
 }
 
 // Custom file output for logger

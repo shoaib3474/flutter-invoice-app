@@ -33,14 +33,14 @@ class GstinTrackingProvider with ChangeNotifier {
       return history;
     } catch (e) {
       _isLoading = false;
-      _errorMessage = e is ApiException 
-          ? e.message 
+      _errorMessage = e is ApiException
+          ? e.message
           : 'An unexpected error occurred: ${e.toString()}';
       notifyListeners();
       rethrow;
     }
   }
-  
+
   Future<List<GstinFilingHistory>> searchByPan(String pan) async {
     _isLoading = true;
     _errorMessage = '';
@@ -55,14 +55,14 @@ class GstinTrackingProvider with ChangeNotifier {
       return results;
     } catch (e) {
       _isLoading = false;
-      _errorMessage = e is ApiException 
-          ? e.message 
+      _errorMessage = e is ApiException
+          ? e.message
           : 'An unexpected error occurred: ${e.toString()}';
       notifyListeners();
       rethrow;
     }
   }
-  
+
   Future<GstJurisdiction> getJurisdiction(String gstinOrPan) async {
     _isLoading = true;
     _errorMessage = '';
@@ -76,8 +76,8 @@ class GstinTrackingProvider with ChangeNotifier {
       return jurisdiction;
     } catch (e) {
       _isLoading = false;
-      _errorMessage = e is ApiException 
-          ? e.message 
+      _errorMessage = e is ApiException
+          ? e.message
           : 'An unexpected error occurred: ${e.toString()}';
       notifyListeners();
       rethrow;
@@ -88,4 +88,8 @@ class GstinTrackingProvider with ChangeNotifier {
     _errorMessage = '';
     notifyListeners();
   }
+
+  void addToRecentPanSearches(String pan) {}
+
+  Future getRecentPanSearches() async {}
 }
