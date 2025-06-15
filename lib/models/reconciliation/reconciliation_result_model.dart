@@ -18,7 +18,9 @@ class ReconciliationResult {
 
   factory ReconciliationResult.fromJson(Map<String, dynamic> json) =>
       _$ReconciliationResultFromJson(json);
-  
+
+  get id => null;
+
   Map<String, dynamic> toJson() => _$ReconciliationResultToJson(this);
 }
 
@@ -38,7 +40,7 @@ class ComparisonResult {
 
   factory ComparisonResult.fromJson(Map<String, dynamic> json) =>
       _$ComparisonResultFromJson(json);
-  
+
   Map<String, dynamic> toJson() => _$ComparisonResultToJson(this);
 }
 
@@ -86,7 +88,7 @@ class ComparisonItem {
 
   factory ComparisonItem.fromJson(Map<String, dynamic> json) =>
       _$ComparisonItemFromJson(json);
-  
+
   Map<String, dynamic> toJson() => _$ComparisonItemToJson(this);
 }
 
@@ -126,6 +128,6 @@ class ComparisonSummary {
 
   factory ComparisonSummary.fromJson(Map<String, dynamic> json) =>
       _$ComparisonSummaryFromJson(json);
-  
+
   Map<String, dynamic> toJson() => _$ComparisonSummaryToJson(this);
 }

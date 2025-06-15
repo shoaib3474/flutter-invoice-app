@@ -1,26 +1,29 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter_invoice_app/models/gstr3b_model.dart';
+import 'package:uuid/uuid.dart';
+
 import '../models/gst_returns/gstr1_model.dart';
-import '../models/gst_returns/gstr3b_model.dart';
 import '../models/gst_returns/gstr4_model.dart';
 import '../repositories/firebase_gst_repository.dart';
 import '../services/logger_service.dart';
-import 'package:uuid/uuid.dart';
 
 class FirebaseGstProvider with ChangeNotifier {
   final FirebaseGstRepository _repository = FirebaseGstRepository();
   final LoggerService _logger = LoggerService();
   final Uuid _uuid = Uuid();
-  
+
   // State variables
   bool _isLoading = false;
   String? _error;
-  
+
   // Getters
   bool get isLoading => _isLoading;
   String? get error => _error;
-  
+
   // GSTR1 Operations
-  
+
   Future<String?> saveGSTR1(GSTR1Model gstr1) async {
     _setLoading(true);
     try {
@@ -33,7 +36,7 @@ class FirebaseGstProvider with ChangeNotifier {
       return null;
     }
   }
-  
+
   Future<GSTR1Model?> getGSTR1(String id) async {
     _setLoading(true);
     try {
@@ -45,8 +48,9 @@ class FirebaseGstProvider with ChangeNotifier {
       return null;
     }
   }
-  
-  Future<List<Map<String, dynamic>>> getGSTR1List(String gstin, {String? returnPeriod}) async {
+
+  Future<List<Map<String, dynamic>>> getGSTR1List(String gstin,
+      {String? returnPeriod}) async {
     _setLoading(true);
     try {
       final list = await _repository.getGSTR1List(gstin, returnPeriod);
@@ -57,7 +61,7 @@ class FirebaseGstProvider with ChangeNotifier {
       return [];
     }
   }
-  
+
   Future<bool> deleteGSTR1(String id) async {
     _setLoading(true);
     try {
@@ -69,9 +73,9 @@ class FirebaseGstProvider with ChangeNotifier {
       return false;
     }
   }
-  
+
   // GSTR3B Operations
-  
+
   Future<String?> saveGSTR3B(GSTR3BModel gstr3b) async {
     _setLoading(true);
     try {
@@ -84,7 +88,7 @@ class FirebaseGstProvider with ChangeNotifier {
       return null;
     }
   }
-  
+
   Future<GSTR3BModel?> getGSTR3B(String id) async {
     _setLoading(true);
     try {
@@ -96,8 +100,9 @@ class FirebaseGstProvider with ChangeNotifier {
       return null;
     }
   }
-  
-  Future<List<Map<String, dynamic>>> getGSTR3BList(String gstin, {String? returnPeriod}) async {
+
+  Future<List<Map<String, dynamic>>> getGSTR3BList(String gstin,
+      {String? returnPeriod}) async {
     _setLoading(true);
     try {
       final list = await _repository.getGSTR3BList(gstin, returnPeriod);
@@ -108,7 +113,7 @@ class FirebaseGstProvider with ChangeNotifier {
       return [];
     }
   }
-  
+
   Future<bool> deleteGSTR3B(String id) async {
     _setLoading(true);
     try {
@@ -120,9 +125,9 @@ class FirebaseGstProvider with ChangeNotifier {
       return false;
     }
   }
-  
+
   // GSTR4 Operations
-  
+
   Future<String?> saveGSTR4(GSTR4Model gstr4) async {
     _setLoading(true);
     try {
@@ -135,7 +140,7 @@ class FirebaseGstProvider with ChangeNotifier {
       return null;
     }
   }
-  
+
   Future<GSTR4Model?> getGSTR4(String id) async {
     _setLoading(true);
     try {
@@ -147,8 +152,9 @@ class FirebaseGstProvider with ChangeNotifier {
       return null;
     }
   }
-  
-  Future<List<Map<String, dynamic>>> getGSTR4List(String gstin, {String? returnPeriod}) async {
+
+  Future<List<Map<String, dynamic>>> getGSTR4List(String gstin,
+      {String? returnPeriod}) async {
     _setLoading(true);
     try {
       final list = await _repository.getGSTR4List(gstin, returnPeriod);
@@ -159,7 +165,7 @@ class FirebaseGstProvider with ChangeNotifier {
       return [];
     }
   }
-  
+
   Future<bool> deleteGSTR4(String id) async {
     _setLoading(true);
     try {
@@ -171,22 +177,22 @@ class FirebaseGstProvider with ChangeNotifier {
       return false;
     }
   }
-  
+
   // Helper methods
-  
+
   void _setLoading(bool loading) {
     _isLoading = loading;
     _error = null;
     notifyListeners();
   }
-  
+
   void _setError(String error) {
     _isLoading = false;
     _error = error;
     _logger.error(error);
     notifyListeners();
   }
-  
+
   void clearError() {
     _error = null;
     notifyListeners();

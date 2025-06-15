@@ -1,12 +1,17 @@
-import 'package:flutter/foundation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: unused_import
 
-import '../models/user/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+
+import '../models/user/user_model.dart' hide User;
 import '../services/auth/auth_service.dart';
 
 class AuthProvider with ChangeNotifier {
+  AuthProvider() {
+    _initializeAuth();
+  }
   final AuthService _authService = AuthService();
-  
+
   User? _currentUser;
   UserModel? _userModel;
   bool _isLoading = false;
@@ -17,10 +22,6 @@ class AuthProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _currentUser != null;
-
-  AuthProvider() {
-    _initializeAuth();
-  }
 
   void _initializeAuth() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
@@ -46,11 +47,10 @@ class AuthProvider with ChangeNotifier {
   Future<bool> signIn(String email, String password) async {
     _setLoading(true);
     try {
-      final user = await _authService.signInWithEmailAndPassword(email, password);
-      _currentUser = user;
-      if (user != null) {
-        await _loadUserModel(user.uid);
-      }
+      final user =
+          await _authService.signInWithEmailAndPassword(email, password);
+      _currentUser = user as User?;
+
       _clearError();
       return true;
     } catch (e) {
@@ -64,7 +64,8 @@ class AuthProvider with ChangeNotifier {
   Future<bool> signUp(String email, String password, String name) async {
     _setLoading(true);
     try {
-      final user = await _authService.createUserWithEmailAndPassword(email, password, name);
+      final user = await _authService.createUserWithEmailAndPassword(
+          email, password, name);
       _currentUser = user;
       if (user != null) {
         await _loadUserModel(user.uid);
