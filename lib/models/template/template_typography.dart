@@ -1,13 +1,6 @@
-class TemplateTypography {
-  final String fontFamily;
-  final double headerFontSize;
-  final double bodyFontSize;
-  final double captionFontSize;
-  final FontWeight headerFontWeight;
-  final FontWeight bodyFontWeight;
-  final double lineHeight;
-  final double letterSpacing;
+import 'package:flutter/material.dart';
 
+class TemplateTypography {
   const TemplateTypography({
     required this.fontFamily,
     required this.headerFontSize,
@@ -22,15 +15,38 @@ class TemplateTypography {
   factory TemplateTypography.defaultTypography() {
     return const TemplateTypography(
       fontFamily: 'Roboto',
-      headerFontSize: 24.0,
-      bodyFontSize: 14.0,
-      captionFontSize: 12.0,
+      headerFontSize: 24,
+      bodyFontSize: 14,
+      captionFontSize: 12,
       headerFontWeight: FontWeight.bold,
       bodyFontWeight: FontWeight.normal,
       lineHeight: 1.5,
-      letterSpacing: 0.0,
+      letterSpacing: 0,
     );
   }
+
+  factory TemplateTypography.fromJson(Map<String, dynamic> json) {
+    return TemplateTypography(
+      fontFamily: json['fontFamily'] ?? 'Roboto',
+      headerFontSize: json['headerFontSize']?.toDouble() ?? 24.0,
+      bodyFontSize: json['bodyFontSize']?.toDouble() ?? 14.0,
+      captionFontSize: json['captionFontSize']?.toDouble() ?? 12.0,
+      headerFontWeight:
+          FontWeight.values[json['headerFontWeight'] ?? FontWeight.bold.index],
+      bodyFontWeight:
+          FontWeight.values[json['bodyFontWeight'] ?? FontWeight.normal.index],
+      lineHeight: json['lineHeight']?.toDouble() ?? 1.5,
+      letterSpacing: json['letterSpacing']?.toDouble() ?? 0.0,
+    );
+  }
+  final String fontFamily;
+  final double headerFontSize;
+  final double bodyFontSize;
+  final double captionFontSize;
+  final FontWeight headerFontWeight;
+  final FontWeight bodyFontWeight;
+  final double lineHeight;
+  final double letterSpacing;
 
   TemplateTypography copyWith({
     String? fontFamily,
@@ -65,18 +81,5 @@ class TemplateTypography {
       'lineHeight': lineHeight,
       'letterSpacing': letterSpacing,
     };
-  }
-
-  factory TemplateTypography.fromJson(Map<String, dynamic> json) {
-    return TemplateTypography(
-      fontFamily: json['fontFamily'] ?? 'Roboto',
-      headerFontSize: json['headerFontSize']?.toDouble() ?? 24.0,
-      bodyFontSize: json['bodyFontSize']?.toDouble() ?? 14.0,
-      captionFontSize: json['captionFontSize']?.toDouble() ?? 12.0,
-      headerFontWeight: FontWeight.values[json['headerFontWeight'] ?? FontWeight.bold.index],
-      bodyFontWeight: FontWeight.values[json['bodyFontWeight'] ?? FontWeight.normal.index],
-      lineHeight: json['lineHeight']?.toDouble() ?? 1.5,
-      letterSpacing: json['letterSpacing']?.toDouble() ?? 0.0,
-    );
   }
 }

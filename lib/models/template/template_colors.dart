@@ -1,12 +1,8 @@
-class TemplateColors {
-  final Color primaryColor;
-  final Color secondaryColor;
-  final Color backgroundColor;
-  final Color textColor;
-  final Color headerColor;
-  final Color borderColor;
-  final Color accentColor;
+// ignore_for_file: deprecated_member_use
 
+import 'package:flutter/widgets.dart';
+
+class TemplateColors {
   const TemplateColors({
     required this.primaryColor,
     required this.secondaryColor,
@@ -28,6 +24,25 @@ class TemplateColors {
       accentColor: Color(0xFFFF5722),
     );
   }
+
+  factory TemplateColors.fromJson(Map<String, dynamic> json) {
+    return TemplateColors(
+      primaryColor: Color(json['primaryColor'] ?? 0xFF2196F3),
+      secondaryColor: Color(json['secondaryColor'] ?? 0xFF03DAC6),
+      backgroundColor: Color(json['backgroundColor'] ?? 0xFFFFFFFF),
+      textColor: Color(json['textColor'] ?? 0xFF000000),
+      headerColor: Color(json['headerColor'] ?? 0xFF1976D2),
+      borderColor: Color(json['borderColor'] ?? 0xFFE0E0E0),
+      accentColor: Color(json['accentColor'] ?? 0xFFFF5722),
+    );
+  }
+  final Color primaryColor;
+  final Color secondaryColor;
+  final Color backgroundColor;
+  final Color textColor;
+  final Color headerColor;
+  final Color borderColor;
+  final Color accentColor;
 
   TemplateColors copyWith({
     Color? primaryColor,
@@ -59,17 +74,5 @@ class TemplateColors {
       'borderColor': borderColor.value,
       'accentColor': accentColor.value,
     };
-  }
-
-  factory TemplateColors.fromJson(Map<String, dynamic> json) {
-    return TemplateColors(
-      primaryColor: Color(json['primaryColor'] ?? 0xFF2196F3),
-      secondaryColor: Color(json['secondaryColor'] ?? 0xFF03DAC6),
-      backgroundColor: Color(json['backgroundColor'] ?? 0xFFFFFFFF),
-      textColor: Color(json['textColor'] ?? 0xFF000000),
-      headerColor: Color(json['headerColor'] ?? 0xFF1976D2),
-      borderColor: Color(json['borderColor'] ?? 0xFFE0E0E0),
-      accentColor: Color(json['accentColor'] ?? 0xFFFF5722),
-    );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum TemplateStyle {
   classic,
   modern,
@@ -14,12 +16,6 @@ enum TemplateLayout {
 }
 
 class TemplateColors {
-  final Color primaryColor;
-  final Color backgroundColor;
-  final Color textColor;
-  final Color headerColor;
-  final Color borderColor;
-
   const TemplateColors({
     required this.primaryColor,
     required this.backgroundColor,
@@ -27,6 +23,11 @@ class TemplateColors {
     required this.headerColor,
     required this.borderColor,
   });
+  final Color primaryColor;
+  final Color backgroundColor;
+  final Color textColor;
+  final Color headerColor;
+  final Color borderColor;
 
   static const TemplateColors defaultColors = TemplateColors(
     primaryColor: Color(0xFF2196F3),
@@ -38,13 +39,6 @@ class TemplateColors {
 }
 
 class TemplateTypography {
-  final double headerFontSize;
-  final double titleFontSize;
-  final double bodyFontSize;
-  final double captionFontSize;
-  final FontWeight headerFontWeight;
-  final FontWeight titleFontWeight;
-
   const TemplateTypography({
     required this.headerFontSize,
     required this.titleFontSize,
@@ -53,6 +47,12 @@ class TemplateTypography {
     required this.headerFontWeight,
     required this.titleFontWeight,
   });
+  final double headerFontSize;
+  final double titleFontSize;
+  final double bodyFontSize;
+  final double captionFontSize;
+  final FontWeight headerFontWeight;
+  final FontWeight titleFontWeight;
 
   static const TemplateTypography defaultTypography = TemplateTypography(
     headerFontSize: 24,
@@ -65,12 +65,6 @@ class TemplateTypography {
 }
 
 class TemplateSettings {
-  final bool showLogo;
-  final bool showCompanyAddress;
-  final bool showGstDetails;
-  final bool showTermsAndConditions;
-  final bool enableQrCode;
-
   const TemplateSettings({
     this.showLogo = true,
     this.showCompanyAddress = true,
@@ -78,22 +72,14 @@ class TemplateSettings {
     this.showTermsAndConditions = true,
     this.enableQrCode = false,
   });
+  final bool showLogo;
+  final bool showCompanyAddress;
+  final bool showGstDetails;
+  final bool showTermsAndConditions;
+  final bool enableQrCode;
 }
 
 class CompanyBranding {
-  final String companyName;
-  final String address;
-  final String city;
-  final String state;
-  final String pinCode;
-  final String country;
-  final String gstin;
-  final String pan;
-  final String email;
-  final String phone;
-  final String website;
-  final String? tagline;
-
   const CompanyBranding({
     required this.companyName,
     required this.address,
@@ -108,4 +94,16 @@ class CompanyBranding {
     required this.website,
     this.tagline,
   });
+  final String companyName;
+  final String address;
+  final String city;
+  final String state;
+  final String pinCode;
+  final String country;
+  final String gstin;
+  final String pan;
+  final String email;
+  final String phone;
+  final String website;
+  final String? tagline;
 }
