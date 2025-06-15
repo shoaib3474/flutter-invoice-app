@@ -1,14 +1,10 @@
-class ApiResponse<T> {
-  final bool success;
-  final T? data;
-  final String message;
-  final int statusCode;
-  final Map<String, dynamic>? errors;
+// ignore_for_file: avoid_redundant_argument_values, avoid_unused_constructor_parameters
 
+class ApiResponse<T> {
   const ApiResponse({
     required this.success,
-    this.data,
     required this.message,
+    this.data,
     this.statusCode = 200,
     this.errors,
   });
@@ -40,16 +36,6 @@ class ApiResponse<T> {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'success': success,
-      'data': data,
-      'message': message,
-      'statusCode': statusCode,
-      'errors': errors,
-    };
-  }
-
   factory ApiResponse.fromJson(Map<String, dynamic> json) {
     return ApiResponse<T>(
       success: json['success'] ?? false,
@@ -58,6 +44,21 @@ class ApiResponse<T> {
       statusCode: json['statusCode'] ?? 500,
       errors: json['errors'],
     );
+  }
+  final bool success;
+  final T? data;
+  final String message;
+  final int statusCode;
+  final Map<String, dynamic>? errors;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'data': data,
+      'message': message,
+      'statusCode': statusCode,
+      'errors': errors,
+    };
   }
 
   @override
@@ -104,11 +105,6 @@ class GSTReturnResponse extends ApiResponse<Map<String, dynamic>> {
 }
 
 class ComparisonResult<T> {
-  final List<ComparisonItem> items;
-  final ComparisonSummary summary;
-  final String comparisonType;
-  final DateTime generatedAt;
-
   ComparisonResult({
     required this.items,
     required this.summary,
@@ -124,11 +120,17 @@ class ComparisonResult<T> {
       items: (json['items'] as List<dynamic>? ?? [])
           .map((item) => ComparisonItem.fromJson(item as Map<String, dynamic>))
           .toList(),
-      summary: ComparisonSummary.fromJson(json['summary'] as Map<String, dynamic>? ?? {}),
+      summary: ComparisonSummary.fromJson(
+          json['summary'] as Map<String, dynamic>? ?? {}),
       comparisonType: json['comparison_type'] ?? 'unknown',
-      generatedAt: DateTime.parse(json['generated_at'] ?? DateTime.now().toIso8601String()),
+      generatedAt: DateTime.parse(
+          json['generated_at'] ?? DateTime.now().toIso8601String()),
     );
   }
+  final List<ComparisonItem> items;
+  final ComparisonSummary summary;
+  final String comparisonType;
+  final DateTime generatedAt;
 
   Map<String, dynamic> toJson(Object Function(T value) toJsonT) {
     return {
@@ -141,6 +143,51 @@ class ComparisonResult<T> {
 }
 
 class ComparisonItem {
+  ComparisonItem({
+    required this.invoiceNumber,
+    required this.invoiceDate,
+    required this.counterpartyGstin,
+    required this.counterpartyName,
+    required this.taxableValueInSource1,
+    required this.taxableValueInSource2,
+    required this.igstInSource1,
+    required this.igstInSource2,
+    required this.cgstInSource1,
+    required this.cgstInSource2,
+    required this.sgstInSource1,
+    required this.sgstInSource2,
+    required this.matchStatus,
+    required this.remarks,
+    this.taxableValueInSource3,
+    this.igstInSource3,
+    this.cgstInSource3,
+    this.sgstInSource3,
+  });
+
+  factory ComparisonItem.fromJson(Map<String, dynamic> json) {
+    return ComparisonItem(
+      invoiceNumber: json['invoice_number'] ?? '',
+      invoiceDate: json['invoice_date'] ?? '',
+      counterpartyGstin: json['counterparty_gstin'] ?? '',
+      counterpartyName: json['counterparty_name'] ?? '',
+      taxableValueInSource1:
+          (json['taxable_value_in_source1'] ?? 0.0).toDouble(),
+      taxableValueInSource2:
+          (json['taxable_value_in_source2'] ?? 0.0).toDouble(),
+      taxableValueInSource3: json['taxable_value_in_source3']?.toDouble(),
+      igstInSource1: (json['igst_in_source1'] ?? 0.0).toDouble(),
+      igstInSource2: (json['igst_in_source2'] ?? 0.0).toDouble(),
+      igstInSource3: json['igst_in_source3']?.toDouble(),
+      cgstInSource1: (json['cgst_in_source1'] ?? 0.0).toDouble(),
+      cgstInSource2: (json['cgst_in_source2'] ?? 0.0).toDouble(),
+      cgstInSource3: json['cgst_in_source3']?.toDouble(),
+      sgstInSource1: (json['sgst_in_source1'] ?? 0.0).toDouble(),
+      sgstInSource2: (json['sgst_in_source2'] ?? 0.0).toDouble(),
+      sgstInSource3: json['sgst_in_source3']?.toDouble(),
+      matchStatus: json['match_status'] ?? 'unknown',
+      remarks: json['remarks'] ?? '',
+    );
+  }
   final String invoiceNumber;
   final String invoiceDate;
   final String counterpartyGstin;
@@ -159,50 +206,6 @@ class ComparisonItem {
   final double? sgstInSource3;
   final String matchStatus;
   final String remarks;
-
-  ComparisonItem({
-    required this.invoiceNumber,
-    required this.invoiceDate,
-    required this.counterpartyGstin,
-    required this.counterpartyName,
-    required this.taxableValueInSource1,
-    required this.taxableValueInSource2,
-    this.taxableValueInSource3,
-    required this.igstInSource1,
-    required this.igstInSource2,
-    this.igstInSource3,
-    required this.cgstInSource1,
-    required this.cgstInSource2,
-    this.cgstInSource3,
-    required this.sgstInSource1,
-    required this.sgstInSource2,
-    this.sgstInSource3,
-    required this.matchStatus,
-    required this.remarks,
-  });
-
-  factory ComparisonItem.fromJson(Map<String, dynamic> json) {
-    return ComparisonItem(
-      invoiceNumber: json['invoice_number'] ?? '',
-      invoiceDate: json['invoice_date'] ?? '',
-      counterpartyGstin: json['counterparty_gstin'] ?? '',
-      counterpartyName: json['counterparty_name'] ?? '',
-      taxableValueInSource1: (json['taxable_value_in_source1'] ?? 0.0).toDouble(),
-      taxableValueInSource2: (json['taxable_value_in_source2'] ?? 0.0).toDouble(),
-      taxableValueInSource3: json['taxable_value_in_source3']?.toDouble(),
-      igstInSource1: (json['igst_in_source1'] ?? 0.0).toDouble(),
-      igstInSource2: (json['igst_in_source2'] ?? 0.0).toDouble(),
-      igstInSource3: json['igst_in_source3']?.toDouble(),
-      cgstInSource1: (json['cgst_in_source1'] ?? 0.0).toDouble(),
-      cgstInSource2: (json['cgst_in_source2'] ?? 0.0).toDouble(),
-      cgstInSource3: json['cgst_in_source3']?.toDouble(),
-      sgstInSource1: (json['sgst_in_source1'] ?? 0.0).toDouble(),
-      sgstInSource2: (json['sgst_in_source2'] ?? 0.0).toDouble(),
-      sgstInSource3: json['sgst_in_source3']?.toDouble(),
-      matchStatus: json['match_status'] ?? 'unknown',
-      remarks: json['remarks'] ?? '',
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -229,6 +232,44 @@ class ComparisonItem {
 }
 
 class ComparisonSummary {
+  ComparisonSummary({
+    required this.totalInvoices,
+    required this.matchedInvoices,
+    required this.partiallyMatchedInvoices,
+    required this.unmatchedInvoices,
+    required this.onlyInSource1Invoices,
+    required this.onlyInSource2Invoices,
+    required this.totalTaxableValueInSource1,
+    required this.totalTaxableValueInSource2,
+    required this.totalTaxInSource1,
+    required this.totalTaxInSource2,
+    required this.taxDifference,
+    this.onlyInSource3Invoices,
+    this.totalTaxableValueInSource3,
+    this.totalTaxInSource3,
+  });
+
+  factory ComparisonSummary.fromJson(Map<String, dynamic> json) {
+    return ComparisonSummary(
+      totalInvoices: json['total_invoices'] ?? 0,
+      matchedInvoices: json['matched_invoices'] ?? 0,
+      partiallyMatchedInvoices: json['partially_matched_invoices'] ?? 0,
+      unmatchedInvoices: json['unmatched_invoices'] ?? 0,
+      onlyInSource1Invoices: json['only_in_source1_invoices'] ?? 0,
+      onlyInSource2Invoices: json['only_in_source2_invoices'] ?? 0,
+      onlyInSource3Invoices: json['only_in_source3_invoices'],
+      totalTaxableValueInSource1:
+          (json['total_taxable_value_in_source1'] ?? 0.0).toDouble(),
+      totalTaxableValueInSource2:
+          (json['total_taxable_value_in_source2'] ?? 0.0).toDouble(),
+      totalTaxableValueInSource3:
+          json['total_taxable_value_in_source3']?.toDouble(),
+      totalTaxInSource1: (json['total_tax_in_source1'] ?? 0.0).toDouble(),
+      totalTaxInSource2: (json['total_tax_in_source2'] ?? 0.0).toDouble(),
+      totalTaxInSource3: json['total_tax_in_source3']?.toDouble(),
+      taxDifference: (json['tax_difference'] ?? 0.0).toDouble(),
+    );
+  }
   final int totalInvoices;
   final int matchedInvoices;
   final int partiallyMatchedInvoices;
@@ -243,42 +284,6 @@ class ComparisonSummary {
   final double totalTaxInSource2;
   final double? totalTaxInSource3;
   final double taxDifference;
-
-  ComparisonSummary({
-    required this.totalInvoices,
-    required this.matchedInvoices,
-    required this.partiallyMatchedInvoices,
-    required this.unmatchedInvoices,
-    required this.onlyInSource1Invoices,
-    required this.onlyInSource2Invoices,
-    this.onlyInSource3Invoices,
-    required this.totalTaxableValueInSource1,
-    required this.totalTaxableValueInSource2,
-    this.totalTaxableValueInSource3,
-    required this.totalTaxInSource1,
-    required this.totalTaxInSource2,
-    this.totalTaxInSource3,
-    required this.taxDifference,
-  });
-
-  factory ComparisonSummary.fromJson(Map<String, dynamic> json) {
-    return ComparisonSummary(
-      totalInvoices: json['total_invoices'] ?? 0,
-      matchedInvoices: json['matched_invoices'] ?? 0,
-      partiallyMatchedInvoices: json['partially_matched_invoices'] ?? 0,
-      unmatchedInvoices: json['unmatched_invoices'] ?? 0,
-      onlyInSource1Invoices: json['only_in_source1_invoices'] ?? 0,
-      onlyInSource2Invoices: json['only_in_source2_invoices'] ?? 0,
-      onlyInSource3Invoices: json['only_in_source3_invoices'],
-      totalTaxableValueInSource1: (json['total_taxable_value_in_source1'] ?? 0.0).toDouble(),
-      totalTaxableValueInSource2: (json['total_taxable_value_in_source2'] ?? 0.0).toDouble(),
-      totalTaxableValueInSource3: json['total_taxable_value_in_source3']?.toDouble(),
-      totalTaxInSource1: (json['total_tax_in_source1'] ?? 0.0).toDouble(),
-      totalTaxInSource2: (json['total_tax_in_source2'] ?? 0.0).toDouble(),
-      totalTaxInSource3: json['total_tax_in_source3']?.toDouble(),
-      taxDifference: (json['tax_difference'] ?? 0.0).toDouble(),
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return {

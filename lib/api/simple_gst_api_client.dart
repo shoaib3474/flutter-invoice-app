@@ -8,7 +8,8 @@ import '../models/gst_returns/gstr3b_model.dart';
 import '../models/gst_returns/gstr4_model.dart';
 import '../models/gst_returns/gstr9_model.dart';
 import '../models/gst_returns/gstr9c_model.dart';
-import '../models/reconciliation/reconciliation_result_model.dart' as reconciliation;
+import '../models/reconciliation/reconciliation_result_model.dart'
+    as reconciliation;
 
 class SimpleGstApiClient {
   final String baseUrl;
@@ -29,7 +30,7 @@ class SimpleGstApiClient {
       final uri = Uri.parse('$baseUrl$endpoint').replace(
         queryParameters: queryParams,
       );
-      
+
       final response = await _client.get(
         uri,
         headers: {'Content-Type': 'application/json'},
@@ -221,29 +222,29 @@ class SimpleGstApiClient {
   }
 
   // GSTR-4 endpoints
-  Future<ApiResponse<GSTR4Summary>> getGSTR4Summary(
+  Future<ApiResponse<GSTR4Model>> getGSTR4Summary(
     String gstin,
     String returnPeriod,
   ) async {
-    return _get<GSTR4Summary>(
+    return _get<GSTR4Model>(
       '/gstr4/summary',
-      GSTR4Summary.fromJson,
+      GSTR4Model.fromJson,
       {'gstin': gstin, 'return_period': returnPeriod},
     );
   }
 
-  Future<ApiResponse<GSTR4>> getGSTR4Details(
+  Future<ApiResponse<GSTR4Model>> getGSTR4Details(
     String gstin,
     String returnPeriod,
   ) async {
-    return _get<GSTR4>(
+    return _get<GSTR4Model>(
       '/gstr4/details',
-      GSTR4.fromJson,
+      GSTR4Model.fromJson,
       {'gstin': gstin, 'return_period': returnPeriod},
     );
   }
 
-  Future<ApiResponse<String>> saveGSTR4(GSTR4 gstr4) async {
+  Future<ApiResponse<String>> saveGSTR4(GSTR4Model gstr4) async {
     return _post<String>(
       '/gstr4/save',
       gstr4.toJson(),
@@ -251,7 +252,7 @@ class SimpleGstApiClient {
     );
   }
 
-  Future<ApiResponse<String>> submitGSTR4(GSTR4 gstr4) async {
+  Future<ApiResponse<String>> submitGSTR4(GSTR4Model gstr4) async {
     return _post<String>(
       '/gstr4/submit',
       gstr4.toJson(),

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/api/api_response.dart';
@@ -10,13 +12,12 @@ import '../models/gst_returns/gstr9_model.dart';
 import '../models/gst_returns/gstr9c_model.dart';
 
 class GstApiClient {
-  final String baseUrl;
-  final http.Client _client;
-
   GstApiClient({
     this.baseUrl = 'https://demo-gst-api.example.com/api/v1',
     http.Client? client,
   }) : _client = client ?? http.Client();
+  final String baseUrl;
+  final http.Client _client;
 
   // GSTR-1 endpoints
   Future<ApiResponse<GSTR1Summary>> getGSTR1Summary(
@@ -25,9 +26,10 @@ class GstApiClient {
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr1/summary?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr1/summary?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ApiResponse<GSTR1Summary>(
@@ -59,9 +61,10 @@ class GstApiClient {
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr1/details?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr1/details?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ApiResponse<GSTR1>(
@@ -94,10 +97,12 @@ class GstApiClient {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(gstr1.toJson()),
       );
-      
+
       return ApiResponse<String>(
         data: response.body,
-        message: response.statusCode == 200 ? 'GSTR1 saved successfully' : 'Failed to save GSTR1',
+        message: response.statusCode == 200
+            ? 'GSTR1 saved successfully'
+            : 'Failed to save GSTR1',
         statusCode: response.statusCode,
         success: response.statusCode == 200,
       );
@@ -117,10 +122,12 @@ class GstApiClient {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(gstr1.toJson()),
       );
-      
+
       return ApiResponse<String>(
         data: response.body,
-        message: response.statusCode == 200 ? 'GSTR1 submitted successfully' : 'Failed to submit GSTR1',
+        message: response.statusCode == 200
+            ? 'GSTR1 submitted successfully'
+            : 'Failed to submit GSTR1',
         statusCode: response.statusCode,
         success: response.statusCode == 200,
       );
@@ -140,9 +147,10 @@ class GstApiClient {
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr2a/summary?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr2a/summary?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ApiResponse<GSTR2ASummary>(
@@ -173,9 +181,10 @@ class GstApiClient {
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr2a/details?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr2a/details?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ApiResponse<GSTR2A>(
@@ -207,9 +216,10 @@ class GstApiClient {
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr2b/summary?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr2b/summary?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ApiResponse<GSTR2BSummary>(
@@ -240,9 +250,10 @@ class GstApiClient {
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr2b/details?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr2b/details?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ApiResponse<GSTR2B>(
@@ -274,9 +285,10 @@ class GstApiClient {
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr3b/summary?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr3b/summary?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ApiResponse<GSTR3BSummary>(
@@ -307,9 +319,10 @@ class GstApiClient {
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr3b/details?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr3b/details?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return ApiResponse<GSTR3B>(
@@ -341,10 +354,12 @@ class GstApiClient {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(gstr3b.toJson()),
       );
-      
+
       return ApiResponse<String>(
         data: response.body,
-        message: response.statusCode == 200 ? 'GSTR3B saved successfully' : 'Failed to save GSTR3B',
+        message: response.statusCode == 200
+            ? 'GSTR3B saved successfully'
+            : 'Failed to save GSTR3B',
         statusCode: response.statusCode,
         success: response.statusCode == 200,
       );
@@ -364,10 +379,12 @@ class GstApiClient {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(gstr3b.toJson()),
       );
-      
+
       return ApiResponse<String>(
         data: response.body,
-        message: response.statusCode == 200 ? 'GSTR3B submitted successfully' : 'Failed to submit GSTR3B',
+        message: response.statusCode == 200
+            ? 'GSTR3B submitted successfully'
+            : 'Failed to submit GSTR3B',
         statusCode: response.statusCode,
         success: response.statusCode == 200,
       );
@@ -381,24 +398,25 @@ class GstApiClient {
   }
 
   // GSTR-4 endpoints
-  Future<ApiResponse<GSTR4Summary>> getGSTR4Summary(
+  Future<ApiResponse<GSTR4Model>> getGSTR4Summary(
     String gstin,
     String returnPeriod,
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr4/summary?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr4/summary?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        return ApiResponse<GSTR4Summary>(
-          data: GSTR4Summary.fromJson(data),
+        return ApiResponse<GSTR4Model>(
+          data: GSTR4Model.fromJson(data),
           message: 'Success',
           success: true,
         );
       } else {
-        return ApiResponse<GSTR4Summary>(
+        return ApiResponse<GSTR4Model>(
           data: null,
           message: 'Failed to fetch GSTR4 summary',
           success: false,
@@ -406,7 +424,7 @@ class GstApiClient {
         );
       }
     } catch (e) {
-      return ApiResponse<GSTR4Summary>(
+      return ApiResponse<GSTR4Model>(
         data: null,
         message: 'Error: $e',
         success: false,
@@ -414,24 +432,25 @@ class GstApiClient {
     }
   }
 
-  Future<ApiResponse<GSTR4>> getGSTR4Details(
+  Future<ApiResponse<GSTR4Model>> getGSTR4Details(
     String gstin,
     String returnPeriod,
   ) async {
     try {
       final response = await _client.get(
-        Uri.parse('$baseUrl/gstr4/details?gstin=$gstin&return_period=$returnPeriod'),
+        Uri.parse(
+            '$baseUrl/gstr4/details?gstin=$gstin&return_period=$returnPeriod'),
       );
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        return ApiResponse<GSTR4>(
-          data: GSTR4.fromJson(data),
+        return ApiResponse<GSTR4Model>(
+          data: GSTR4Model.fromJson(data),
           message: 'Success',
           success: true,
         );
       } else {
-        return ApiResponse<GSTR4>(
+        return ApiResponse<GSTR4Model>(
           data: null,
           message: 'Failed to fetch GSTR4 details',
           success: false,
@@ -439,7 +458,7 @@ class GstApiClient {
         );
       }
     } catch (e) {
-      return ApiResponse<GSTR4>(
+      return ApiResponse<GSTR4Model>(
         data: null,
         message: 'Error: $e',
         success: false,
@@ -447,17 +466,19 @@ class GstApiClient {
     }
   }
 
-  Future<ApiResponse<String>> saveGSTR4(GSTR4 gstr4) async {
+  Future<ApiResponse<String>> saveGSTR4(GSTR4Model gstr4) async {
     try {
       final response = await _client.post(
         Uri.parse('$baseUrl/gstr4/save'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(gstr4.toJson()),
       );
-      
+
       return ApiResponse<String>(
         data: response.body,
-        message: response.statusCode == 200 ? 'GSTR4 saved successfully' : 'Failed to save GSTR4',
+        message: response.statusCode == 200
+            ? 'GSTR4 saved successfully'
+            : 'Failed to save GSTR4',
         statusCode: response.statusCode,
         success: response.statusCode == 200,
       );
@@ -470,17 +491,19 @@ class GstApiClient {
     }
   }
 
-  Future<ApiResponse<String>> submitGSTR4(GSTR4 gstr4) async {
+  Future<ApiResponse<String>> submitGSTR4(GSTR4Model gstr4) async {
     try {
       final response = await _client.post(
         Uri.parse('$baseUrl/gstr4/submit'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(gstr4.toJson()),
       );
-      
+
       return ApiResponse<String>(
         data: response.body,
-        message: response.statusCode == 200 ? 'GSTR4 submitted successfully' : 'Failed to submit GSTR4',
+        message: response.statusCode == 200
+            ? 'GSTR4 submitted successfully'
+            : 'Failed to submit GSTR4',
         statusCode: response.statusCode,
         success: response.statusCode == 200,
       );

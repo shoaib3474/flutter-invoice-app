@@ -23,7 +23,7 @@ class FirebaseLinksWidget extends StatelessWidget {
                 const Icon(Icons.link, color: Colors.orange),
                 const SizedBox(width: 8),
                 Text(
-                  l10n.firebaseQuickLinks,
+                  l10n.firebaseQuickLinks!,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -91,7 +91,7 @@ class FirebaseLinksWidget extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      l10n.firebaseProjectNote,
+                      l10n.firebaseProjectNote!,
                       style: const TextStyle(fontSize: 12),
                     ),
                   ),
