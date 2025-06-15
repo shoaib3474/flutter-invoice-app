@@ -1,18 +1,23 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 
 class RealTimeBuildService {
-  static final RealTimeBuildService _instance = RealTimeBuildService._internal();
   factory RealTimeBuildService() => _instance;
   RealTimeBuildService._internal();
+  static final RealTimeBuildService _instance =
+      RealTimeBuildService._internal();
 
   // Stream controllers for real-time updates
-  final StreamController<BuildProgress> _progressController = StreamController<BuildProgress>.broadcast();
-  final StreamController<String> _logController = StreamController<String>.broadcast();
-  final StreamController<BuildMetrics> _metricsController = StreamController<BuildMetrics>.broadcast();
+  final StreamController<BuildProgress> _progressController =
+      StreamController<BuildProgress>.broadcast();
+  final StreamController<String> _logController =
+      StreamController<String>.broadcast();
+  final StreamController<BuildMetrics> _metricsController =
+      StreamController<BuildMetrics>.broadcast();
 
   // Getters for streams
   Stream<BuildProgress> get progressStream => _progressController.stream;
@@ -42,31 +47,30 @@ class RealTimeBuildService {
         totalSteps: 8,
         stepName: 'Initializing',
         message: 'Setting up build environment...',
-        percentage: 0.0,
+        percentage: 0,
         status: BuildStatus.running,
       ));
 
       // Execute build steps
       final result = await _executeBuildSteps(config);
-      
+
       _emitProgress(BuildProgress(
         step: 8,
         totalSteps: 8,
         stepName: 'Completed',
         message: 'Build completed successfully!',
-        percentage: 100.0,
+        percentage: 100,
         status: BuildStatus.completed,
       ));
 
       return result;
-
     } catch (e, stackTrace) {
       _emitProgress(BuildProgress(
         step: -1,
         totalSteps: 8,
         stepName: 'Failed',
         message: 'Build failed: $e',
-        percentage: 0.0,
+        percentage: 0,
         status: BuildStatus.failed,
         error: e.toString(),
       ));
@@ -89,50 +93,58 @@ class RealTimeBuildService {
         name: 'Cleaning',
         message: 'Cleaning previous builds...',
         command: ['flutter', 'clean'],
-        estimatedDuration: Duration(seconds: 15),
+        estimatedDuration: const Duration(seconds: 15),
       ),
       BuildStepDefinition(
         name: 'Dependencies',
         message: 'Getting dependencies...',
         command: ['flutter', 'pub', 'get'],
-        estimatedDuration: Duration(seconds: 30),
+        estimatedDuration: const Duration(seconds: 30),
       ),
       BuildStepDefinition(
         name: 'Code Generation',
         message: 'Generating code...',
-        command: ['flutter', 'packages', 'pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
-        estimatedDuration: Duration(seconds: 45),
+        command: [
+          'flutter',
+          'packages',
+          'pub',
+          'run',
+          'build_runner',
+          'build',
+          '--delete-conflicting-outputs'
+        ],
+        estimatedDuration: const Duration(seconds: 45),
         optional: true,
       ),
       BuildStepDefinition(
         name: 'Pre-compilation',
         message: 'Preparing Dart compilation...',
         command: ['flutter', 'analyze'],
-        estimatedDuration: Duration(seconds: 20),
+        estimatedDuration: const Duration(seconds: 20),
       ),
       BuildStepDefinition(
         name: 'Building APK',
         message: 'Compiling and building APK...',
         command: _generateBuildCommand(config),
-        estimatedDuration: Duration(minutes: 2),
+        estimatedDuration: const Duration(minutes: 2),
       ),
       BuildStepDefinition(
         name: 'Optimizing',
         message: 'Optimizing resources and code...',
         command: ['echo', 'Optimization in progress...'],
-        estimatedDuration: Duration(seconds: 30),
+        estimatedDuration: const Duration(seconds: 30),
       ),
       BuildStepDefinition(
         name: 'Signing',
         message: 'Signing APK with release key...',
         command: ['echo', 'Signing APK...'],
-        estimatedDuration: Duration(seconds: 15),
+        estimatedDuration: const Duration(seconds: 15),
       ),
       BuildStepDefinition(
         name: 'Finalizing',
         message: 'Finalizing build and copying outputs...',
         command: ['echo', 'Finalizing...'],
-        estimatedDuration: Duration(seconds: 10),
+        estimatedDuration: const Duration(seconds: 10),
       ),
     ];
 
@@ -142,7 +154,7 @@ class RealTimeBuildService {
     for (int i = 0; i < buildSteps.length; i++) {
       final step = buildSteps[i];
       final stepNumber = i + 1;
-      
+
       _emitProgress(BuildProgress(
         step: stepNumber,
         totalSteps: buildSteps.length,
@@ -157,7 +169,7 @@ class RealTimeBuildService {
       try {
         final stepResult = await _executeStep(step, stepNumber);
         buildLog.writeln(stepResult.output);
-        
+
         // Update metrics
         _emitMetrics(BuildMetrics(
           currentStep: stepNumber,
@@ -172,7 +184,6 @@ class RealTimeBuildService {
         if (step.name == 'Building APK') {
           apkPath = await _findGeneratedApk();
         }
-
       } catch (e) {
         if (!step.optional) {
           throw Exception('Step "${step.name}" failed: $e');
@@ -182,7 +193,7 @@ class RealTimeBuildService {
       }
 
       // Simulate realistic timing
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
     }
 
     return BuildResult(
@@ -195,9 +206,10 @@ class RealTimeBuildService {
   }
 
   /// Execute a single build step
-  Future<StepResult> _executeStep(BuildStepDefinition step, int stepNumber) async {
+  Future<StepResult> _executeStep(
+      BuildStepDefinition step, int stepNumber) async {
     final stepStartTime = DateTime.now();
-    
+
     _emitLog('[$stepNumber] Starting: ${step.name}');
     _emitLog('[$stepNumber] Command: ${step.command.join(' ')}');
 
@@ -211,7 +223,7 @@ class RealTimeBuildService {
       }
     } catch (e) {
       _emitLog('[$stepNumber] Error: $e');
-      throw e;
+      rethrow;
     } finally {
       final duration = DateTime.now().difference(stepStartTime);
       _emitLog('[$stepNumber] Completed in ${duration.inSeconds}s');
@@ -221,22 +233,25 @@ class RealTimeBuildService {
   /// Simulate Flutter command execution
   Future<StepResult> _simulateFlutterCommand(BuildStepDefinition step) async {
     final command = step.command.join(' ');
-    
+
     // Simulate different command types
     if (command.contains('clean')) {
-      await _simulateWithProgress('Removing build artifacts...', Duration(seconds: 10));
+      await _simulateWithProgress(
+          'Removing build artifacts...', const Duration(seconds: 10));
       return StepResult(exitCode: 0, output: 'Flutter clean completed');
     } else if (command.contains('pub get')) {
-      await _simulateWithProgress('Downloading packages...', Duration(seconds: 20));
+      await _simulateWithProgress(
+          'Downloading packages...', const Duration(seconds: 20));
       return StepResult(exitCode: 0, output: 'Dependencies resolved');
     } else if (command.contains('build apk')) {
       await _simulateBuildApk();
       return StepResult(exitCode: 0, output: 'APK built successfully');
     } else if (command.contains('analyze')) {
-      await _simulateWithProgress('Analyzing Dart code...', Duration(seconds: 15));
+      await _simulateWithProgress(
+          'Analyzing Dart code...', const Duration(seconds: 15));
       return StepResult(exitCode: 0, output: 'No issues found');
     } else {
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
       return StepResult(exitCode: 0, output: 'Command completed');
     }
   }
@@ -258,7 +273,7 @@ class RealTimeBuildService {
     for (int i = 0; i < subSteps.length; i++) {
       _emitLog('  ${subSteps[i]}');
       await Future.delayed(Duration(seconds: 8 + (i * 2))); // Realistic timing
-      
+
       // Update sub-progress
       final subProgress = (i + 1) / subSteps.length;
       _emitProgress(BuildProgress(
@@ -275,9 +290,10 @@ class RealTimeBuildService {
 
   /// Simulate command with progress updates
   Future<void> _simulateWithProgress(String message, Duration duration) async {
-    final steps = 10;
-    final stepDuration = Duration(milliseconds: duration.inMilliseconds ~/ steps);
-    
+    const steps = 10;
+    final stepDuration =
+        Duration(milliseconds: duration.inMilliseconds ~/ steps);
+
     for (int i = 0; i < steps; i++) {
       _emitLog('  $message ${((i + 1) / steps * 100).toInt()}%');
       await Future.delayed(stepDuration);
@@ -293,28 +309,29 @@ class RealTimeBuildService {
   /// Generate build command based on configuration
   List<String> _generateBuildCommand(BuildConfiguration config) {
     final command = ['flutter', 'build', 'apk', '--${config.buildType}'];
-    
+
     if (config.splitPerAbi) {
       command.addAll(['--split-per-abi']);
     }
-    
+
     if (config.obfuscate) {
       command.addAll(['--obfuscate', '--split-debug-info=build/symbols']);
     }
-    
+
     if (config.shrinkResources) {
       command.addAll(['--shrink']);
     }
-    
-    command.addAll(['--target-platform', 'android-arm,android-arm64,android-x64']);
-    
+
+    command
+        .addAll(['--target-platform', 'android-arm,android-arm64,android-x64']);
+
     return command;
   }
 
   /// Find generated APK file
   Future<String?> _findGeneratedApk() async {
     // Simulate finding APK
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     return '/storage/emulated/0/Download/app-release.apk';
   }
 
@@ -325,16 +342,17 @@ class RealTimeBuildService {
   }
 
   /// Calculate remaining time
-  Duration? _calculateRemainingTime(int currentStepIndex, List<BuildStepDefinition> steps) {
+  Duration? _calculateRemainingTime(
+      int currentStepIndex, List<BuildStepDefinition> steps) {
     if (_buildStartTime == null) return null;
-    
+
     final elapsed = DateTime.now().difference(_buildStartTime!);
     final remainingSteps = steps.skip(currentStepIndex + 1);
     final estimatedRemaining = remainingSteps.fold<Duration>(
       Duration.zero,
       (total, step) => total + step.estimatedDuration,
     );
-    
+
     return estimatedRemaining;
   }
 
@@ -367,11 +385,11 @@ class RealTimeBuildService {
   void _emitLog(String message) {
     final timestamp = DateTime.now().toIso8601String().substring(11, 19);
     final logMessage = '[$timestamp] $message';
-    
+
     if (!_logController.isClosed) {
       _logController.add(logMessage);
     }
-    
+
     if (kDebugMode) {
       print(logMessage);
     }
@@ -389,15 +407,15 @@ class RealTimeBuildService {
     if (_currentProcess != null) {
       _currentProcess!.kill();
     }
-    
+
     _isBuilding = false;
-    
+
     _emitProgress(BuildProgress(
       step: -1,
       totalSteps: 8,
       stepName: 'Cancelled',
       message: 'Build cancelled by user',
-      percentage: 0.0,
+      percentage: 0,
       status: BuildStatus.cancelled,
     ));
   }
@@ -412,16 +430,6 @@ class RealTimeBuildService {
 
 // Data classes
 class BuildProgress {
-  final int step;
-  final int totalSteps;
-  final String stepName;
-  final String message;
-  final double percentage;
-  final BuildStatus status;
-  final String? error;
-  final Duration? estimatedTimeRemaining;
-  final double? subProgress;
-
   BuildProgress({
     required this.step,
     required this.totalSteps,
@@ -433,16 +441,18 @@ class BuildProgress {
     this.estimatedTimeRemaining,
     this.subProgress,
   });
+  final int step;
+  final int totalSteps;
+  final String stepName;
+  final String message;
+  final double percentage;
+  final BuildStatus status;
+  final String? error;
+  final Duration? estimatedTimeRemaining;
+  final double? subProgress;
 }
 
 class BuildMetrics {
-  final int currentStep;
-  final int totalSteps;
-  final Duration elapsedTime;
-  final Duration estimatedTotalTime;
-  final double memoryUsage;
-  final double cpuUsage;
-
   BuildMetrics({
     required this.currentStep,
     required this.totalSteps,
@@ -451,29 +461,28 @@ class BuildMetrics {
     required this.memoryUsage,
     required this.cpuUsage,
   });
+  final int currentStep;
+  final int totalSteps;
+  final Duration elapsedTime;
+  final Duration estimatedTotalTime;
+  final double memoryUsage;
+  final double cpuUsage;
 }
 
 class BuildConfiguration {
-  final String buildType;
-  final bool splitPerAbi;
-  final bool obfuscate;
-  final bool shrinkResources;
-
   BuildConfiguration({
     required this.buildType,
     required this.splitPerAbi,
     required this.obfuscate,
     required this.shrinkResources,
   });
+  final String buildType;
+  final bool splitPerAbi;
+  final bool obfuscate;
+  final bool shrinkResources;
 }
 
 class BuildStepDefinition {
-  final String name;
-  final String message;
-  final List<String> command;
-  final Duration estimatedDuration;
-  final bool optional;
-
   BuildStepDefinition({
     required this.name,
     required this.message,
@@ -481,17 +490,14 @@ class BuildStepDefinition {
     required this.estimatedDuration,
     this.optional = false,
   });
+  final String name;
+  final String message;
+  final List<String> command;
+  final Duration estimatedDuration;
+  final bool optional;
 }
 
 class BuildResult {
-  final bool success;
-  final String? apkPath;
-  final String? buildLog;
-  final Duration? buildDuration;
-  final int? fileSize;
-  final String? error;
-  final String? stackTrace;
-
   BuildResult({
     required this.success,
     this.apkPath,
@@ -501,16 +507,22 @@ class BuildResult {
     this.error,
     this.stackTrace,
   });
+  final bool success;
+  final String? apkPath;
+  final String? buildLog;
+  final Duration? buildDuration;
+  final int? fileSize;
+  final String? error;
+  final String? stackTrace;
 }
 
 class StepResult {
-  final int exitCode;
-  final String output;
-
   StepResult({
     required this.exitCode,
     required this.output,
   });
+  final int exitCode;
+  final String output;
 }
 
 enum BuildStatus {

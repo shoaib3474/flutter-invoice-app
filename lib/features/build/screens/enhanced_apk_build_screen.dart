@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// ignore_for_file: avoid_redundant_argument_values, deprecated_member_use
+
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+
 import '../services/apk_build_service.dart';
 
 class EnhancedApkBuildScreen extends StatefulWidget {
@@ -13,33 +16,34 @@ class EnhancedApkBuildScreen extends StatefulWidget {
 class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
     with TickerProviderStateMixin {
   final ApkBuildService _buildService = ApkBuildService();
-  
+
   // Animation controllers
   late AnimationController _progressController;
   late AnimationController _successController;
   late Animation<double> _progressAnimation;
   late Animation<double> _successAnimation;
-  
+
   // Build state
   bool _isBuilding = false;
   bool _buildCompleted = false;
   ApkBuildResult? _buildResult;
   BuildInfo? _buildInfo;
-  
+
   // Build configuration
   bool _splitPerAbi = true;
   bool _obfuscate = true;
   bool _shrinkResources = true;
   String _buildType = 'release';
-  
+
   // Progress tracking
   int _currentStep = 0;
-  String _currentStepMessage = '';
   Timer? _progressTimer;
-  
+
   final List<BuildStep> _buildSteps = [
-    BuildStep('Initializing', 'Setting up build environment...', Icons.settings),
-    BuildStep('Cleaning', 'Cleaning previous builds...', Icons.cleaning_services),
+    BuildStep(
+        'Initializing', 'Setting up build environment...', Icons.settings),
+    BuildStep(
+        'Cleaning', 'Cleaning previous builds...', Icons.cleaning_services),
     BuildStep('Dependencies', 'Getting dependencies...', Icons.download),
     BuildStep('Code Generation', 'Generating code...', Icons.code),
     BuildStep('Compiling', 'Compiling Dart code...', Icons.build),
@@ -60,16 +64,16 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _successController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    
+
     _progressAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
     );
-    
+
     _successAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _successController, curve: Curves.elasticOut),
     );
@@ -102,7 +106,7 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
       _currentStep = 0;
     });
 
-    _progressController.forward();
+    await _progressController.forward();
     _simulateBuildProgress();
 
     try {
@@ -118,7 +122,7 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
       });
 
       if (result.success) {
-        _successController.forward();
+        await _successController.forward();
         _showSuccess('🎉 APK built successfully!');
         _showBuildCompletionDialog();
       } else {
@@ -139,7 +143,6 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
       if (_currentStep < _buildSteps.length - 1) {
         setState(() {
           _currentStep++;
-          _currentStepMessage = _buildSteps[_currentStep].message;
         });
       } else {
         timer.cancel();
@@ -175,16 +178,21 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Your APK has been built successfully with the following optimizations:'),
+            const Text(
+                'Your APK has been built successfully with the following optimizations:'),
             const SizedBox(height: 12),
-            if (_splitPerAbi) _buildFeatureChip('Split per ABI', Icons.architecture),
-            if (_obfuscate) _buildFeatureChip('Code Obfuscation', Icons.security),
-            if (_shrinkResources) _buildFeatureChip('Resource Shrinking', Icons.compress),
+            if (_splitPerAbi)
+              _buildFeatureChip('Split per ABI', Icons.architecture),
+            if (_obfuscate)
+              _buildFeatureChip('Code Obfuscation', Icons.security),
+            if (_shrinkResources)
+              _buildFeatureChip('Resource Shrinking', Icons.compress),
             const SizedBox(height: 12),
             if (_buildResult?.fileSize != null)
               Text('APK Size: ${_formatFileSize(_buildResult!.fileSize!)}'),
             if (_buildResult?.buildDuration != null)
-              Text('Build Time: ${_formatDuration(_buildResult!.buildDuration!)}'),
+              Text(
+                  'Build Time: ${_formatDuration(_buildResult!.buildDuration!)}'),
           ],
         ),
         actions: [
@@ -304,7 +312,7 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
           ),
         ],
       ),
-      body: Container(
+      body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -366,7 +374,8 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
                     color: Colors.blue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.android, color: Colors.blue, size: 24),
+                  child:
+                      const Icon(Icons.android, color: Colors.blue, size: 24),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -376,14 +385,14 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
                       Text(
                         'GST Invoice App',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       Text(
                         'Production APK Builder',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[600],
-                        ),
+                              color: Colors.grey[600],
+                            ),
                       ),
                     ],
                   ),
@@ -392,7 +401,8 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
             ),
             const SizedBox(height: 16),
             if (_buildInfo != null) ...[
-              _buildInfoRow('Version', '${_buildInfo!.version} (${_buildInfo!.buildNumber})'),
+              _buildInfoRow('Version',
+                  '${_buildInfo!.version} (${_buildInfo!.buildNumber})'),
               _buildInfoRow('Package', _buildInfo!.packageName),
               _buildInfoRow('Target SDK', 'API ${_buildInfo!.sdkVersion}'),
               _buildInfoRow('Device', _buildInfo!.deviceModel),
@@ -415,11 +425,11 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
             Text(
               'Build Configuration',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
-            
+
             // Build Type Selector
             Container(
               padding: const EdgeInsets.all(12),
@@ -439,8 +449,10 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
                     underline: const SizedBox(),
                     items: const [
                       DropdownMenuItem(value: 'debug', child: Text('Debug')),
-                      DropdownMenuItem(value: 'profile', child: Text('Profile')),
-                      DropdownMenuItem(value: 'release', child: Text('Release')),
+                      DropdownMenuItem(
+                          value: 'profile', child: Text('Profile')),
+                      DropdownMenuItem(
+                          value: 'release', child: Text('Release')),
                     ],
                     onChanged: (value) {
                       setState(() {
@@ -452,7 +464,7 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Optimization Options
             _buildOptimizationTile(
               'Split per ABI',
@@ -462,7 +474,7 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
               (value) => setState(() => _splitPerAbi = value),
               'Reduces APK size by ~60%',
             ),
-            
+
             _buildOptimizationTile(
               'Code Obfuscation',
               'Obfuscate Dart code to prevent reverse engineering',
@@ -471,7 +483,7 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
               (value) => setState(() => _obfuscate = value),
               'Enhances app security',
             ),
-            
+
             _buildOptimizationTile(
               'Resource Shrinking',
               'Remove unused resources to reduce APK size',
@@ -554,19 +566,21 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
                 Text(
                   'Building APK...',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Progress bar
             AnimatedBuilder(
               animation: _progressAnimation,
               builder: (context, child) {
                 return LinearProgressIndicator(
-                  value: (_currentStep + 1) / _buildSteps.length * _progressAnimation.value,
+                  value: (_currentStep + 1) /
+                      _buildSteps.length *
+                      _progressAnimation.value,
                   backgroundColor: Colors.grey[300],
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                   minHeight: 8,
@@ -574,13 +588,13 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
               },
             ),
             const SizedBox(height: 8),
-            
+
             Text(
               'Step ${_currentStep + 1} of ${_buildSteps.length}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 16),
-            
+
             // Current step
             Container(
               padding: const EdgeInsets.all(16),
@@ -692,8 +706,11 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
                     return Transform.scale(
                       scale: _successAnimation.value,
                       child: Icon(
-                        _buildResult!.success ? Icons.check_circle : Icons.error,
-                        color: _buildResult!.success ? Colors.green : Colors.red,
+                        _buildResult!.success
+                            ? Icons.check_circle
+                            : Icons.error,
+                        color:
+                            _buildResult!.success ? Colors.green : Colors.red,
                         size: 32,
                       ),
                     );
@@ -703,19 +720,24 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
                 Text(
                   _buildResult!.success ? 'Build Successful!' : 'Build Failed',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: _buildResult!.success ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
+                        color:
+                            _buildResult!.success ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-
             if (_buildResult!.success) ...[
               // Success details
-              _buildDetailRow('APK Location', _buildResult!.apkPath ?? 'Unknown'),
-              _buildDetailRow('File Size', _formatFileSize(_buildResult!.fileSize ?? 0)),
-              _buildDetailRow('Build Time', _formatDuration(_buildResult!.buildDuration ?? Duration.zero)),
+              _buildDetailRow(
+                  'APK Location', _buildResult!.apkPath ?? 'Unknown'),
+              _buildDetailRow(
+                  'File Size', _formatFileSize(_buildResult!.fileSize ?? 0)),
+              _buildDetailRow(
+                  'Build Time',
+                  _formatDuration(
+                      _buildResult!.buildDuration ?? Duration.zero)),
               const SizedBox(height: 20),
 
               // Action buttons
@@ -818,17 +840,23 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Build Types:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('Build Types:',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               Text('• Debug: For development and testing'),
               Text('• Profile: For performance testing'),
               Text('• Release: For production distribution'),
               SizedBox(height: 12),
-              Text('Optimizations:', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('• Split per ABI: Creates smaller APKs for each device type'),
-              Text('• Code Obfuscation: Protects your code from reverse engineering'),
-              Text('• Resource Shrinking: Removes unused resources to reduce size'),
+              Text('Optimizations:',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                  '• Split per ABI: Creates smaller APKs for each device type'),
+              Text(
+                  '• Code Obfuscation: Protects your code from reverse engineering'),
+              Text(
+                  '• Resource Shrinking: Removes unused resources to reduce size'),
               SizedBox(height: 12),
-              Text('The build process typically takes 2-5 minutes depending on your device performance.'),
+              Text(
+                  'The build process typically takes 2-5 minutes depending on your device performance.'),
             ],
           ),
         ),
@@ -844,9 +872,8 @@ class _EnhancedApkBuildScreenState extends State<EnhancedApkBuildScreen>
 }
 
 class BuildStep {
+  BuildStep(this.title, this.message, this.icon);
   final String title;
   final String message;
   final IconData icon;
-
-  BuildStep(this.title, this.message, this.icon);
 }

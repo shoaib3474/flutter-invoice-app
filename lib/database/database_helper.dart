@@ -1,17 +1,15 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static final DatabaseHelper _instance = DatabaseHelper._internal();
-  static Database? _database;
-
   factory DatabaseHelper() => _instance;
 
   DatabaseHelper._internal();
+  static final DatabaseHelper _instance = DatabaseHelper._internal();
+  static Database? _database;
 
   Future<Database> get database async {
     _database ??= await _initDatabase();
@@ -21,8 +19,8 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentsDirectory.path, 'gst_invoice.db');
-    
-    return await openDatabase(
+
+    return openDatabase(
       path,
       version: 1,
       onCreate: _onCreate,
@@ -97,22 +95,25 @@ class DatabaseHelper {
 
   Future<int> insert(String table, Map<String, dynamic> data) async {
     final db = await database;
-    return await db.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
+    return db.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<Map<String, dynamic>>> query(String table, {String? where, List<dynamic>? whereArgs}) async {
+  Future<List<Map<String, dynamic>>> query(String table,
+      {String? where, List<dynamic>? whereArgs}) async {
     final db = await database;
-    return await db.query(table, where: where, whereArgs: whereArgs);
+    return db.query(table, where: where, whereArgs: whereArgs);
   }
 
-  Future<int> update(String table, Map<String, dynamic> data, String where, List<dynamic> whereArgs) async {
+  Future<int> update(String table, Map<String, dynamic> data, String where,
+      List<dynamic> whereArgs) async {
     final db = await database;
-    return await db.update(table, data, where: where, whereArgs: whereArgs);
+    return db.update(table, data, where: where, whereArgs: whereArgs);
   }
 
-  Future<int> delete(String table, String where, List<dynamic> whereArgs) async {
+  Future<int> delete(
+      String table, String where, List<dynamic> whereArgs) async {
     final db = await database;
-    return await db.delete(table, where: where, whereArgs: whereArgs);
+    return db.delete(table, where: where, whereArgs: whereArgs);
   }
 
   Future<void> close() async {
@@ -129,7 +130,8 @@ class DatabaseHelper {
     return [];
   }
 
-  Future<void> updateData(String table, Map<String, dynamic> data, String where) async {
+  Future<void> updateData(
+      String table, Map<String, dynamic> data, String where) async {
     // Mock implementation
   }
 

@@ -1,5 +1,6 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../services/apk_build_service.dart';
 import '../widgets/build_configuration_widget.dart';
 import '../widgets/build_progress_widget.dart';
@@ -14,11 +15,11 @@ class ApkBuildScreen extends StatefulWidget {
 
 class _ApkBuildScreenState extends State<ApkBuildScreen> {
   final ApkBuildService _buildService = ApkBuildService();
-  
+
   bool _isBuilding = false;
   ApkBuildResult? _buildResult;
   BuildInfo? _buildInfo;
-  
+
   // Build configuration
   bool _splitPerAbi = true;
   bool _obfuscate = true;
@@ -134,7 +135,7 @@ class _ApkBuildScreenState extends State<ApkBuildScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
-            onPressed: () => _showBuildInfoDialog(),
+            onPressed: _showBuildInfoDialog,
           ),
         ],
       ),
@@ -157,10 +158,12 @@ class _ApkBuildScreenState extends State<ApkBuildScreen> {
                       ),
                       const SizedBox(height: 12),
                       _buildInfoRow('App Name', _buildInfo!.appName),
-                      _buildInfoRow('Version', '${_buildInfo!.version} (${_buildInfo!.buildNumber})'),
+                      _buildInfoRow('Version',
+                          '${_buildInfo!.version} (${_buildInfo!.buildNumber})'),
                       _buildInfoRow('Package', _buildInfo!.packageName),
                       _buildInfoRow('Device', _buildInfo!.deviceModel),
-                      _buildInfoRow('Android', 'API ${_buildInfo!.sdkVersion} (${_buildInfo!.androidVersion})'),
+                      _buildInfoRow('Android',
+                          'API ${_buildInfo!.sdkVersion} (${_buildInfo!.androidVersion})'),
                     ],
                   ),
                 ),
@@ -173,9 +176,11 @@ class _ApkBuildScreenState extends State<ApkBuildScreen> {
               splitPerAbi: _splitPerAbi,
               obfuscate: _obfuscate,
               shrinkResources: _shrinkResources,
-              onSplitPerAbiChanged: (value) => setState(() => _splitPerAbi = value),
+              onSplitPerAbiChanged: (value) =>
+                  setState(() => _splitPerAbi = value),
               onObfuscateChanged: (value) => setState(() => _obfuscate = value),
-              onShrinkResourcesChanged: (value) => setState(() => _shrinkResources = value),
+              onShrinkResourcesChanged: (value) =>
+                  setState(() => _shrinkResources = value),
             ),
             const SizedBox(height: 16),
 
@@ -188,13 +193,13 @@ class _ApkBuildScreenState extends State<ApkBuildScreen> {
             // Build Button
             ElevatedButton.icon(
               onPressed: _isBuilding ? null : _buildApk,
-              icon: _isBuilding 
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.build),
+              icon: _isBuilding
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.build),
               label: Text(_isBuilding ? 'Building...' : 'Build APK'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
@@ -252,9 +257,11 @@ class _ApkBuildScreenState extends State<ApkBuildScreen> {
             const SizedBox(height: 8),
             Text('• Split per ABI: ${_splitPerAbi ? 'Enabled' : 'Disabled'}'),
             Text('• Code Obfuscation: ${_obfuscate ? 'Enabled' : 'Disabled'}'),
-            Text('• Resource Shrinking: ${_shrinkResources ? 'Enabled' : 'Disabled'}'),
+            Text(
+                '• Resource Shrinking: ${_shrinkResources ? 'Enabled' : 'Disabled'}'),
             const SizedBox(height: 16),
-            const Text('This will create a production-ready APK optimized for distribution.'),
+            const Text(
+                'This will create a production-ready APK optimized for distribution.'),
           ],
         ),
         actions: [
