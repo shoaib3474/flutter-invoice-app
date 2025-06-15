@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -14,7 +16,8 @@ class DebugScreen extends StatefulWidget {
   State<DebugScreen> createState() => _DebugScreenState();
 }
 
-class _DebugScreenState extends State<DebugScreen> with SingleTickerProviderStateMixin {
+class _DebugScreenState extends State<DebugScreen>
+    with SingleTickerProviderStateMixin {
   final LoggerService _logger = LoggerService();
   late TabController _tabController;
   String _logs = 'Loading logs...';
@@ -75,11 +78,11 @@ Name: ${iosInfo.name}
       final appDocDir = await getApplicationDocumentsDirectory();
       final appSupportDir = await getApplicationSupportDirectory();
       final tempDir = await getTemporaryDirectory();
-      
+
       int appDocSize = await _calculateDirSize(appDocDir);
       int appSupportSize = await _calculateDirSize(appSupportDir);
       int tempSize = await _calculateDirSize(tempDir);
-      
+
       _storageInfo = '''
 App Documents Directory: ${appDocDir.path}
 Size: ${_formatBytes(appDocSize)}
@@ -105,7 +108,8 @@ Total App Storage: ${_formatBytes(appDocSize + appSupportSize + tempSize)}
     int totalSize = 0;
     try {
       if (await dir.exists()) {
-        await for (var entity in dir.list(recursive: true, followLinks: false)) {
+        await for (var entity
+            in dir.list(recursive: true, followLinks: false)) {
           if (entity is File) {
             totalSize += await entity.length();
           }
@@ -270,7 +274,8 @@ Total App Storage: ${_formatBytes(appDocSize + appSupportSize + tempSize)}
             onPressed: () async {
               await Clipboard.setData(ClipboardData(text: content));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Information copied to clipboard')),
+                const SnackBar(
+                    content: Text('Information copied to clipboard')),
               );
             },
           ),

@@ -16,7 +16,7 @@ class InvoiceListScreen extends StatefulWidget {
 
 class _InvoiceListScreenState extends State<InvoiceListScreen> {
   final InvoiceRepository _invoiceRepository = InvoiceRepository();
-  List<Invoice> _invoices = [];
+  List<InvoiceModel> _invoices = [];
   bool _isLoading = true;
   String _searchQuery = '';
   InvoiceStatus? _statusFilter;
@@ -36,7 +36,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
       // In a real app, this would fetch from a repository
       // For now, we'll create some dummy data
       _invoices = _createDummyInvoices();
-      
+
       // Apply filters
       _applyFilters();
     } catch (e) {
@@ -49,23 +49,27 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
   }
 
   void _applyFilters() {
-    List<Invoice> filteredInvoices = List.from(_invoices);
-    
+    List<InvoiceModel> filteredInvoices = List.from(_invoices);
+
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
       filteredInvoices = filteredInvoices.where((invoice) {
-        return invoice.invoiceNumber.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               invoice.customerName.toLowerCase().contains(_searchQuery.toLowerCase());
+        return invoice.invoiceNumber
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase()) ||
+            invoice.customerName
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase());
       }).toList();
     }
-    
+
     // Apply status filter
     if (_statusFilter != null) {
       filteredInvoices = filteredInvoices.where((invoice) {
         return invoice.status == _statusFilter;
       }).toList();
     }
-    
+
     setState(() {
       _invoices = filteredInvoices;
     });
@@ -80,7 +84,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
     );
   }
 
-  void _navigateToInvoiceDetail(Invoice invoice) {
+  void _navigateToInvoiceDetail(InvoiceModel invoice) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -98,7 +102,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
     ).then((_) => _loadInvoices());
   }
 
-  void _navigateToEditInvoice(Invoice invoice) {
+  void _navigateToEditInvoice(InvoiceModel invoice) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -107,12 +111,13 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
     ).then((_) => _loadInvoices());
   }
 
-  void _deleteInvoice(Invoice invoice) {
+  void _deleteInvoice(InvoiceModel invoice) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Invoice'),
-        content: Text('Are you sure you want to delete invoice #${invoice.invoiceNumber}?'),
+        content: Text(
+            'Are you sure you want to delete invoice #${invoice.invoiceNumber}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -197,7 +202,8 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.receipt_long, size: 64, color: Colors.grey),
+                            const Icon(Icons.receipt_long,
+                                size: 64, color: Colors.grey),
                             const SizedBox(height: 16),
                             const Text(
                               'No invoices found',
@@ -267,20 +273,22 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                 },
               ),
             ),
-            ...InvoiceStatus.values.map((status) => ListTile(
-              title: Text(_getStatusText(status)),
-              leading: Radio<InvoiceStatus?>(
-                value: status,
-                groupValue: _statusFilter,
-                onChanged: (value) {
-                  Navigator.pop(context);
-                  setState(() {
-                    _statusFilter = value;
-                  });
-                  _loadInvoices();
-                },
-              ),
-            )).toList(),
+            ...InvoiceStatus.values
+                .map((status) => ListTile(
+                      title: Text(_getStatusText(status)),
+                      leading: Radio<InvoiceStatus?>(
+                        value: status,
+                        groupValue: _statusFilter,
+                        onChanged: (value) {
+                          Navigator.pop(context);
+                          setState(() {
+                            _statusFilter = value;
+                          });
+                          _loadInvoices();
+                        },
+                      ),
+                    ))
+                .toList(),
           ],
         ),
         actions: [
@@ -315,11 +323,11 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
   }
 
   // Create dummy invoices for testing
-  List<Invoice> _createDummyInvoices() {
+  List<InvoiceModel> _createDummyInvoices() {
     final now = DateTime.now();
-    
+
     return [
-      Invoice(
+      InvoiceModel(
         id: '1',
         invoiceNumber: 'INV-001',
         invoiceDate: now.subtract(const Duration(days: 30)),
@@ -343,7 +351,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
         grandTotal: 11800,
         createdBy: 'user1',
       ),
-      Invoice(
+      InvoiceModel(
         id: '2',
         invoiceNumber: 'INV-002',
         invoiceDate: now.subtract(const Duration(days: 20)),
@@ -367,7 +375,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
         grandTotal: 17700,
         createdBy: 'user1',
       ),
-      Invoice(
+      InvoiceModel(
         id: '3',
         invoiceNumber: 'INV-003',
         invoiceDate: now.subtract(const Duration(days: 10)),
@@ -392,7 +400,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
         isInterState: true,
         createdBy: 'user1',
       ),
-      Invoice(
+      InvoiceModel(
         id: '4',
         invoiceNumber: 'INV-004',
         invoiceDate: now.subtract(const Duration(days: 5)),
@@ -416,7 +424,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
         grandTotal: 5900,
         createdBy: 'user1',
       ),
-      Invoice(
+      InvoiceModel(
         id: '5',
         invoiceNumber: 'INV-005',
         invoiceDate: now.subtract(const Duration(days: 45)),

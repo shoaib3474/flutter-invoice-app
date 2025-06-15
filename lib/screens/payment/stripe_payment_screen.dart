@@ -8,7 +8,7 @@ import '../../widgets/payment/payment_form_widget.dart';
 import '../../widgets/payment/payment_success_widget.dart';
 
 class StripePaymentScreen extends StatefulWidget {
-  final Invoice invoice;
+  final InvoiceModel invoice;
   final String? customerEmail;
 
   const StripePaymentScreen({
@@ -23,12 +23,12 @@ class StripePaymentScreen extends StatefulWidget {
 
 class _StripePaymentScreenState extends State<StripePaymentScreen> {
   final StripePaymentService _stripeService = StripePaymentService();
-  
+
   StripePaymentIntent? _paymentIntent;
   StripePaymentResult? _paymentResult;
   bool _isLoading = false;
   String? _errorMessage;
-  
+
   @override
   void initState() {
     super.initState();
@@ -37,7 +37,7 @@ class _StripePaymentScreenState extends State<StripePaymentScreen> {
 
   Future<void> _initializeStripe() async {
     setState(() => _isLoading = true);
-    
+
     try {
       await _stripeService.initialize();
       await _createPaymentIntent();
@@ -59,7 +59,7 @@ class _StripePaymentScreenState extends State<StripePaymentScreen> {
           'app_name': 'Flutter Invoice App',
         },
       );
-      
+
       setState(() {
         _paymentIntent = paymentIntent;
         _isLoading = false;

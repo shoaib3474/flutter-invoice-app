@@ -13,121 +13,125 @@ import 'package:path/path.dart' as path;
 class JsonMigrationSource implements MigrationSource {
   final Map<String, dynamic> _config;
   late String _basePath;
-  
+
   JsonMigrationSource(this._config);
-  
+
   @override
   Future<void> initialize() async {
     // Get base path for JSON files
     _basePath = _config['path'] ?? '';
-    
+
     // Ensure directory exists
     final directory = Directory(_basePath);
     if (!await directory.exists()) {
       throw Exception('Directory does not exist: $_basePath');
     }
   }
-  
+
   @override
-  Future<List<Invoice>> getInvoices() async {
+  Future<List<InvoiceModel>> getInvoices() async {
     final file = File(path.join(_basePath, 'invoices.json'));
     if (!await file.exists()) {
       return [];
     }
-    
+
     final jsonString = await file.readAsString();
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    
-    return jsonList.map<Invoice>((json) => Invoice.fromMap(json)).toList();
+
+    return jsonList
+        .map<InvoiceModel>((json) => InvoiceModel.fromMap(json))
+        .toList();
   }
-  
+
   @override
   Future<List<Customer>> getCustomers() async {
     final file = File(path.join(_basePath, 'customers.json'));
     if (!await file.exists()) {
       return [];
     }
-    
+
     final jsonString = await file.readAsString();
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    
+
     return jsonList.map<Customer>((json) => Customer.fromMap(json)).toList();
   }
-  
+
   @override
   Future<List<GSTR1>> getGSTR1Returns() async {
     final file = File(path.join(_basePath, 'gstr1.json'));
     if (!await file.exists()) {
       return [];
     }
-    
+
     final jsonString = await file.readAsString();
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    
+
     return jsonList.map<GSTR1>((json) => GSTR1.fromJson(json)).toList();
   }
-  
+
   @override
   Future<List<GSTR3B>> getGSTR3BReturns() async {
     final file = File(path.join(_basePath, 'gstr3b.json'));
     if (!await file.exists()) {
       return [];
     }
-    
+
     final jsonString = await file.readAsString();
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    
+
     return jsonList.map<GSTR3B>((json) => GSTR3B.fromJson(json)).toList();
   }
-  
+
   @override
   Future<List<GSTR9>> getGSTR9Returns() async {
     final file = File(path.join(_basePath, 'gstr9.json'));
     if (!await file.exists()) {
       return [];
     }
-    
+
     final jsonString = await file.readAsString();
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    
+
     return jsonList.map<GSTR9>((json) => GSTR9.fromJson(json)).toList();
   }
-  
+
   @override
   Future<List<GSTR9C>> getGSTR9CReturns() async {
     final file = File(path.join(_basePath, 'gstr9c.json'));
     if (!await file.exists()) {
       return [];
     }
-    
+
     final jsonString = await file.readAsString();
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    
+
     return jsonList.map<GSTR9C>((json) => GSTR9C.fromJson(json)).toList();
   }
-  
+
   @override
   Future<List<AppSetting>> getSettings() async {
     final file = File(path.join(_basePath, 'settings.json'));
     if (!await file.exists()) {
       return [];
     }
-    
+
     final jsonString = await file.readAsString();
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    
-    return jsonList.map<AppSetting>((json) => AppSetting(
-      key: json['key'],
-      value: json['value'],
-      lastModified: DateTime.parse(json['lastModified']),
-    )).toList();
+
+    return jsonList
+        .map<AppSetting>((json) => AppSetting(
+              key: json['key'],
+              value: json['value'],
+              lastModified: DateTime.parse(json['lastModified']),
+            ))
+        .toList();
   }
-  
+
   @override
   String getSourceName() {
     return 'JSON Files';
   }
-  
+
   @override
   Map<String, dynamic> getSourceInfo() {
     return {
@@ -144,7 +148,7 @@ class JsonMigrationSource implements MigrationSource {
       ],
     };
   }
-  
+
   @override
   Future<void> dispose() async {
     // No resources to dispose

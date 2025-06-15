@@ -11,7 +11,7 @@ class InvoiceRepository {
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
   // Create a new invoice
-  Future<Invoice> createInvoice(Invoice invoice) async {
+  Future<InvoiceModel> createInvoice(InvoiceModel invoice) async {
     try {
       await _firestore
           .collection(_collection)
@@ -24,11 +24,11 @@ class InvoiceRepository {
   }
 
   // Get an invoice by ID
-  Future<Invoice?> getInvoice(String id) async {
+  Future<InvoiceModel?> getInvoice(String id) async {
     try {
       final doc = await _firestore.collection(_collection).doc(id).get();
       if (doc.exists) {
-        return Invoice.fromFirestore(doc);
+        return InvoiceModel.fromFirestore(doc);
       }
       return null;
     } catch (e) {
@@ -37,7 +37,7 @@ class InvoiceRepository {
   }
 
   // Update an invoice
-  Future<void> updateInvoice(Invoice invoice) async {
+  Future<void> updateInvoice(InvoiceModel invoice) async {
     try {
       await _firestore
           .collection(_collection)
@@ -58,31 +58,35 @@ class InvoiceRepository {
   }
 
   // Get all invoices
-  Future<List<Future<Invoice?>>> getAllInvoices() async {
+  Future<List<Future<InvoiceModel?>>> getAllInvoices() async {
     try {
       final snapshot = await _firestore.collection(_collection).get();
-      return snapshot.docs.map((doc) => Invoice.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => InvoiceModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get invoices: $e');
     }
   }
 
   // Get invoices by customer
-  Future<List<Future<Invoice?>>> getInvoicesByCustomer(
+  Future<List<Future<InvoiceModel?>>> getInvoicesByCustomer(
       String customerName) async {
     try {
       final snapshot = await _firestore
           .collection(_collection)
           .where('customer_name', isEqualTo: customerName)
           .get();
-      return snapshot.docs.map((doc) => Invoice.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => InvoiceModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get invoices by customer: $e');
     }
   }
 
   // Get invoices by date range
-  Future<List<Future<Invoice?>>> getInvoicesByDateRange(
+  Future<List<Future<InvoiceModel?>>> getInvoicesByDateRange(
       DateTime start, DateTime end) async {
     try {
       final snapshot = await _firestore
@@ -91,48 +95,57 @@ class InvoiceRepository {
               isGreaterThanOrEqualTo: Timestamp.fromDate(start))
           .where('invoice_date', isLessThanOrEqualTo: Timestamp.fromDate(end))
           .get();
-      return snapshot.docs.map((doc) => Invoice.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => InvoiceModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get invoices by date range: $e');
     }
   }
 
   // Get invoices by status
-  Future<List<Future<Invoice?>>> getInvoicesByStatus(
+  Future<List<Future<InvoiceModel?>>> getInvoicesByStatus(
       InvoiceStatus status) async {
     try {
       final snapshot = await _firestore
           .collection(_collection)
           .where('status', isEqualTo: status.index)
           .get();
-      return snapshot.docs.map((doc) => Invoice.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => InvoiceModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get invoices by status: $e');
     }
   }
 
   // Get invoices by type
-  Future<List<Future<Invoice?>>> getInvoicesByType(InvoiceType type) async {
+  Future<List<Future<InvoiceModel?>>> getInvoicesByType(
+      InvoiceType type) async {
     try {
       final snapshot = await _firestore
           .collection(_collection)
           .where('invoice_type', isEqualTo: type.index)
           .get();
-      return snapshot.docs.map((doc) => Invoice.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => InvoiceModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get invoices by type: $e');
     }
   }
 
   // Get invoices for GST returns
-  Future<List<Future<Invoice?>>> getInvoicesForGSTReturns(
+  Future<List<Future<InvoiceModel?>>> getInvoicesForGSTReturns(
       String returnPeriod) async {
     try {
       final snapshot = await _firestore
           .collection(_collection)
           .where('gst_return_period', isEqualTo: returnPeriod)
           .get();
-      return snapshot.docs.map((doc) => Invoice.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => InvoiceModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get invoices for GST returns: $e');
     }

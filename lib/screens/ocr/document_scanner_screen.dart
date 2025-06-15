@@ -19,10 +19,10 @@ class DocumentScannerScreen extends StatefulWidget {
 class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
   final FirebaseOCRService _ocrService = FirebaseOCRService();
   final ImagePicker _imagePicker = ImagePicker();
-  
+
   File? _selectedImage;
   OCRResult? _ocrResult;
-  Invoice? _extractedInvoice;
+  InvoiceModel? _extractedInvoice;
   bool _isProcessing = false;
   String? _errorMessage;
 
@@ -100,14 +100,12 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
             ),
             const SizedBox(height: 16),
           ],
-
           if (_selectedImage == null) ...[
             _buildWelcomeCard(),
           ] else ...[
             _buildImagePreview(),
             const SizedBox(height: 16),
           ],
-
           if (_ocrResult != null) ...[
             OCRResultWidget(
               result: _ocrResult!,
@@ -115,7 +113,6 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
             ),
             const SizedBox(height: 16),
           ],
-
           if (_extractedInvoice != null) ...[
             InvoicePreviewWidget(
               invoice: _extractedInvoice!,
@@ -362,7 +359,8 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
     });
 
     try {
-      final result = await _ocrService.extractTextFromImage(_selectedImage!.path);
+      final result =
+          await _ocrService.extractTextFromImage(_selectedImage!.path);
       setState(() {
         _ocrResult = result;
         _isProcessing = false;
@@ -407,7 +405,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
 
   void _saveExtractedInvoice() {
     if (_extractedInvoice == null) return;
-    
+
     // Navigate to invoice form with pre-filled data
     Navigator.pushNamed(
       context,
@@ -418,7 +416,7 @@ class _DocumentScannerScreenState extends State<DocumentScannerScreen> {
 
   void _editExtractedInvoice() {
     if (_extractedInvoice == null) return;
-    
+
     // Navigate to invoice form for editing
     Navigator.pushNamed(
       context,

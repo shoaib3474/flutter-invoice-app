@@ -7,8 +7,8 @@ import 'invoice_item_model.dart';
 import 'invoice_status.dart';
 import 'invoice_type.dart';
 
-class Invoice {
-  Invoice({
+class InvoiceModel {
+  InvoiceModel({
     String? id,
     required this.invoiceNumber,
     required this.invoiceDate,
@@ -41,12 +41,14 @@ class Invoice {
     DateTime? updatedAt,
     required this.createdBy,
     required double taxAmount,
+    required String customerId,
+    required double totalAmount,
   })  : id = id ?? const Uuid().v4(),
         createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 
-  factory Invoice.fromJson(Map<String, dynamic> json) {
-    return Invoice(
+  factory InvoiceModel.fromJson(Map<String, dynamic> json) {
+    return InvoiceModel(
       id: json['id'],
       invoiceNumber: json['invoiceNumber'],
       invoiceDate: DateTime.parse(json['invoiceDate']),
@@ -87,10 +89,12 @@ class Invoice {
       updatedAt: DateTime.parse(json['updatedAt']),
       createdBy: json['createdBy'],
       taxAmount: json['totalTax']?.toDouble() ?? 0.0,
+      customerId: '',
+      totalAmount: 00,
     );
   }
 
-  factory Invoice.create({
+  factory InvoiceModel.create({
     required String invoiceNumber,
     required DateTime invoiceDate,
     required DateTime dueDate,
@@ -126,7 +130,7 @@ class Invoice {
     final grandTotal = subtotal + totalTax;
     final isInterState = customerStateCode != placeOfSupplyCode;
 
-    return Invoice(
+    return InvoiceModel(
       invoiceNumber: invoiceNumber,
       invoiceDate: invoiceDate,
       dueDate: dueDate,
@@ -152,7 +156,7 @@ class Invoice {
       isReverseCharge: isReverseCharge,
       isInterState: isInterState,
       createdBy: createdBy,
-      taxAmount: totalTax,
+      taxAmount: totalTax, customerId: '', totalAmount: 00,
     );
   }
   final String id;
@@ -192,7 +196,7 @@ class Invoice {
   double get total => grandTotal;
   DateTime get date => invoiceDate;
 
-  Invoice copyWith({
+  InvoiceModel copyWith({
     String? id,
     String? invoiceNumber,
     DateTime? invoiceDate,
@@ -225,7 +229,7 @@ class Invoice {
     DateTime? updatedAt,
     String? createdBy,
   }) {
-    return Invoice(
+    return InvoiceModel(
       id: id ?? this.id,
       invoiceNumber: invoiceNumber ?? this.invoiceNumber,
       invoiceDate: invoiceDate ?? this.invoiceDate,
@@ -258,6 +262,8 @@ class Invoice {
       updatedAt: updatedAt ?? DateTime.now(),
       createdBy: createdBy ?? this.createdBy,
       taxAmount: totalTax ?? this.totalTax,
+      customerId: '',
+      totalAmount: 00,
     );
   }
 
@@ -305,14 +311,16 @@ class Invoice {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Invoice && other.id == id;
+    return other is InvoiceModel && other.id == id;
   }
 
   @override
   int get hashCode => id.hashCode;
 
-  static Future<Invoice?> fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> doc) async {}
+  static Future<InvoiceModel?> fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> doc) async {
+    return null;
+  }
 
   Map<String, dynamic> toFirestore() {
     return {

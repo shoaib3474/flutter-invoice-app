@@ -9,7 +9,7 @@ import '../../models/invoice/invoice_model.dart';
 class FirebaseOCRService {
   final LoggerService _logger = LoggerService();
   late final TextRecognizer _textRecognizer;
-  
+
   FirebaseOCRService() {
     _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
   }
@@ -18,26 +18,28 @@ class FirebaseOCRService {
   Future<OCRResult> extractTextFromImage(String imagePath) async {
     try {
       _logger.info('Starting OCR extraction from: $imagePath');
-      
+
       final inputImage = InputImage.fromFilePath(imagePath);
       final recognizedText = await _textRecognizer.processImage(inputImage);
-      
+
       final result = OCRResult(
         extractedText: recognizedText.text,
         confidence: _calculateConfidence(recognizedText),
-        blocks: recognizedText.blocks.map((block) => OCRTextBlock(
-          text: block.text,
-          boundingBox: OCRBoundingBox(
-            left: block.boundingBox.left.toDouble(),
-            top: block.boundingBox.top.toDouble(),
-            right: block.boundingBox.right.toDouble(),
-            bottom: block.boundingBox.bottom.toDouble(),
-          ),
-          confidence: block.confidence ?? 0.0,
-        )).toList(),
+        blocks: recognizedText.blocks
+            .map((block) => OCRTextBlock(
+                  text: block.text,
+                  boundingBox: OCRBoundingBox(
+                    left: block.boundingBox.left.toDouble(),
+                    top: block.boundingBox.top.toDouble(),
+                    right: block.boundingBox.right.toDouble(),
+                    bottom: block.boundingBox.bottom.toDouble(),
+                  ),
+                  confidence: block.confidence ?? 0.0,
+                ))
+            .toList(),
         processingTime: DateTime.now(),
       );
-      
+
       _logger.info('OCR extraction completed successfully');
       return result;
     } catch (e) {
@@ -50,7 +52,7 @@ class FirebaseOCRService {
   Future<OCRResult> extractTextFromBytes(Uint8List imageBytes) async {
     try {
       _logger.info('Starting OCR extraction from image bytes');
-      
+
       final inputImage = InputImage.fromBytes(
         bytes: imageBytes,
         metadata: InputImageMetadata(
@@ -60,25 +62,27 @@ class FirebaseOCRService {
           bytesPerRow: 800,
         ),
       );
-      
+
       final recognizedText = await _textRecognizer.processImage(inputImage);
-      
+
       final result = OCRResult(
         extractedText: recognizedText.text,
         confidence: _calculateConfidence(recognizedText),
-        blocks: recognizedText.blocks.map((block) => OCRTextBlock(
-          text: block.text,
-          boundingBox: OCRBoundingBox(
-            left: block.boundingBox.left.toDouble(),
-            top: block.boundingBox.top.toDouble(),
-            right: block.boundingBox.right.toDouble(),
-            bottom: block.boundingBox.bottom.toDouble(),
-          ),
-          confidence: block.confidence ?? 0.0,
-        )).toList(),
+        blocks: recognizedText.blocks
+            .map((block) => OCRTextBlock(
+                  text: block.text,
+                  boundingBox: OCRBoundingBox(
+                    left: block.boundingBox.left.toDouble(),
+                    top: block.boundingBox.top.toDouble(),
+                    right: block.boundingBox.right.toDouble(),
+                    bottom: block.boundingBox.bottom.toDouble(),
+                  ),
+                  confidence: block.confidence ?? 0.0,
+                ))
+            .toList(),
         processingTime: DateTime.now(),
       );
-      
+
       _logger.info('OCR extraction from bytes completed successfully');
       return result;
     } catch (e) {
@@ -88,27 +92,27 @@ class FirebaseOCRService {
   }
 
   // Parse invoice data from OCR result
-  Future<Invoice?> parseInvoiceFromOCR(OCRResult ocrResult) async {
+  Future<InvoiceModel?> parseInvoiceFromOCR(OCRResult ocrResult) async {
     try {
       _logger.info('Parsing invoice data from OCR result');
-      
+
       final text = ocrResult.extractedText.toLowerCase();
       final lines = text.split('\n');
-      
+
       // Extract invoice details using pattern matching
       String? invoiceNumber = _extractInvoiceNumber(lines);
       DateTime? invoiceDate = _extractInvoiceDate(lines);
       String? customerName = _extractCustomerName(lines);
       String? customerGstin = _extractGSTIN(lines);
       double? totalAmount = _extractTotalAmount(lines);
-      
+
       if (invoiceNumber == null) {
         _logger.warning('Could not extract invoice number from OCR');
         return null;
       }
-      
+
       // Create invoice from extracted data
-      final invoice = Invoice(
+      final invoice = InvoiceModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         invoiceNumber: invoiceNumber,
         invoiceDate: invoiceDate ?? DateTime.now(),
@@ -127,7 +131,7 @@ class FirebaseOCRService {
         invoiceType: InvoiceType.sales,
         isReverseCharge: _detectReverseCharge(lines),
       );
-      
+
       _logger.info('Successfully parsed invoice from OCR');
       return invoice;
     } catch (e) {
@@ -139,11 +143,14 @@ class FirebaseOCRService {
   // Extract specific data patterns
   String? _extractInvoiceNumber(List<String> lines) {
     final patterns = [
-      RegExp(r'invoice\s*(?:no|number|#)?\s*:?\s*([a-zA-Z0-9\-/]+)', caseSensitive: false),
-      RegExp(r'bill\s*(?:no|number|#)?\s*:?\s*([a-zA-Z0-9\-/]+)', caseSensitive: false),
-      RegExp(r'inv\s*(?:no|number|#)?\s*:?\s*([a-zA-Z0-9\-/]+)', caseSensitive: false),
+      RegExp(r'invoice\s*(?:no|number|#)?\s*:?\s*([a-zA-Z0-9\-/]+)',
+          caseSensitive: false),
+      RegExp(r'bill\s*(?:no|number|#)?\s*:?\s*([a-zA-Z0-9\-/]+)',
+          caseSensitive: false),
+      RegExp(r'inv\s*(?:no|number|#)?\s*:?\s*([a-zA-Z0-9\-/]+)',
+          caseSensitive: false),
     ];
-    
+
     for (final line in lines) {
       for (final pattern in patterns) {
         final match = pattern.firstMatch(line);
@@ -157,10 +164,11 @@ class FirebaseOCRService {
 
   DateTime? _extractInvoiceDate(List<String> lines) {
     final patterns = [
-      RegExp(r'date\s*:?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})', caseSensitive: false),
+      RegExp(r'date\s*:?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})',
+          caseSensitive: false),
       RegExp(r'(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})'),
     ];
-    
+
     for (final line in lines) {
       for (final pattern in patterns) {
         final match = pattern.firstMatch(line);
@@ -187,10 +195,11 @@ class FirebaseOCRService {
 
   String? _extractCustomerName(List<String> lines) {
     final patterns = [
-      RegExp(r'(?:bill\s*to|customer|client)\s*:?\s*(.+)', caseSensitive: false),
+      RegExp(r'(?:bill\s*to|customer|client)\s*:?\s*(.+)',
+          caseSensitive: false),
       RegExp(r'(?:to|buyer)\s*:?\s*(.+)', caseSensitive: false),
     ];
-    
+
     for (final line in lines) {
       for (final pattern in patterns) {
         final match = pattern.firstMatch(line);
@@ -203,8 +212,10 @@ class FirebaseOCRService {
   }
 
   String? _extractGSTIN(List<String> lines) {
-    final pattern = RegExp(r'gstin?\s*:?\s*([0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})', caseSensitive: false);
-    
+    final pattern = RegExp(
+        r'gstin?\s*:?\s*([0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})',
+        caseSensitive: false);
+
     for (final line in lines) {
       final match = pattern.firstMatch(line);
       if (match != null) {
@@ -220,7 +231,7 @@ class FirebaseOCRService {
       RegExp(r'amount\s*:?\s*₹?\s*([0-9,]+\.?[0-9]*)', caseSensitive: false),
       RegExp(r'₹\s*([0-9,]+\.?[0-9]*)'),
     ];
-    
+
     for (final line in lines) {
       for (final pattern in patterns) {
         final match = pattern.firstMatch(line);
@@ -278,17 +289,17 @@ class FirebaseOCRService {
 
   double _calculateConfidence(RecognizedText recognizedText) {
     if (recognizedText.blocks.isEmpty) return 0.0;
-    
+
     double totalConfidence = 0.0;
     int blockCount = 0;
-    
+
     for (final block in recognizedText.blocks) {
       if (block.confidence != null) {
         totalConfidence += block.confidence!;
         blockCount++;
       }
     }
-    
+
     return blockCount > 0 ? totalConfidence / blockCount : 0.0;
   }
 

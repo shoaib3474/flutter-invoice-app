@@ -16,8 +16,8 @@ import '../../widgets/common/loading_indicator.dart';
 import '../../widgets/invoice/invoice_item_form.dart';
 
 class InvoiceFormScreen extends StatefulWidget {
-  final Invoice? invoice;
-  
+  final InvoiceModel? invoice;
+
   const InvoiceFormScreen({
     Key? key,
     this.invoice,
@@ -31,7 +31,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _invoiceService = InvoiceService();
   final _authService = AuthService();
-  
+
   // Controllers for invoice details
   final _invoiceNumberController = TextEditingController();
   final _invoiceDateController = TextEditingController();
@@ -45,19 +45,19 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
   final _placeOfSupplyCodeController = TextEditingController();
   final _notesController = TextEditingController();
   final _termsController = TextEditingController();
-  
+
   // Invoice type and status
   InvoiceType _invoiceType = InvoiceType.sales;
   InvoiceStatus _invoiceStatus = InvoiceStatus.draft;
-  
+
   // Invoice items
   List<InvoiceItem> _items = [];
-  
+
   // Flags
   bool _isReverseCharge = false;
   bool _isLoading = false;
   String _errorMessage = '';
-  
+
   // Calculated totals
   double _subtotal = 0.0;
   double _cgstTotal = 0.0;
@@ -66,16 +66,17 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
   double _cessTotal = 0.0;
   double _totalTax = 0.0;
   double _grandTotal = 0.0;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     // Set default dates
     final now = DateTime.now();
     _invoiceDateController.text = DateFormat('dd/MM/yyyy').format(now);
-    _dueDateController.text = DateFormat('dd/MM/yyyy').format(now.add(const Duration(days: 30)));
-    
+    _dueDateController.text =
+        DateFormat('dd/MM/yyyy').format(now.add(const Duration(days: 30)));
+
     // If editing an existing invoice, populate the form
     if (widget.invoice != null) {
       _populateForm();
@@ -84,7 +85,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
       _generateInvoiceNumber();
     }
   }
-  
+
   @override
   void dispose() {
     _invoiceNumberController.dispose();
@@ -101,12 +102,13 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
     _termsController.dispose();
     super.dispose();
   }
-  
+
   void _populateForm() {
     final invoice = widget.invoice!;
-    
+
     _invoiceNumberController.text = invoice.invoiceNumber;
-    _invoiceDateController.text = DateFormat('dd/MM/yyyy').format(invoice.invoiceDate);
+    _invoiceDateController.text =
+        DateFormat('dd/MM/yyyy').format(invoice.invoiceDate);
     _dueDateController.text = DateFormat('dd/MM/yyyy').format(invoice.dueDate);
     _customerNameController.text = invoice.customerName;
     _customerGstinController.text = invoice.customerGstin;
@@ -117,28 +119,28 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
     _placeOfSupplyCodeController.text = invoice.placeOfSupplyCode.toString();
     _notesController.text = invoice.notes;
     _termsController.text = invoice.termsAndConditions;
-    
+
     _invoiceType = invoice.invoiceType;
     _invoiceStatus = invoice.status;
     _isReverseCharge = invoice.isReverseCharge;
-    
+
     _items = List.from(invoice.items);
-    
+
     _updateTotals();
   }
-  
+
   Future<void> _generateInvoiceNumber() async {
     final nextNumber = await _invoiceService.getNextInvoiceNumber();
     _invoiceNumberController.text = nextNumber;
   }
-  
+
   void _updateTotals() {
     double subtotal = 0.0;
     double cgstTotal = 0.0;
     double sgstTotal = 0.0;
     double igstTotal = 0.0;
     double cessTotal = 0.0;
-    
+
     for (var item in _items) {
       subtotal += item.totalBeforeTax;
       cgstTotal += item.cgstAmount;
@@ -146,7 +148,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
       igstTotal += item.igstAmount;
       cessTotal += item.cessAmount;
     }
-    
+
     setState(() {
       _subtotal = subtotal;
       _cgstTotal = cgstTotal;
@@ -157,27 +159,28 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
       _grandTotal = subtotal + _totalTax;
     });
   }
-  
+
   Future<void> _selectDate(TextEditingController controller) async {
     final initialDate = controller.text.isNotEmpty
         ? DateFormat('dd/MM/yyyy').parse(controller.text)
         : DateTime.now();
-    
+
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: initialDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
-    
+
     if (pickedDate != null) {
       controller.text = DateFormat('dd/MM/yyyy').format(pickedDate);
     }
   }
-  
+
   void _addItem() {
-    final isInterState = _placeOfSupplyCodeController.text != _customerStateCodeController.text;
-    
+    final isInterState =
+        _placeOfSupplyCodeController.text != _customerStateCodeController.text;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -192,10 +195,11 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
       ),
     );
   }
-  
+
   void _editItem(int index) {
-    final isInterState = _placeOfSupplyCodeController.text != _customerStateCodeController.text;
-    
+    final isInterState =
+        _placeOfSupplyCodeController.text != _customerStateCodeController.text;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -211,34 +215,35 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
       ),
     );
   }
-  
+
   void _removeItem(int index) {
     setState(() {
       _items.removeAt(index);
       _updateTotals();
     });
   }
-  
+
   Future<void> _saveInvoice() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     if (_items.isEmpty) {
       setState(() {
         _errorMessage = 'Please add at least one item to the invoice';
       });
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';
     });
-    
+
     try {
-      final invoiceDate = DateFormat('dd/MM/yyyy').parse(_invoiceDateController.text);
+      final invoiceDate =
+          DateFormat('dd/MM/yyyy').parse(_invoiceDateController.text);
       final dueDate = DateFormat('dd/MM/yyyy').parse(_dueDateController.text);
-      
-      final invoice = Invoice.create(
+
+      final invoice = InvoiceModel.create(
         invoiceNumber: _invoiceNumberController.text,
         invoiceDate: invoiceDate,
         dueDate: dueDate,
@@ -256,7 +261,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
         isReverseCharge: _isReverseCharge,
         createdBy: _authService.getUserId() ?? '',
       );
-      
+
       if (widget.invoice != null) {
         // Update existing invoice
         await _invoiceService.updateInvoice(invoice.copyWith(
@@ -268,7 +273,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
         // Create new invoice
         await _invoiceService.createInvoice(invoice);
       }
-      
+
       if (mounted) {
         Navigator.pop(context, true);
       }
@@ -284,7 +289,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -316,7 +321,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                         ),
                       ),
                     ),
-                  
+
                   // Form fields
                   Expanded(
                     child: SingleChildScrollView(
@@ -327,7 +332,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                           // Invoice details section
                           _buildSectionTitle('Invoice Details'),
                           const SizedBox(height: 16),
-                          
+
                           // Invoice type
                           DropdownButtonFormField<InvoiceType>(
                             value: _invoiceType,
@@ -354,7 +359,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Invoice status (only for editing)
                           if (widget.invoice != null) ...[
                             DropdownButtonFormField<InvoiceStatus>(
@@ -383,7 +388,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             ),
                             const SizedBox(height: 16),
                           ],
-                          
+
                           // Invoice number
                           Row(
                             children: [
@@ -412,7 +417,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Invoice date and due date
                           Row(
                             children: [
@@ -423,7 +428,8 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                                   hintText: 'DD/MM/YYYY',
                                   prefixIcon: Icons.calendar_today,
                                   readOnly: true,
-                                  onTap: () => _selectDate(_invoiceDateController),
+                                  onTap: () =>
+                                      _selectDate(_invoiceDateController),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please select invoice date';
@@ -452,7 +458,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Reverse charge
                           CheckboxListTile(
                             title: const Text('Reverse Charge'),
@@ -466,11 +472,11 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             controlAffinity: ListTileControlAffinity.leading,
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Customer details section
                           _buildSectionTitle('Customer Details'),
                           const SizedBox(height: 16),
-                          
+
                           // Customer name
                           CustomTextField(
                             controller: _customerNameController,
@@ -485,7 +491,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Customer GSTIN
                           CustomTextField(
                             controller: _customerGstinController,
@@ -502,7 +508,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Customer address
                           CustomTextField(
                             controller: _customerAddressController,
@@ -518,7 +524,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Customer state and state code
                           Row(
                             children: [
@@ -559,7 +565,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Place of supply
                           Row(
                             children: [
@@ -600,7 +606,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             ],
                           ),
                           const SizedBox(height: 24),
-                          
+
                           // Items section
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -614,7 +620,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Items list
                           _items.isEmpty
                               ? const Center(
@@ -640,16 +646,20 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Expanded(
                                                   child: Text(
                                                     item.name,
                                                     style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 16,
                                                     ),
                                                   ),
@@ -657,23 +667,33 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                                                 Row(
                                                   children: [
                                                     IconButton(
-                                                      icon: const Icon(Icons.edit, size: 20),
-                                                      onPressed: () => _editItem(index),
+                                                      icon: const Icon(
+                                                          Icons.edit,
+                                                          size: 20),
+                                                      onPressed: () =>
+                                                          _editItem(index),
                                                       padding: EdgeInsets.zero,
-                                                      constraints: const BoxConstraints(),
+                                                      constraints:
+                                                          const BoxConstraints(),
                                                     ),
                                                     const SizedBox(width: 8),
                                                     IconButton(
-                                                      icon: const Icon(Icons.delete, size: 20, color: Colors.red),
-                                                      onPressed: () => _removeItem(index),
+                                                      icon: const Icon(
+                                                          Icons.delete,
+                                                          size: 20,
+                                                          color: Colors.red),
+                                                      onPressed: () =>
+                                                          _removeItem(index),
                                                       padding: EdgeInsets.zero,
-                                                      constraints: const BoxConstraints(),
+                                                      constraints:
+                                                          const BoxConstraints(),
                                                     ),
                                                   ],
                                                 ),
                                               ],
                                             ),
-                                            if (item.description.isNotEmpty) ...[
+                                            if (item
+                                                .description.isNotEmpty) ...[
                                               const SizedBox(height: 4),
                                               Text(
                                                 item.description,
@@ -685,15 +705,21 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                                             ],
                                             const SizedBox(height: 8),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Text('HSN/SAC: ${item.hsnSacCode}'),
-                                                Text('${item.quantity} ${item.unit} × ₹${NumberFormatter.format(item.unitPrice)}'),
+                                                Text(
+                                                    'HSN/SAC: ${item.hsnSacCode}'),
+                                                Text(
+                                                    '${item.quantity} ${item.unit} × ₹${NumberFormatter.format(item.unitPrice)}'),
                                               ],
                                             ),
                                             const SizedBox(height: 4),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   'Taxable Value: ₹${NumberFormatter.format(item.taxableValue)}',
@@ -710,19 +736,23 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                                             Row(
                                               children: [
                                                 if (item.cgstRate > 0) ...[
-                                                  Text('CGST: ${item.cgstRate}%'),
+                                                  Text(
+                                                      'CGST: ${item.cgstRate}%'),
                                                   const SizedBox(width: 8),
                                                 ],
                                                 if (item.sgstRate > 0) ...[
-                                                  Text('SGST: ${item.sgstRate}%'),
+                                                  Text(
+                                                      'SGST: ${item.sgstRate}%'),
                                                   const SizedBox(width: 8),
                                                 ],
                                                 if (item.igstRate > 0) ...[
-                                                  Text('IGST: ${item.igstRate}%'),
+                                                  Text(
+                                                      'IGST: ${item.igstRate}%'),
                                                   const SizedBox(width: 8),
                                                 ],
                                                 if (item.cessRate > 0) ...[
-                                                  Text('Cess: ${item.cessRate}%'),
+                                                  Text(
+                                                      'Cess: ${item.cessRate}%'),
                                                 ],
                                               ],
                                             ),
@@ -733,11 +763,11 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                                   },
                                 ),
                           const SizedBox(height: 24),
-                          
+
                           // Additional details section
                           _buildSectionTitle('Additional Details'),
                           const SizedBox(height: 16),
-                          
+
                           // Notes
                           CustomTextField(
                             controller: _notesController,
@@ -747,7 +777,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                             maxLines: 3,
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Terms and conditions
                           CustomTextField(
                             controller: _termsController,
@@ -761,7 +791,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                       ),
                     ),
                   ),
-                  
+
                   // Summary section
                   Container(
                     padding: const EdgeInsets.all(16),
@@ -846,7 +876,9 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
                         ),
                         const SizedBox(height: 16),
                         CustomButton(
-                          text: widget.invoice != null ? 'Update Invoice' : 'Save Invoice',
+                          text: widget.invoice != null
+                              ? 'Update Invoice'
+                              : 'Save Invoice',
                           icon: Icons.save,
                           onPressed: _saveInvoice,
                         ),
@@ -858,7 +890,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
             ),
     );
   }
-  
+
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
@@ -868,7 +900,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
       ),
     );
   }
-  
+
   String _getInvoiceTypeText(InvoiceType type) {
     switch (type) {
       case InvoiceType.sales:
@@ -881,7 +913,7 @@ class _InvoiceFormScreenState extends State<InvoiceFormScreen> {
         return 'Debit Note';
     }
   }
-  
+
   String _getInvoiceStatusText(InvoiceStatus status) {
     switch (status) {
       case InvoiceStatus.draft:

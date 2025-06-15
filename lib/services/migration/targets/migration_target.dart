@@ -10,7 +10,7 @@ abstract class MigrationTarget {
   Future<void> initialize();
 
   /// Save an invoice to the target
-  Future<void> saveInvoice(Invoice invoice);
+  Future<void> saveInvoice(InvoiceModel invoice);
 
   /// Save a customer to the target
   Future<void> saveCustomer(Customer customer);
@@ -31,7 +31,7 @@ abstract class MigrationTarget {
   Future<void> saveSetting(String key, String value);
 
   /// Get all invoices from the target (for validation)
-  Future<List<Invoice>> getInvoices();
+  Future<List<InvoiceModel>> getInvoices();
 
   /// Get all customers from the target (for validation)
   Future<List<Customer>> getCustomers();

@@ -11,7 +11,7 @@ abstract class MigrationSource {
   Future<void> initialize();
 
   /// Get all invoices from the source
-  Future<List<Invoice>> getInvoices();
+  Future<List<InvoiceModel>> getInvoices();
 
   /// Get all customers from the source
   Future<List<Customer>> getCustomers();

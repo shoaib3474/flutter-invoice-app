@@ -17,7 +17,7 @@ class PaymentFormWidget extends StatefulWidget {
     required this.onPaymentError,
   });
 
-  final Invoice invoice;
+  final InvoiceModel invoice;
   final StripePaymentIntent paymentIntent;
   final Function(StripePaymentResult) onPaymentComplete;
   final Function(String) onPaymentError;
@@ -29,14 +29,14 @@ class PaymentFormWidget extends StatefulWidget {
 class _PaymentFormWidgetState extends State<PaymentFormWidget> {
   final StripePaymentService _stripeService = StripePaymentService();
   final _formKey = GlobalKey<FormState>();
-  
+
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
   final _postalCodeController = TextEditingController();
   final _countryController = TextEditingController(text: 'IN');
-  
+
   bool _isProcessing = false;
   bool _saveCard = false;
 
@@ -98,15 +98,20 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
             _buildSummaryRow('Customer:', widget.invoice.customerName),
             _buildSummaryRow('Date:', _formatDate(widget.invoice.invoiceDate)),
             const Divider(height: 20),
-            _buildSummaryRow('Subtotal:', '₹${widget.invoice.subtotal.toStringAsFixed(2)}'),
+            _buildSummaryRow(
+                'Subtotal:', '₹${widget.invoice.subtotal.toStringAsFixed(2)}'),
             if (widget.invoice.cgstTotal > 0)
-              _buildSummaryRow('CGST:', '₹${widget.invoice.cgstTotal.toStringAsFixed(2)}'),
+              _buildSummaryRow(
+                  'CGST:', '₹${widget.invoice.cgstTotal.toStringAsFixed(2)}'),
             if (widget.invoice.sgstTotal > 0)
-              _buildSummaryRow('SGST:', '₹${widget.invoice.sgstTotal.toStringAsFixed(2)}'),
+              _buildSummaryRow(
+                  'SGST:', '₹${widget.invoice.sgstTotal.toStringAsFixed(2)}'),
             if (widget.invoice.igstTotal > 0)
-              _buildSummaryRow('IGST:', '₹${widget.invoice.igstTotal.toStringAsFixed(2)}'),
+              _buildSummaryRow(
+                  'IGST:', '₹${widget.invoice.igstTotal.toStringAsFixed(2)}'),
             if (widget.invoice.cessTotal > 0)
-              _buildSummaryRow('Cess:', '₹${widget.invoice.cessTotal.toStringAsFixed(2)}'),
+              _buildSummaryRow(
+                  'Cess:', '₹${widget.invoice.cessTotal.toStringAsFixed(2)}'),
             const Divider(height: 20),
             _buildSummaryRow(
               'Total Amount:',
@@ -161,7 +166,7 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Card Element
             DecoratedBox(
               decoration: BoxDecoration(
@@ -180,7 +185,7 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Billing Information
             const Text(
               'Billing Information',
@@ -190,7 +195,7 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
               ),
             ),
             const SizedBox(height: 12),
-            
+
             TextFormField(
               controller: _emailController,
               decoration: const InputDecoration(
@@ -210,7 +215,7 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
               },
             ),
             const SizedBox(height: 12),
-            
+
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
@@ -226,7 +231,7 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
               },
             ),
             const SizedBox(height: 12),
-            
+
             TextFormField(
               controller: _addressController,
               decoration: const InputDecoration(
@@ -243,7 +248,7 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
               },
             ),
             const SizedBox(height: 12),
-            
+
             Row(
               children: [
                 Expanded(
@@ -280,7 +285,7 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
               ],
             ),
             const SizedBox(height: 12),
-            
+
             TextFormField(
               controller: _countryController,
               decoration: const InputDecoration(
@@ -296,7 +301,7 @@ class _PaymentFormWidgetState extends State<PaymentFormWidget> {
               },
             ),
             const SizedBox(height: 16),
-            
+
             CheckboxListTile(
               title: const Text('Save card for future payments'),
               value: _saveCard,

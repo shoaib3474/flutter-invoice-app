@@ -25,7 +25,7 @@ class InvoicePdfService {
   static final InvoicePdfService _instance = InvoicePdfService._internal();
   final LogoService _logoService = LogoService();
 
-  Future<Uint8List> generateInvoicePdf(Invoice invoice,
+  Future<Uint8List> generateInvoicePdf(InvoiceModel invoice,
       {required PdfPageFormat format}) async {
     final pdf = pw.Document();
     final font = await PdfGoogleFonts.nunitoRegular();
@@ -147,7 +147,7 @@ class InvoicePdfService {
     return pdf.save();
   }
 
-  pw.Widget _buildHeader(Invoice invoice, pw.MemoryImage? logoImage,
+  pw.Widget _buildHeader(InvoiceModel invoice, pw.MemoryImage? logoImage,
       pw.Font boldFont, DateFormat dateFormat) {
     String invoiceTypeText;
     switch (invoice.invoiceType) {
@@ -275,7 +275,7 @@ class InvoicePdfService {
   }
 
   pw.Widget _buildCustomerInfo(
-      Invoice invoice, pw.Font font, pw.Font boldFont) {
+      InvoiceModel invoice, pw.Font font, pw.Font boldFont) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -363,7 +363,8 @@ class InvoicePdfService {
     );
   }
 
-  pw.Widget _buildItemsTable(Invoice invoice, pw.Font font, pw.Font boldFont) {
+  pw.Widget _buildItemsTable(
+      InvoiceModel invoice, pw.Font font, pw.Font boldFont) {
     // Define table columns
     final tableHeaders = [
       'Item & Description',
@@ -529,7 +530,7 @@ class InvoicePdfService {
   }
 
   pw.Widget _buildInvoiceSummary(
-      Invoice invoice, pw.Font font, pw.Font boldFont) {
+      InvoiceModel invoice, pw.Font font, pw.Font boldFont) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -689,7 +690,7 @@ class InvoicePdfService {
   }
 
   // Function to print a PDF document
-  Future<void> printInvoicePdf(Invoice invoice) async {
+  Future<void> printInvoicePdf(InvoiceModel invoice) async {
     final pdfData = await generateInvoicePdf(invoice, format: PdfPageFormat.a4);
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdfData,
@@ -698,7 +699,7 @@ class InvoicePdfService {
   }
 
   // Function to save PDF to file and return the file path
-  Future<String> saveInvoicePdf(Invoice invoice) async {
+  Future<String> saveInvoicePdf(InvoiceModel invoice) async {
     final pdfData = await generateInvoicePdf(invoice, format: PdfPageFormat.a4);
     final output = await getApplicationDocumentsDirectory();
     final fileName =
@@ -709,7 +710,7 @@ class InvoicePdfService {
   }
 
   // Function to share PDF file
-  Future<void> shareInvoicePdf(Invoice invoice) async {
+  Future<void> shareInvoicePdf(InvoiceModel invoice) async {
     final pdfData = await generateInvoicePdf(invoice, format: PdfPageFormat.a4);
     final output = await getTemporaryDirectory();
     final fileName = 'Invoice_${invoice.invoiceNumber}.pdf';
@@ -720,7 +721,7 @@ class InvoicePdfService {
   }
 
   // Function to view PDF file
-  Future<void> viewInvoicePdf(Invoice invoice) async {
+  Future<void> viewInvoicePdf(InvoiceModel invoice) async {
     final filePath = await saveInvoicePdf(invoice);
     await OpenFile.open(filePath);
   }

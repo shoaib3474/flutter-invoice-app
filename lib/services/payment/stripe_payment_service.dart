@@ -8,9 +8,10 @@ import '../../models/invoice/invoice_model.dart';
 class StripePaymentService {
   final LoggerService _logger = LoggerService();
   final FirebaseFunctions _functions = FirebaseFunctions.instance;
-  
-  static const String _publishableKey = 'pk_test_your_publishable_key_here'; // Replace with your key
-  
+
+  static const String _publishableKey =
+      'pk_test_your_publishable_key_here'; // Replace with your key
+
   // Initialize Stripe
   Future<void> initialize() async {
     try {
@@ -25,13 +26,14 @@ class StripePaymentService {
 
   // Create payment intent for invoice
   Future<StripePaymentIntent> createPaymentIntent({
-    required Invoice invoice,
+    required InvoiceModel invoice,
     required String currency,
     Map<String, dynamic>? metadata,
   }) async {
     try {
-      _logger.info('Creating payment intent for invoice: ${invoice.invoiceNumber}');
-      
+      _logger.info(
+          'Creating payment intent for invoice: ${invoice.invoiceNumber}');
+
       final callable = _functions.httpsCallable('createPaymentIntent');
       final result = await callable.call({
         'amount': (invoice.grandTotal * 100).round(), // Amount in cents
@@ -47,9 +49,9 @@ class StripePaymentService {
           ...?metadata,
         },
       });
-      
+
       final data = result.data as Map<String, dynamic>;
-      
+
       final paymentIntent = StripePaymentIntent(
         id: data['id'],
         clientSecret: data['client_secret'],
@@ -59,7 +61,7 @@ class StripePaymentService {
         invoiceId: invoice.id,
         createdAt: DateTime.now(),
       );
-      
+
       _logger.info('Payment intent created successfully: ${paymentIntent.id}');
       return paymentIntent;
     } catch (e) {
@@ -75,7 +77,7 @@ class StripePaymentService {
   }) async {
     try {
       _logger.info('Processing payment for intent: ${paymentIntent.id}');
-      
+
       // Confirm payment with Stripe
       final result = await Stripe.instance.confirmPayment(
         paymentIntentClientSecret: paymentIntent.clientSecret,
@@ -85,7 +87,7 @@ class StripePaymentService {
           ),
         ),
       );
-      
+
       final paymentResult = StripePaymentResult(
         paymentIntentId: paymentIntent.id,
         status: result.status.name,
@@ -96,7 +98,7 @@ class StripePaymentService {
         receiptUrl: null, // Will be updated by webhook
         processedAt: DateTime.now(),
       );
-      
+
       _logger.info('Payment processed successfully: ${paymentResult.status}');
       return paymentResult;
     } catch (e) {
@@ -114,7 +116,7 @@ class StripePaymentService {
   }) async {
     try {
       _logger.info('Creating Stripe customer: $email');
-      
+
       final callable = _functions.httpsCallable('createCustomer');
       final result = await callable.call({
         'name': name,
@@ -122,9 +124,9 @@ class StripePaymentService {
         'phone': phone,
         'metadata': metadata,
       });
-      
+
       final data = result.data as Map<String, dynamic>;
-      
+
       final customer = StripeCustomer(
         id: data['id'],
         name: data['name'],
@@ -132,7 +134,7 @@ class StripePaymentService {
         phone: data['phone'],
         createdAt: DateTime.fromMillisecondsSinceEpoch(data['created'] * 1000),
       );
-      
+
       _logger.info('Stripe customer created successfully: ${customer.id}');
       return customer;
     } catch (e) {
@@ -143,13 +145,13 @@ class StripePaymentService {
 
   // Send invoice via Stripe
   Future<StripeInvoice> sendInvoice({
-    required Invoice invoice,
+    required InvoiceModel invoice,
     required String customerId,
     int? daysUntilDue,
   }) async {
     try {
       _logger.info('Sending invoice via Stripe: ${invoice.invoiceNumber}');
-      
+
       final callable = _functions.httpsCallable('sendInvoice');
       final result = await callable.call({
         'customer_id': customerId,
@@ -158,8 +160,11 @@ class StripePaymentService {
           'description': 'Invoice ${invoice.invoiceNumber}',
           'amount': (invoice.grandTotal * 100).round(),
           'currency': 'inr',
-          'due_date': daysUntilDue != null 
-              ? DateTime.now().add(Duration(days: daysUntilDue)).millisecondsSinceEpoch ~/ 1000
+          'due_date': daysUntilDue != null
+              ? DateTime.now()
+                      .add(Duration(days: daysUntilDue))
+                      .millisecondsSinceEpoch ~/
+                  1000
               : invoice.dueDate.millisecondsSinceEpoch ~/ 1000,
           'metadata': {
             'invoice_id': invoice.id,
@@ -167,15 +172,17 @@ class StripePaymentService {
             'customer_name': invoice.customerName,
           },
         },
-        'line_items': invoice.items.map((item) => {
-          'description': item.name,
-          'quantity': item.quantity,
-          'unit_amount': (item.unitPrice * 100).round(),
-        }).toList(),
+        'line_items': invoice.items
+            .map((item) => {
+                  'description': item.name,
+                  'quantity': item.quantity,
+                  'unit_amount': (item.unitPrice * 100).round(),
+                })
+            .toList(),
       });
-      
+
       final data = result.data as Map<String, dynamic>;
-      
+
       final stripeInvoice = StripeInvoice(
         id: data['id'],
         number: data['number'],
@@ -189,7 +196,7 @@ class StripePaymentService {
         dueDate: DateTime.fromMillisecondsSinceEpoch(data['due_date'] * 1000),
         createdAt: DateTime.fromMillisecondsSinceEpoch(data['created'] * 1000),
       );
-      
+
       _logger.info('Invoice sent via Stripe successfully: ${stripeInvoice.id}');
       return stripeInvoice;
     } catch (e) {
@@ -202,8 +209,9 @@ class StripePaymentService {
   Future<String> getPaymentStatus(String paymentIntentId) async {
     try {
       final callable = _functions.httpsCallable('getPaymentStatus');
-      final result = await callable.call({'payment_intent_id': paymentIntentId});
-      
+      final result =
+          await callable.call({'payment_intent_id': paymentIntentId});
+
       return result.data['status'] as String;
     } catch (e) {
       _logger.error('Failed to get payment status: $e');
@@ -219,16 +227,16 @@ class StripePaymentService {
   }) async {
     try {
       _logger.info('Processing refund for payment: $paymentIntentId');
-      
+
       final callable = _functions.httpsCallable('refundPayment');
       final result = await callable.call({
         'payment_intent_id': paymentIntentId,
         'amount': amount,
         'reason': reason,
       });
-      
+
       final data = result.data as Map<String, dynamic>;
-      
+
       final refund = StripeRefund(
         id: data['id'],
         amount: data['amount'],
@@ -238,7 +246,7 @@ class StripePaymentService {
         reason: data['reason'],
         createdAt: DateTime.fromMillisecondsSinceEpoch(data['created'] * 1000),
       );
-      
+
       _logger.info('Refund processed successfully: ${refund.id}');
       return refund;
     } catch (e) {

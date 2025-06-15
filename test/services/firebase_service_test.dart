@@ -27,7 +27,7 @@ void main() {
       test('should create invoice successfully', () async {
         await TestHelpers.signInTestUser();
 
-        final invoice = Invoice(
+        final invoice = InvoiceModel(
           id: 'test-id',
           invoiceNumber: 'INV-001',
           customerName: 'Test Customer',
@@ -79,7 +79,7 @@ void main() {
       });
 
       test('should validate invoice data', () {
-        final invoice = Invoice(
+        final invoice = InvoiceModel(
           id: '',
           invoiceNumber: '',
           customerName: '',

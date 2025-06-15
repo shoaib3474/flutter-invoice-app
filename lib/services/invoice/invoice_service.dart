@@ -11,7 +11,7 @@ class InvoiceService {
   final InvoicePdfService _pdfService = InvoicePdfService();
 
   // Get all invoices for the current user
-  Stream<List<Invoice>> getInvoices() {
+  Stream<List<InvoiceModel>> getInvoices() {
     final userId = _authService.getUserId();
     if (userId == null) {
       return Stream.value([]);
@@ -22,21 +22,22 @@ class InvoiceService {
         .where('created_by', isEqualTo: userId)
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Invoice.fromFirestore(doc)).toList());
+        .map((snapshot) => snapshot.docs
+            .map((doc) => InvoiceModel.fromFirestore(doc))
+            .toList());
   }
 
   // Get a single invoice by ID
-  Future<Invoice?> getInvoice(String id) async {
+  Future<InvoiceModel?> getInvoice(String id) async {
     final doc = await _firestore.collection('invoices').doc(id).get();
     if (doc.exists) {
-      return Invoice.fromFirestore(doc);
+      return InvoiceModel.fromFirestore(doc);
     }
     return null;
   }
 
   // Create a new invoice
-  Future<void> createInvoice(Invoice invoice) async {
+  Future<void> createInvoice(InvoiceModel invoice) async {
     await _firestore
         .collection('invoices')
         .doc(invoice.id)
@@ -44,7 +45,7 @@ class InvoiceService {
   }
 
   // Update an existing invoice
-  Future<void> updateInvoice(Invoice invoice) async {
+  Future<void> updateInvoice(InvoiceModel invoice) async {
     await _firestore
         .collection('invoices')
         .doc(invoice.id)
@@ -67,7 +68,7 @@ class InvoiceService {
   }
 
   // Generate PDF from invoice
-  Future<void> generateAndShareInvoicePdf(Invoice invoice) async {
+  Future<void> generateAndShareInvoicePdf(InvoiceModel invoice) async {
     try {
       await _pdfService.shareInvoicePdf(invoice);
     } catch (e) {
@@ -76,7 +77,7 @@ class InvoiceService {
   }
 
   // Print invoice
-  Future<void> printInvoice(Invoice invoice) async {
+  Future<void> printInvoice(InvoiceModel invoice) async {
     try {
       await _pdfService.printInvoicePdf(invoice);
     } catch (e) {
@@ -85,7 +86,7 @@ class InvoiceService {
   }
 
   // Save invoice PDF
-  Future<String> saveInvoicePdf(Invoice invoice) async {
+  Future<String> saveInvoicePdf(InvoiceModel invoice) async {
     try {
       return await _pdfService.saveInvoicePdf(invoice);
     } catch (e) {
@@ -94,7 +95,7 @@ class InvoiceService {
   }
 
   // View invoice PDF
-  Future<void> viewInvoicePdf(Invoice invoice) async {
+  Future<void> viewInvoicePdf(InvoiceModel invoice) async {
     try {
       await _pdfService.viewInvoicePdf(invoice);
     } catch (e) {
@@ -127,7 +128,7 @@ class InvoiceService {
     double overdueAmount = 0.0;
 
     for (var doc in querySnapshot.docs) {
-      final invoice = Invoice.fromFirestore(doc);
+      final invoice = InvoiceModel.fromFirestore(doc);
       totalAmount += invoice.grandTotal;
 
       switch (invoice.status) {

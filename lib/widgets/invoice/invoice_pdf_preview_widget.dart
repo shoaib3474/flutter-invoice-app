@@ -13,7 +13,7 @@ class InvoicePdfPreviewWidget extends StatefulWidget {
     super.key,
   });
 
-  final Invoice invoice;
+  final InvoiceModel invoice;
 
   @override
   State<InvoicePdfPreviewWidget> createState() =>

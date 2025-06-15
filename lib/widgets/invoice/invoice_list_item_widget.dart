@@ -13,7 +13,7 @@ class InvoiceListItem extends StatelessWidget {
     required this.onDelete,
   });
 
-  final Invoice invoice;
+  final InvoiceModel invoice;
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -46,9 +46,11 @@ class InvoiceListItem extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(invoice.status).withValues(alpha: 0.1),
+                    color:
+                        _getStatusColor(invoice.status).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: _getStatusColor(invoice.status),

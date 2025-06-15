@@ -1,5 +1,7 @@
-import 'package:hive/hive.dart';
+// ignore_for_file: avoid_unused_constructor_parameters
+
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
 part 'customer_model.g.dart';
 
@@ -17,6 +19,80 @@ enum CustomerType {
 
 @HiveType(typeId: 1)
 class Customer extends Equatable {
+  const Customer({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.createdAt,
+    required this.updatedAt,
+    required String phone,
+    required String city,
+    required String state,
+    required String pincode,
+    this.mobile,
+    this.email,
+    this.address,
+    this.gstin,
+    this.panNumber,
+    this.creditLimit = 0.0,
+    this.currentBalance = 0.0,
+  });
+
+  factory Customer.fromJson(Map<String, dynamic> json) {
+    return Customer(
+      id: json['id'],
+      name: json['name'],
+      mobile: json['mobile'],
+      email: json['email'],
+      address: json['address'],
+      gstin: json['gstin'],
+      panNumber: json['panNumber'],
+      type: CustomerType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => CustomerType.regular,
+      ),
+      creditLimit: json['creditLimit']?.toDouble() ?? 0.0,
+      currentBalance: json['currentBalance']?.toDouble() ?? 0.0,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      phone: '',
+      city: '',
+      state: '',
+      pincode: '',
+    );
+  }
+
+  factory Customer.create({
+    required String name,
+    String? mobile,
+    String? email,
+    String? address,
+    String? gstin,
+    String? panNumber,
+    CustomerType type = CustomerType.regular,
+    double creditLimit = 0.0,
+    double currentBalance = 0.0,
+  }) {
+    final now = DateTime.now();
+    return Customer(
+      id: now.millisecondsSinceEpoch.toString(),
+      name: name,
+      mobile: mobile,
+      email: email,
+      address: address,
+      gstin: gstin,
+      panNumber: panNumber,
+      type: type,
+      creditLimit: creditLimit,
+      currentBalance: currentBalance,
+      createdAt: now,
+      updatedAt: now,
+      phone: '',
+      city: '',
+      state: '',
+      pincode: '',
+    );
+  }
   @HiveField(0)
   final String id;
 
@@ -52,49 +128,6 @@ class Customer extends Equatable {
 
   @HiveField(11)
   final DateTime updatedAt;
-
-  const Customer({
-    required this.id,
-    required this.name,
-    this.mobile,
-    this.email,
-    this.address,
-    this.gstin,
-    this.panNumber,
-    required this.type,
-    this.creditLimit = 0.0,
-    this.currentBalance = 0.0,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory Customer.create({
-    required String name,
-    String? mobile,
-    String? email,
-    String? address,
-    String? gstin,
-    String? panNumber,
-    CustomerType type = CustomerType.regular,
-    double creditLimit = 0.0,
-    double currentBalance = 0.0,
-  }) {
-    final now = DateTime.now();
-    return Customer(
-      id: now.millisecondsSinceEpoch.toString(),
-      name: name,
-      mobile: mobile,
-      email: email,
-      address: address,
-      gstin: gstin,
-      panNumber: panNumber,
-      type: type,
-      creditLimit: creditLimit,
-      currentBalance: currentBalance,
-      createdAt: now,
-      updatedAt: now,
-    );
-  }
 
   @override
   List<Object?> get props => [
@@ -139,6 +172,10 @@ class Customer extends Equatable {
       currentBalance: currentBalance ?? this.currentBalance,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
+      phone: '',
+      city: '',
+      state: '',
+      pincode: '',
     );
   }
 
@@ -159,27 +196,9 @@ class Customer extends Equatable {
     };
   }
 
-  factory Customer.fromJson(Map<String, dynamic> json) {
-    return Customer(
-      id: json['id'],
-      name: json['name'],
-      mobile: json['mobile'],
-      email: json['email'],
-      address: json['address'],
-      gstin: json['gstin'],
-      panNumber: json['panNumber'],
-      type: CustomerType.values.firstWhere(
-        (e) => e.name == json['type'],
-        orElse: () => CustomerType.regular,
-      ),
-      creditLimit: json['creditLimit']?.toDouble() ?? 0.0,
-      currentBalance: json['currentBalance']?.toDouble() ?? 0.0,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-    );
+  static Customer? fromMap(Map<String, dynamic> customerData) {
+    return null;
   }
-
-  static Customer? fromMap(Map<String, dynamic> customerData) {}
 }
 
 extension CustomerTypeExtension on CustomerType {

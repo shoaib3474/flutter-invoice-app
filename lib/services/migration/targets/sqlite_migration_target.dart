@@ -17,9 +17,9 @@ class SQLiteMigrationTarget implements MigrationTarget {
   late DatabaseHelper _dbHelper;
   Database? _db;
   final Uuid _uuid = Uuid();
-  
+
   SQLiteMigrationTarget(this._config);
-  
+
   @override
   Future<void> initialize() async {
     // Use custom database path if provided
@@ -32,32 +32,32 @@ class SQLiteMigrationTarget implements MigrationTarget {
       _db = await _dbHelper.database;
     }
   }
-  
+
   @override
-  Future<void> saveInvoice(Invoice invoice) async {
+  Future<void> saveInvoice(InvoiceModel invoice) async {
     // Ensure invoice has an ID
     if (invoice.id.isEmpty) {
       invoice = invoice.copyWith(id: _uuid.v4());
     }
-    
+
     // Prepare invoice data
     final invoiceMap = invoice.toMap();
     invoiceMap['sync_status'] = SyncStatus.synced.toString();
     invoiceMap['last_modified'] = DateTime.now().millisecondsSinceEpoch;
     invoiceMap['is_deleted'] = 0;
-    
+
     // Save invoice
     await _db!.insert(
       'invoices',
       invoiceMap,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    
+
     // Save invoice items
     for (final item in invoice.items) {
       final itemMap = item.toMap();
       itemMap['invoice_id'] = invoice.id;
-      
+
       await _db!.insert(
         'invoice_items',
         itemMap,
@@ -65,20 +65,20 @@ class SQLiteMigrationTarget implements MigrationTarget {
       );
     }
   }
-  
+
   @override
   Future<void> saveCustomer(Customer customer) async {
     // Ensure customer has an ID
     if (customer.id.isEmpty) {
       customer = customer.copyWith(id: _uuid.v4());
     }
-    
+
     // Prepare customer data
     final customerMap = customer.toMap();
     customerMap['sync_status'] = SyncStatus.synced.toString();
     customerMap['last_modified'] = DateTime.now().millisecondsSinceEpoch;
     customerMap['is_deleted'] = 0;
-    
+
     // Save customer
     await _db!.insert(
       'customers',
@@ -86,11 +86,11 @@ class SQLiteMigrationTarget implements MigrationTarget {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-  
+
   @override
   Future<void> saveGSTR1(GSTR1 gstr1) async {
     final id = _uuid.v4();
-    
+
     // Prepare GSTR1 data
     final gstr1Map = {
       'id': id,
@@ -103,7 +103,7 @@ class SQLiteMigrationTarget implements MigrationTarget {
       'last_modified': DateTime.now().millisecondsSinceEpoch,
       'is_deleted': 0,
     };
-    
+
     // Save GSTR1
     await _db!.insert(
       'gstr1',
@@ -111,11 +111,11 @@ class SQLiteMigrationTarget implements MigrationTarget {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-  
+
   @override
   Future<void> saveGSTR3B(GSTR3B gstr3b) async {
     final id = _uuid.v4();
-    
+
     // Prepare GSTR3B data
     final gstr3bMap = {
       'id': id,
@@ -128,7 +128,7 @@ class SQLiteMigrationTarget implements MigrationTarget {
       'last_modified': DateTime.now().millisecondsSinceEpoch,
       'is_deleted': 0,
     };
-    
+
     // Save GSTR3B
     await _db!.insert(
       'gstr3b',
@@ -136,11 +136,11 @@ class SQLiteMigrationTarget implements MigrationTarget {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-  
+
   @override
   Future<void> saveGSTR9(GSTR9 gstr9) async {
     final id = _uuid.v4();
-    
+
     // Prepare GSTR9 data
     final gstr9Map = {
       'id': id,
@@ -152,7 +152,7 @@ class SQLiteMigrationTarget implements MigrationTarget {
       'last_modified': DateTime.now().millisecondsSinceEpoch,
       'is_deleted': 0,
     };
-    
+
     // Save GSTR9
     await _db!.insert(
       'gstr9',
@@ -160,11 +160,11 @@ class SQLiteMigrationTarget implements MigrationTarget {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-  
+
   @override
   Future<void> saveGSTR9C(GSTR9C gstr9c) async {
     final id = _uuid.v4();
-    
+
     // Prepare GSTR9C data
     final gstr9cMap = {
       'id': id,
@@ -176,7 +176,7 @@ class SQLiteMigrationTarget implements MigrationTarget {
       'last_modified': DateTime.now().millisecondsSinceEpoch,
       'is_deleted': 0,
     };
-    
+
     // Save GSTR9C
     await _db!.insert(
       'gstr9c',
@@ -184,7 +184,7 @@ class SQLiteMigrationTarget implements MigrationTarget {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-  
+
   @override
   Future<void> saveSetting(String key, String value) async {
     // Prepare setting data
@@ -193,7 +193,7 @@ class SQLiteMigrationTarget implements MigrationTarget {
       'value': value,
       'last_modified': DateTime.now().millisecondsSinceEpoch,
     };
-    
+
     // Save setting
     await _db!.insert(
       'settings',
@@ -201,12 +201,13 @@ class SQLiteMigrationTarget implements MigrationTarget {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-  
+
   @override
-  Future<List<Invoice>> getInvoices() async {
-    final List<Map<String, dynamic>> invoiceMaps = await _db!.query('invoices', where: 'is_deleted = 0');
-    final List<Invoice> invoices = [];
-    
+  Future<List<InvoiceModel>> getInvoices() async {
+    final List<Map<String, dynamic>> invoiceMaps =
+        await _db!.query('invoices', where: 'is_deleted = 0');
+    final List<InvoiceModel> invoices = [];
+
     for (final invoiceMap in invoiceMaps) {
       try {
         // Get invoice items
@@ -215,31 +216,34 @@ class SQLiteMigrationTarget implements MigrationTarget {
           where: 'invoice_id = ?',
           whereArgs: [invoiceMap['id']],
         );
-        
+
         // Create invoice with items
-        final invoice = Invoice.fromMap(invoiceMap);
-        invoice.items = itemMaps.map((item) => InvoiceItem.fromMap(item)).toList();
-        
+        final invoice = InvoiceModel.fromMap(invoiceMap);
+        invoice.items =
+            itemMaps.map((item) => InvoiceItem.fromMap(item)).toList();
+
         invoices.add(invoice);
       } catch (e) {
         print('Error loading invoice ${invoiceMap['id']}: $e');
       }
     }
-    
+
     return invoices;
   }
-  
+
   @override
   Future<List<Customer>> getCustomers() async {
-    final List<Map<String, dynamic>> customerMaps = await _db!.query('customers', where: 'is_deleted = 0');
+    final List<Map<String, dynamic>> customerMaps =
+        await _db!.query('customers', where: 'is_deleted = 0');
     return customerMaps.map((map) => Customer.fromMap(map)).toList();
   }
-  
+
   @override
   Future<List<GSTR1>> getGSTR1Returns() async {
-    final List<Map<String, dynamic>> gstr1Maps = await _db!.query('gstr1', where: 'is_deleted = 0');
+    final List<Map<String, dynamic>> gstr1Maps =
+        await _db!.query('gstr1', where: 'is_deleted = 0');
     final List<GSTR1> returns = [];
-    
+
     for (final map in gstr1Maps) {
       try {
         final data = jsonDecode(map['data']);
@@ -248,15 +252,16 @@ class SQLiteMigrationTarget implements MigrationTarget {
         print('Error loading GSTR1 ${map['id']}: $e');
       }
     }
-    
+
     return returns;
   }
-  
+
   @override
   Future<List<GSTR3B>> getGSTR3BReturns() async {
-    final List<Map<String, dynamic>> gstr3bMaps = await _db!.query('gstr3b', where: 'is_deleted = 0');
+    final List<Map<String, dynamic>> gstr3bMaps =
+        await _db!.query('gstr3b', where: 'is_deleted = 0');
     final List<GSTR3B> returns = [];
-    
+
     for (final map in gstr3bMaps) {
       try {
         final data = jsonDecode(map['data']);
@@ -265,15 +270,16 @@ class SQLiteMigrationTarget implements MigrationTarget {
         print('Error loading GSTR3B ${map['id']}: $e');
       }
     }
-    
+
     return returns;
   }
-  
+
   @override
   Future<List<GSTR9>> getGSTR9Returns() async {
-    final List<Map<String, dynamic>> gstr9Maps = await _db!.query('gstr9', where: 'is_deleted = 0');
+    final List<Map<String, dynamic>> gstr9Maps =
+        await _db!.query('gstr9', where: 'is_deleted = 0');
     final List<GSTR9> returns = [];
-    
+
     for (final map in gstr9Maps) {
       try {
         final data = jsonDecode(map['data']);
@@ -282,15 +288,16 @@ class SQLiteMigrationTarget implements MigrationTarget {
         print('Error loading GSTR9 ${map['id']}: $e');
       }
     }
-    
+
     return returns;
   }
-  
+
   @override
   Future<List<GSTR9C>> getGSTR9CReturns() async {
-    final List<Map<String, dynamic>> gstr9cMaps = await _db!.query('gstr9c', where: 'is_deleted = 0');
+    final List<Map<String, dynamic>> gstr9cMaps =
+        await _db!.query('gstr9c', where: 'is_deleted = 0');
     final List<GSTR9C> returns = [];
-    
+
     for (final map in gstr9cMaps) {
       try {
         final data = jsonDecode(map['data']);
@@ -299,19 +306,21 @@ class SQLiteMigrationTarget implements MigrationTarget {
         print('Error loading GSTR9C ${map['id']}: $e');
       }
     }
-    
+
     return returns;
   }
-  
+
   @override
   Future<List<Map<String, String>>> getSettings() async {
     final List<Map<String, dynamic>> settingMaps = await _db!.query('settings');
-    return settingMaps.map((map) => {
-      'key': map['key'],
-      'value': map['value'],
-    }).toList();
+    return settingMaps
+        .map((map) => {
+              'key': map['key'],
+              'value': map['value'],
+            })
+        .toList();
   }
-  
+
   @override
   Future<void> cleanDatabase() async {
     // Delete all data from tables
@@ -324,21 +333,30 @@ class SQLiteMigrationTarget implements MigrationTarget {
     await _db!.delete('gstr9c');
     // Don't delete settings as they may contain important app configuration
   }
-  
+
   @override
   String getTargetName() {
     return 'SQLite Database';
   }
-  
+
   @override
   Map<String, dynamic> getTargetInfo() {
     return {
       'type': 'sqlite',
       'path': _config['path'] ?? 'Default Database',
-      'tables': ['invoices', 'invoice_items', 'customers', 'gstr1', 'gstr3b', 'gstr9', 'gstr9c', 'settings'],
+      'tables': [
+        'invoices',
+        'invoice_items',
+        'customers',
+        'gstr1',
+        'gstr3b',
+        'gstr9',
+        'gstr9c',
+        'settings'
+      ],
     };
   }
-  
+
   @override
   Future<void> dispose() async {
     // Close database if it was opened directly

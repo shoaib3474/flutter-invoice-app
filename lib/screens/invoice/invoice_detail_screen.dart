@@ -16,8 +16,8 @@ class InvoiceDetailScreen extends StatefulWidget {
     this.invoice,
     this.invoiceId,
   });
-  
-  final Invoice? invoice;
+
+  final InvoiceModel? invoice;
   final String? invoiceId;
 
   @override
@@ -26,7 +26,7 @@ class InvoiceDetailScreen extends StatefulWidget {
 
 class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
   final InvoiceService _invoiceService = InvoiceService();
-  Invoice? _invoice;
+  InvoiceModel? _invoice;
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -84,7 +84,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Invoice'),
-        content: Text('Are you sure you want to delete invoice #${_invoice!.invoiceNumber}?'),
+        content: Text(
+            'Are you sure you want to delete invoice #${_invoice!.invoiceNumber}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -262,21 +263,23 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                   children: [
                     Text(
                       'Invoice #${_invoice!.invoiceNumber}',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       _getInvoiceTypeText(_invoice!.invoiceType),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                            color: Colors.grey[600],
+                          ),
                     ),
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: _getStatusColor(_invoice!.status).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
@@ -381,16 +384,18 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
             Text(
               'Customer Details',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             _buildDetailRow('Name', _invoice!.customerName),
             if (_invoice!.customerGstin.isNotEmpty)
               _buildDetailRow('GSTIN', _invoice!.customerGstin),
             _buildDetailRow('Address', _invoice!.customerAddress),
-            _buildDetailRow('State', '${_invoice!.customerState} (${_invoice!.customerStateCode})'),
-            _buildDetailRow('Place of Supply', '${_invoice!.placeOfSupply} (${_invoice!.placeOfSupplyCode})'),
+            _buildDetailRow('State',
+                '${_invoice!.customerState} (${_invoice!.customerStateCode})'),
+            _buildDetailRow('Place of Supply',
+                '${_invoice!.placeOfSupply} (${_invoice!.placeOfSupplyCode})'),
           ],
         ),
       ),
@@ -437,8 +442,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
             Text(
               'Items',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             ListView.separated(
@@ -573,8 +578,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
             Text(
               'Summary',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             _buildSummaryRow('Subtotal', _invoice!.subtotal),
@@ -629,8 +634,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
             Text(
               'Notes',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(_invoice!.notes),
@@ -650,8 +655,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
             Text(
               'Terms and Conditions',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(_invoice!.termsAndConditions),
@@ -730,7 +735,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
   void _downloadInvoice() {
     // TODO: Implement download functionality
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Download functionality not implemented yet')),
+      const SnackBar(
+          content: Text('Download functionality not implemented yet')),
     );
   }
 }

@@ -20,14 +20,16 @@ class DatabaseTestScreen extends StatefulWidget {
 class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
   final DatabaseTester _databaseTester = DatabaseTester();
   final GstJsonImportService _gstJsonImportService = GstJsonImportService();
-  final SupabaseGstReturnsRepository _gstRepository = SupabaseGstReturnsRepository();
-  final SupabaseInvoiceRepository _invoiceRepository = SupabaseInvoiceRepository();
-  
+  final SupabaseGstReturnsRepository _gstRepository =
+      SupabaseGstReturnsRepository();
+  final SupabaseInvoiceRepository _invoiceRepository =
+      SupabaseInvoiceRepository();
+
   bool _isLoading = false;
   Map<String, dynamic> _testResults = {};
   String _statusMessage = '';
   bool _isError = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +53,7 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
             ),
     );
   }
-  
+
   Widget _buildTestSection() {
     return Card(
       elevation: 2,
@@ -77,7 +79,7 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       ),
     );
   }
-  
+
   Widget _buildImportExportSection() {
     return Card(
       elevation: 2,
@@ -137,7 +139,7 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       ),
     );
   }
-  
+
   Widget _buildRealWorldTestSection() {
     return Card(
       elevation: 2,
@@ -197,7 +199,7 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       ),
     );
   }
-  
+
   Widget _buildTestResults() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +224,7 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       ],
     );
   }
-  
+
   List<Widget> _buildTableResults(Map<String, bool> tableResults) {
     return tableResults.entries.map((entry) {
       return Padding(
@@ -231,7 +233,7 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       );
     }).toList();
   }
-  
+
   Widget _buildTestResultItem(String name, bool passed) {
     return Row(
       children: [
@@ -254,7 +256,7 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       ],
     );
   }
-  
+
   Widget _buildStatusMessage() {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -284,16 +286,16 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       ),
     );
   }
-  
+
   Future<void> _runAllTests() async {
     setState(() {
       _isLoading = true;
       _statusMessage = '';
     });
-    
+
     try {
       final results = await _databaseTester.runAllTests();
-      
+
       setState(() {
         _testResults = results;
         _isLoading = false;
@@ -306,20 +308,21 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       });
     }
   }
-  
+
   Future<void> _importGstReturn(GstReturnType returnType) async {
     setState(() {
       _isLoading = true;
       _statusMessage = '';
       _isError = false;
     });
-    
+
     try {
       final data = await _gstJsonImportService.importFromJsonFile(returnType);
-      
+
       setState(() {
         _isLoading = false;
-        _statusMessage = 'Successfully imported ${returnType.toString().split('.').last.toUpperCase()} data';
+        _statusMessage =
+            'Successfully imported ${returnType.toString().split('.').last.toUpperCase()} data';
         _isError = false;
       });
     } catch (e) {
@@ -330,17 +333,17 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       });
     }
   }
-  
+
   Future<void> _createTestInvoice() async {
     setState(() {
       _isLoading = true;
       _statusMessage = '';
       _isError = false;
     });
-    
+
     try {
       // Create a test invoice
-      final invoice = Invoice(
+      final invoice = InvoiceModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         invoiceNumber: 'TEST-${DateTime.now().millisecondsSinceEpoch}',
         customerName: 'Test Customer',
@@ -378,12 +381,13 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         terms: 'Net 30',
         status: InvoiceStatus.draft,
       );
-      
+
       await _invoiceRepository.createInvoice(invoice);
-      
+
       setState(() {
         _isLoading = false;
-        _statusMessage = 'Successfully created test invoice with ID: ${invoice.id}';
+        _statusMessage =
+            'Successfully created test invoice with ID: ${invoice.id}';
         _isError = false;
       });
     } catch (e) {
@@ -394,14 +398,14 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       });
     }
   }
-  
+
   Future<void> _createTestGSTR1() async {
     setState(() {
       _isLoading = true;
       _statusMessage = '';
       _isError = false;
     });
-    
+
     try {
       // Create a test GSTR1
       final gstr1 = GSTR1(
@@ -434,12 +438,13 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         status: 'Not Filed',
         filingDate: DateTime.now(),
       );
-      
+
       await _gstRepository.saveGSTR1(gstr1);
-      
+
       setState(() {
         _isLoading = false;
-        _statusMessage = 'Successfully created test GSTR1 for period: ${gstr1.returnPeriod}';
+        _statusMessage =
+            'Successfully created test GSTR1 for period: ${gstr1.returnPeriod}';
         _isError = false;
       });
     } catch (e) {
@@ -450,14 +455,14 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       });
     }
   }
-  
+
   Future<void> _createTestGSTR3B() async {
     setState(() {
       _isLoading = true;
       _statusMessage = '';
       _isError = false;
     });
-    
+
     try {
       // Create a test GSTR3B
       final gstr3b = GSTR3B(
@@ -505,12 +510,13 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
         status: 'Not Filed',
         filingDate: DateTime.now(),
       );
-      
+
       await _gstRepository.saveGSTR3B(gstr3b);
-      
+
       setState(() {
         _isLoading = false;
-        _statusMessage = 'Successfully created test GSTR3B for period: ${gstr3b.returnPeriod}';
+        _statusMessage =
+            'Successfully created test GSTR3B for period: ${gstr3b.returnPeriod}';
         _isError = false;
       });
     } catch (e) {
@@ -521,17 +527,17 @@ class _DatabaseTestScreenState extends State<DatabaseTestScreen> {
       });
     }
   }
-  
+
   Future<void> _fetchAllInvoices() async {
     setState(() {
       _isLoading = true;
       _statusMessage = '';
       _isError = false;
     });
-    
+
     try {
       final invoices = await _invoiceRepository.getAllInvoices();
-      
+
       setState(() {
         _isLoading = false;
         _statusMessage = 'Successfully fetched ${invoices.length} invoices';

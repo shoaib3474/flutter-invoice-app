@@ -18,7 +18,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
   bool _isLoading = false;
   String _resultMessage = '';
   bool _showPreview = false;
-  late Invoice _sampleInvoice;
+  late InvoiceModel _sampleInvoice;
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
 
   void _createSampleInvoice() {
     const uuid = Uuid();
-    
+
     // Create sample invoice items
     final items = [
       InvoiceItem(
@@ -67,14 +67,14 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
         sgstRate: 9,
       ),
     ];
-    
+
     // Calculate totals for each item
     for (final item in items) {
       item.calculateTotals();
     }
-    
+
     // Create sample invoice
-    _sampleInvoice = Invoice(
+    _sampleInvoice = InvoiceModel(
       id: uuid.v4(),
       invoiceNumber: 'INV-TEST-001',
       invoiceDate: DateTime.now(),
@@ -88,7 +88,8 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
       placeOfSupplyCode: '06',
       items: items,
       notes: 'Thank you for your business!',
-      termsAndConditions: '1. Payment due within 30 days\n2. Late payment subject to 18% interest per annum',
+      termsAndConditions:
+          '1. Payment due within 30 days\n2. Late payment subject to 18% interest per annum',
       status: InvoiceStatus.issued,
       invoiceType: InvoiceType.sales,
       isReverseCharge: false,
@@ -97,7 +98,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
-    
+
     // Calculate invoice totals
     _sampleInvoice.calculateTotals();
   }
@@ -107,7 +108,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
       _isLoading = true;
       _resultMessage = '';
     });
-    
+
     try {
       await _pdfService.viewInvoicePdf(_sampleInvoice);
       setState(() {
@@ -129,7 +130,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
       _isLoading = true;
       _resultMessage = '';
     });
-    
+
     try {
       await _pdfService.shareInvoicePdf(_sampleInvoice);
       setState(() {
@@ -151,7 +152,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
       _isLoading = true;
       _resultMessage = '';
     });
-    
+
     try {
       await _pdfService.printInvoicePdf(_sampleInvoice);
       setState(() {
@@ -173,7 +174,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
       _isLoading = true;
       _resultMessage = '';
     });
-    
+
     try {
       final filePath = await _pdfService.saveInvoicePdf(_sampleInvoice);
       setState(() {
@@ -221,7 +222,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 24),
-              
+
               // Invoice details card
               Card(
                 elevation: 2,
@@ -238,17 +239,20 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _buildDetailRow('Invoice Number:', _sampleInvoice.invoiceNumber),
+                      _buildDetailRow(
+                          'Invoice Number:', _sampleInvoice.invoiceNumber),
                       _buildDetailRow('Customer:', _sampleInvoice.customerName),
                       _buildDetailRow('GSTIN:', _sampleInvoice.customerGstin),
-                      _buildDetailRow('Items:', '${_sampleInvoice.items.length} items'),
-                      _buildDetailRow('Total Amount:', '₹${_sampleInvoice.grandTotal.toStringAsFixed(2)}'),
+                      _buildDetailRow(
+                          'Items:', '${_sampleInvoice.items.length} items'),
+                      _buildDetailRow('Total Amount:',
+                          '₹${_sampleInvoice.grandTotal.toStringAsFixed(2)}'),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Action buttons with proper async handling
               Wrap(
                 spacing: 16,
@@ -286,7 +290,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
                   ),
                 ],
               ),
-              
+
               // Loading indicator
               if (_isLoading)
                 const Center(
@@ -295,7 +299,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
                     child: CircularProgressIndicator(),
                   ),
                 ),
-              
+
               // Result message with proper color handling
               if (_resultMessage.isNotEmpty)
                 Container(
@@ -322,7 +326,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
                     ),
                   ),
                 ),
-              
+
               // PDF Preview
               if (_showPreview)
                 InvoicePdfPreviewWidget(invoice: _sampleInvoice),
@@ -332,7 +336,7 @@ class _PdfTestScreenState extends State<PdfTestScreen> {
       ),
     );
   }
-  
+
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),

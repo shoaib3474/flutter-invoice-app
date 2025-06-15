@@ -12,7 +12,7 @@ class InvoiceActionsWidget extends StatelessWidget {
     Key? key,
     this.onShare,
   }) : super(key: key);
-  final Invoice invoice;
+  final InvoiceModel invoice;
   final Function? onShare;
 
   @override
