@@ -660,4 +660,6 @@ pause
     if (filePath.endsWith('.sha256')) return 'Checksum';
     return 'Other';
   }
+
+  Future getBuildSummary() async {}
 }

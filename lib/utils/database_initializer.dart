@@ -1,9 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter_invoice_app/config/supabase_config.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DatabaseInitializer {
-  static final SupabaseClient _client = SupabaseConfig.client;
-  
+  static final SupabaseClient _client = SupabaseConfig.client as SupabaseClient;
+
   static Future<void> initializeDatabase() async {
     try {
       // Check if tables exist, if not create them
@@ -14,11 +16,11 @@ class DatabaseInitializer {
       rethrow;
     }
   }
-  
+
   static Future<void> _createTables() async {
     // We don't need to create tables manually as they should be created in the Supabase dashboard
     // This method can be used to verify tables exist or perform migrations
-    
+
     // Verify essential tables exist
     await _verifyTable(SupabaseConfig.invoicesTable);
     await _verifyTable(SupabaseConfig.invoiceItemsTable);
@@ -29,7 +31,7 @@ class DatabaseInitializer {
     await _verifyTable(SupabaseConfig.gstr9Table);
     await _verifyTable(SupabaseConfig.gstr9cTable);
   }
-  
+
   static Future<void> _verifyTable(String tableName) async {
     try {
       // Try to select a single row to verify table exists
