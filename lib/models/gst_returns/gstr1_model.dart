@@ -68,10 +68,12 @@ class GSTR1Summary {
     required this.filingDate,
   });
 
-  factory GSTR1Summary.fromJson(Map<String, dynamic> json) => _$GSTR1SummaryFromJson(json);
+  factory GSTR1Summary.fromJson(Map<String, dynamic> json) =>
+      _$GSTR1SummaryFromJson(json);
   Map<String, dynamic> toJson() => _$GSTR1SummaryToJson(this);
 }
 
+@JsonSerializable()
 class GSTR1Model {
   final String gstin;
   final String financialYear;
@@ -83,7 +85,7 @@ class GSTR1Model {
   final int hsnSummaryCount;
   final double hsnTotalValue;
 
-  const GSTR1Model({
+  GSTR1Model({
     required this.gstin,
     required this.financialYear,
     required this.taxPeriod,
@@ -95,33 +97,12 @@ class GSTR1Model {
     required this.hsnTotalValue,
   });
 
-  factory GSTR1Model.fromJson(Map<String, dynamic> json) {
-    return GSTR1Model(
-      gstin: json['gstin'] as String,
-      financialYear: json['financialYear'] as String,
-      taxPeriod: json['taxPeriod'] as String,
-      b2bInvoiceCount: json['b2bInvoiceCount'] as int,
-      b2bInvoiceValue: (json['b2bInvoiceValue'] as num).toDouble(),
-      b2cInvoiceCount: json['b2cInvoiceCount'] as int,
-      b2cInvoiceValue: (json['b2cInvoiceValue'] as num).toDouble(),
-      hsnSummaryCount: json['hsnSummaryCount'] as int,
-      hsnTotalValue: (json['hsnTotalValue'] as num).toDouble(),
-    );
-  }
+  get fp => null;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'gstin': gstin,
-      'financialYear': financialYear,
-      'taxPeriod': taxPeriod,
-      'b2bInvoiceCount': b2bInvoiceCount,
-      'b2bInvoiceValue': b2bInvoiceValue,
-      'b2cInvoiceCount': b2cInvoiceCount,
-      'b2cInvoiceValue': b2cInvoiceValue,
-      'hsnSummaryCount': hsnSummaryCount,
-      'hsnTotalValue': hsnTotalValue,
-    };
-  }
+  static Future<GSTR1Model?> fromJson(data) async {}
+
+  // factory GSTR1Model.fromJson(Map<String, dynamic> json) => _$GSTR1ModelFromJson(json);
+  // Map<String, dynamic> toJson() => _$GSTR1ModelToJson(this);
 }
 
 @JsonSerializable()
@@ -156,7 +137,8 @@ class B2BInvoice {
     required this.invoiceType,
   });
 
-  factory B2BInvoice.fromJson(Map<String, dynamic> json) => _$B2BInvoiceFromJson(json);
+  factory B2BInvoice.fromJson(Map<String, dynamic> json) =>
+      _$B2BInvoiceFromJson(json);
   Map<String, dynamic> toJson() => _$B2BInvoiceToJson(this);
 }
 
@@ -184,7 +166,8 @@ class B2CLInvoice {
     required this.placeOfSupply,
   });
 
-  factory B2CLInvoice.fromJson(Map<String, dynamic> json) => _$B2CLInvoiceFromJson(json);
+  factory B2CLInvoice.fromJson(Map<String, dynamic> json) =>
+      _$B2CLInvoiceFromJson(json);
   Map<String, dynamic> toJson() => _$B2CLInvoiceToJson(this);
 }
 
@@ -210,7 +193,8 @@ class B2CSInvoice {
     required this.cessAmount,
   });
 
-  factory B2CSInvoice.fromJson(Map<String, dynamic> json) => _$B2CSInvoiceFromJson(json);
+  factory B2CSInvoice.fromJson(Map<String, dynamic> json) =>
+      _$B2CSInvoiceFromJson(json);
   Map<String, dynamic> toJson() => _$B2CSInvoiceToJson(this);
 }
 
@@ -238,6 +222,7 @@ class ExportInvoice {
     required this.exportType,
   });
 
-  factory ExportInvoice.fromJson(Map<String, dynamic> json) => _$ExportInvoiceFromJson(json);
+  factory ExportInvoice.fromJson(Map<String, dynamic> json) =>
+      _$ExportInvoiceFromJson(json);
   Map<String, dynamic> toJson() => _$ExportInvoiceToJson(this);
 }

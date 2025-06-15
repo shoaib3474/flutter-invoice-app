@@ -1,17 +1,17 @@
+import 'package:flutter_invoice_app/database/database_helper.dart';
 import 'package:flutter_invoice_app/models/alerts/alert_configuration_model.dart';
 import 'package:flutter_invoice_app/models/alerts/alert_instance_model.dart';
-import 'package:flutter_invoice_app/services/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AlertRepository {
-  final DatabaseHelper _databaseHelper;
-
   AlertRepository(this._databaseHelper);
+  final DatabaseHelper _databaseHelper;
 
   // Alert Configurations
   Future<List<AlertConfiguration>> getAllAlertConfigurations() async {
     final db = await _databaseHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query('alert_configurations');
+    final List<Map<String, dynamic>> maps =
+        await db.query('alert_configurations');
     return List.generate(maps.length, (i) {
       return AlertConfiguration.fromMap(maps[i]);
     });

@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_invoice_app/models/gstr3b_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/gst_returns/gstr1_model.dart';
 import '../models/gst_returns/gstr3b_model.dart';
 import '../models/gst_returns/gstr4_model.dart';
@@ -8,9 +10,9 @@ import '../services/logger_service.dart';
 class FirebaseGstRepository {
   final FirebaseService _firebaseService = FirebaseService();
   final LoggerService _logger = LoggerService();
-  
+
   // GSTR1 Operations
-  
+
   Future<void> saveGSTR1(GSTR1Model gstr1, String id) async {
     try {
       await _firebaseService.setDocument(
@@ -19,7 +21,7 @@ class FirebaseGstRepository {
         {
           'gstin': gstr1.gstin,
           'return_period': gstr1.fp,
-          'data': gstr1.toJson(),
+          // 'data': gstr1.toJson(),
           'status': 'draft',
           'created_at': FieldValue.serverTimestamp(),
         },
@@ -30,10 +32,11 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
+
   Future<GSTR1Model?> getGSTR1(String id) async {
     try {
-      Map<String, dynamic>? data = await _firebaseService.getDocument('gstr1', id);
+      Map<String, dynamic>? data = (await _firebaseService.getDocument(
+          'gstr1', id)) as Map<String, dynamic>?;
       if (data != null && data.containsKey('data')) {
         return GSTR1Model.fromJson(data['data']);
       }
@@ -43,17 +46,18 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
-  Future<List<Map<String, dynamic>>> getGSTR1List(String gstin, String? returnPeriod) async {
+
+  Future<List<Map<String, dynamic>>> getGSTR1List(
+      String gstin, String? returnPeriod) async {
     try {
       List<List<dynamic>> whereConditions = [
         ['gstin', '==', gstin],
       ];
-      
+
       if (returnPeriod != null) {
         whereConditions.add(['return_period', '==', returnPeriod]);
       }
-      
+
       return await _firebaseService.queryDocuments(
         'gstr1',
         whereConditions: whereConditions,
@@ -65,7 +69,7 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
+
   Future<void> deleteGSTR1(String id) async {
     try {
       await _firebaseService.deleteDocument('gstr1', id);
@@ -75,9 +79,9 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
+
   // GSTR3B Operations
-  
+
   Future<void> saveGSTR3B(GSTR3BModel gstr3b, String id) async {
     try {
       await _firebaseService.setDocument(
@@ -97,10 +101,11 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
+
   Future<GSTR3BModel?> getGSTR3B(String id) async {
     try {
-      Map<String, dynamic>? data = await _firebaseService.getDocument('gstr3b', id);
+      Map<String, dynamic>? data = (await _firebaseService.getDocument(
+          'gstr3b', id)) as Map<String, dynamic>?;
       if (data != null && data.containsKey('data')) {
         return GSTR3BModel.fromJson(data['data']);
       }
@@ -110,17 +115,18 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
-  Future<List<Map<String, dynamic>>> getGSTR3BList(String gstin, String? returnPeriod) async {
+
+  Future<List<Map<String, dynamic>>> getGSTR3BList(
+      String gstin, String? returnPeriod) async {
     try {
       List<List<dynamic>> whereConditions = [
         ['gstin', '==', gstin],
       ];
-      
+
       if (returnPeriod != null) {
         whereConditions.add(['return_period', '==', returnPeriod]);
       }
-      
+
       return await _firebaseService.queryDocuments(
         'gstr3b',
         whereConditions: whereConditions,
@@ -132,7 +138,7 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
+
   Future<void> deleteGSTR3B(String id) async {
     try {
       await _firebaseService.deleteDocument('gstr3b', id);
@@ -142,9 +148,9 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
+
   // GSTR4 Operations
-  
+
   Future<void> saveGSTR4(GSTR4Model gstr4, String id) async {
     try {
       await _firebaseService.setDocument(
@@ -164,10 +170,11 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
+
   Future<GSTR4Model?> getGSTR4(String id) async {
     try {
-      Map<String, dynamic>? data = await _firebaseService.getDocument('gstr4', id);
+      Map<String, dynamic>? data = (await _firebaseService.getDocument(
+          'gstr4', id)) as Map<String, dynamic>?;
       if (data != null && data.containsKey('data')) {
         return GSTR4Model.fromJson(data['data']);
       }
@@ -177,17 +184,18 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
-  Future<List<Map<String, dynamic>>> getGSTR4List(String gstin, String? returnPeriod) async {
+
+  Future<List<Map<String, dynamic>>> getGSTR4List(
+      String gstin, String? returnPeriod) async {
     try {
       List<List<dynamic>> whereConditions = [
         ['gstin', '==', gstin],
       ];
-      
+
       if (returnPeriod != null) {
         whereConditions.add(['return_period', '==', returnPeriod]);
       }
-      
+
       return await _firebaseService.queryDocuments(
         'gstr4',
         whereConditions: whereConditions,
@@ -199,7 +207,7 @@ class FirebaseGstRepository {
       rethrow;
     }
   }
-  
+
   Future<void> deleteGSTR4(String id) async {
     try {
       await _firebaseService.deleteDocument('gstr4', id);

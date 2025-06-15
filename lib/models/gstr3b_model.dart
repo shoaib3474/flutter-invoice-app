@@ -85,6 +85,8 @@ class GSTR3BModel {
   late double taxPayableIGST;
   late double taxPayableSGST;
 
+  get ret_period => null;
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

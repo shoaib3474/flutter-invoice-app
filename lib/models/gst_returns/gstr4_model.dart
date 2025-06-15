@@ -70,10 +70,10 @@ class GSTR4Model {
 
   @override
   int get hashCode {
-    return gstin.hashCode ^
-        returnPeriod.hashCode ^
-        financialYear.hashCode;
+    return gstin.hashCode ^ returnPeriod.hashCode ^ financialYear.hashCode;
   }
+
+  get ret_period => null;
 }
 
 @JsonSerializable()

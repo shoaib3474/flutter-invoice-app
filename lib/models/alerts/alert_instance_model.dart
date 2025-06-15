@@ -1,29 +1,41 @@
-import 'alert_severity.dart';
+import 'package:flutter/foundation.dart';
 
-enum AlertMetricType {
-  taxMismatch,
-  filingDelay,
-  complianceIssue,
-  dataInconsistency,
-  systemError;
-
-  String get displayName {
-    switch (this) {
-      case AlertMetricType.taxMismatch:
-        return 'Tax Mismatch';
-      case AlertMetricType.filingDelay:
-        return 'Filing Delay';
-      case AlertMetricType.complianceIssue:
-        return 'Compliance Issue';
-      case AlertMetricType.dataInconsistency:
-        return 'Data Inconsistency';
-      case AlertMetricType.systemError:
-        return 'System Error';
-    }
-  }
-}
-
+@immutable
 class AlertInstance {
+  const AlertInstance({
+    required this.id,
+    required this.title,
+    required this.message,
+    required this.severity,
+    required this.metricType,
+    required this.createdAt,
+    required this.isRead,
+    required this.acknowledged,
+    this.acknowledgedAt,
+    this.metadata,
+  });
+
+  factory AlertInstance.fromMap(Map<String, dynamic> map) {
+    return AlertInstance(
+      id: map['id'] as String,
+      title: map['title'] as String,
+      message: map['message'] as String,
+      severity: AlertSeverityExtension.fromString(map['severity'] as String),
+      metricType: AlertMetricType.values.firstWhere(
+        (e) => e.name == map['metricType'],
+        orElse: () => AlertMetricType.systemError,
+      ),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+      isRead: (map['isRead'] ?? 0) == 1,
+      acknowledged: (map['acknowledged'] ?? 0) == 1,
+      acknowledgedAt: map['acknowledgedAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['acknowledgedAt'] as int)
+          : null,
+      metadata: map['metadata'] != null
+          ? Map<String, dynamic>.from(map['metadata'])
+          : null,
+    );
+  }
   final String id;
   final String title;
   final String message;
@@ -35,112 +47,31 @@ class AlertInstance {
   final DateTime? acknowledgedAt;
   final Map<String, dynamic>? metadata;
 
-  const AlertInstance({
-    required this.id,
-    required this.title,
-    required this.message,
-    required this.severity,
-    required this.metricType,
-    required this.createdAt,
-    this.isRead = false,
-    this.acknowledged = false,
-    this.acknowledgedAt,
-    this.metadata,
-  });
-
-  factory AlertInstance.fromJson(Map<String, dynamic> json) {
-    return AlertInstance(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      message: json['message'] as String,
-      severity: AlertSeverity.fromString(json['severity'] as String),
-      metricType: AlertMetricType.values.firstWhere(
-        (e) => e.name == json['metricType'],
-        orElse: () => AlertMetricType.systemError,
-      ),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      isRead: json['isRead'] as bool? ?? false,
-      acknowledged: json['acknowledged'] as bool? ?? false,
-      acknowledgedAt: json['acknowledgedAt'] != null
-          ? DateTime.tryParse(json['acknowledgedAt'])
-          : null,
-      metadata: json['metadata'] as Map<String, dynamic>?,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
+  Map<String, Object?> toMap() {
     return {
       'id': id,
       'title': title,
       'message': message,
       'severity': severity.name,
       'metricType': metricType.name,
-      'createdAt': createdAt.toIso8601String(),
-      'isRead': isRead,
-      'acknowledged': acknowledged,
-      'acknowledgedAt': acknowledgedAt?.toIso8601String(),
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'isRead': isRead ? 1 : 0,
+      'acknowledged': acknowledged ? 1 : 0,
+      'acknowledgedAt': acknowledgedAt?.millisecondsSinceEpoch,
       'metadata': metadata,
     };
   }
+}
 
-  AlertInstance copyWith({
-    String? id,
-    String? title,
-    String? message,
-    AlertSeverity? severity,
-    AlertMetricType? metricType,
-    DateTime? createdAt,
-    bool? isRead,
-    bool? acknowledged,
-    DateTime? acknowledgedAt,
-    Map<String, dynamic>? metadata,
-  }) {
-    return AlertInstance(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      message: message ?? this.message,
-      severity: severity ?? this.severity,
-      metricType: metricType ?? this.metricType,
-      createdAt: createdAt ?? this.createdAt,
-      isRead: isRead ?? this.isRead,
-      acknowledged: acknowledged ?? this.acknowledged,
-      acknowledgedAt: acknowledgedAt ?? this.acknowledgedAt,
-      metadata: metadata ?? this.metadata,
+enum AlertSeverity { info, warning, critical }
+
+extension AlertSeverityExtension on AlertSeverity {
+  static AlertSeverity fromString(String value) {
+    return AlertSeverity.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => AlertSeverity.info,
     );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is AlertInstance &&
-        other.id == id &&
-        other.title == title &&
-        other.message == message &&
-        other.severity == severity &&
-        other.metricType == metricType &&
-        other.createdAt == createdAt &&
-        other.isRead == isRead &&
-        other.acknowledged == acknowledged &&
-        other.acknowledgedAt == acknowledgedAt;
-  }
-
-  @override
-  int get hashCode {
-    return Object.hash(
-      id,
-      title,
-      message,
-      severity,
-      metricType,
-      createdAt,
-      isRead,
-      acknowledged,
-      acknowledgedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'AlertInstance(id: $id, title: $title, severity: $severity, metricType: $metricType, createdAt: $createdAt, isRead: $isRead, acknowledged: $acknowledged, acknowledgedAt: $acknowledgedAt)';
   }
 }
+
+enum AlertMetricType { usage, limit, systemError }
