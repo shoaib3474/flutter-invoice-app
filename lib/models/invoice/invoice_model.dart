@@ -1,5 +1,6 @@
 // ignore_for_file: always_put_required_named_parameters_first, avoid_equals_and_hash_code_on_mutable_classes, avoid_unused_constructor_parameters
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 import 'invoice_item_model.dart';
@@ -309,4 +310,15 @@ class Invoice {
 
   @override
   int get hashCode => id.hashCode;
+
+  static Future<Invoice?> fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> doc) async {}
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'id': id,
+      'customerName': customerName,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
 }

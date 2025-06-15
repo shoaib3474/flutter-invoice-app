@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_invoice_app/screens/auth/register_screen.dart';
 import 'package:flutter_invoice_app/screens/auth/reset_password_screen.dart';
-import 'package:flutter_invoice_app/services/auth/supabase_auth_service.dart';
 import 'package:flutter_invoice_app/widgets/common/custom_button.dart';
 import 'package:flutter_invoice_app/widgets/common/custom_text_field.dart';
 import 'package:flutter_invoice_app/widgets/common/loading_indicator.dart';
@@ -17,35 +16,35 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  
+
   final _authService = SupabaseAuthService();
-  
+
   bool _isLoading = false;
   String _errorMessage = '';
-  
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _signIn() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';
     });
-    
+
     try {
       await _authService.signInWithEmail(
         _emailController.text.trim(),
         _passwordController.text,
       );
-      
+
       // Navigation is handled by the AuthWrapper
     } catch (e) {
       setState(() {
@@ -59,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,4 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+class SupabaseAuthService {
+  Future<void> signInWithEmail(String trim, String text) async {}
 }
