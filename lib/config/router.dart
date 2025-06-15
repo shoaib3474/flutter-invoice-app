@@ -1,20 +1,21 @@
-import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
+// ignore_for_file: unused_local_variable
 
-import '../screens/home_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/register_screen.dart';
-import '../screens/invoice/invoice_list_screen.dart';
-import '../screens/invoice/invoice_form_screen.dart';
-import '../screens/invoice/invoice_detail_screen.dart';
+import '../screens/dashboard/gst_dashboard_screen.dart';
 import '../screens/gstr1_screen.dart';
 import '../screens/gstr3b_screen.dart';
 import '../screens/gstr4_screen.dart';
 import '../screens/gstr9_screen.dart';
 import '../screens/gstr9c_screen.dart';
+import '../screens/home_screen.dart';
+import '../screens/invoice/invoice_detail_screen.dart';
+import '../screens/invoice/invoice_form_screen.dart';
+import '../screens/invoice/invoice_list_screen.dart';
 import '../screens/settings/settings_screen.dart';
-import '../screens/dashboard/gst_dashboard_screen.dart';
-import '../models/invoice/invoice_model.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -54,8 +55,8 @@ class AppRouter {
             path: '/edit/:id',
             name: 'edit-invoice',
             builder: (context, state) {
-              final id = state.pathParameters['id']!;
-              return InvoiceFormScreen(invoiceId: id);
+              final id = state.pathParameters['id'];
+              return const InvoiceFormScreen();
             },
           ),
           GoRoute(
