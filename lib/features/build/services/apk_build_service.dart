@@ -1,16 +1,17 @@
+// ignore_for_file: avoid_slow_async_io
+
 import 'dart:io';
-import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ApkBuildService {
-  static final ApkBuildService _instance = ApkBuildService._internal();
   factory ApkBuildService() => _instance;
   ApkBuildService._internal();
+  static final ApkBuildService _instance = ApkBuildService._internal();
 
   /// Build production APK
   Future<ApkBuildResult> buildProductionApk({
@@ -21,12 +22,12 @@ class ApkBuildService {
   }) async {
     try {
       final buildStartTime = DateTime.now();
-      
+
       // Get app info
       final packageInfo = await PackageInfo.fromPlatform();
       final deviceInfo = DeviceInfoPlugin();
       final androidInfo = await deviceInfo.androidInfo;
-      
+
       // Create build configuration
       final buildConfig = ApkBuildConfig(
         appName: packageInfo.appName,
@@ -37,16 +38,17 @@ class ApkBuildService {
         shrinkResources: shrinkResources,
         targetSdk: androidInfo.version.sdkInt,
       );
-      
+
       // Execute build process
       final buildResult = await _executeBuildProcess(buildConfig);
-      
+
       // Calculate build time
       final buildDuration = DateTime.now().difference(buildStartTime);
-      
+
       // Copy APK to downloads
-      final apkPath = await _copyApkToDownloads(buildResult.apkPath, buildConfig);
-      
+      final apkPath =
+          await _copyApkToDownloads(buildResult.apkPath, buildConfig);
+
       return ApkBuildResult(
         success: true,
         apkPath: apkPath,
@@ -55,7 +57,6 @@ class ApkBuildService {
         fileSize: await _getFileSize(apkPath),
         buildLog: buildResult.buildLog,
       );
-      
     } catch (e, stackTrace) {
       return ApkBuildResult(
         success: false,
@@ -66,30 +67,31 @@ class ApkBuildService {
   }
 
   /// Execute the actual build process
-  Future<_BuildProcessResult> _executeBuildProcess(ApkBuildConfig config) async {
+  Future<_BuildProcessResult> _executeBuildProcess(
+      ApkBuildConfig config) async {
     final buildCommands = _generateBuildCommands(config);
     final buildLog = StringBuffer();
-    
+
     for (final command in buildCommands) {
       buildLog.writeln('Executing: ${command.join(' ')}');
-      
+
       final result = await Process.run(
         command.first,
         command.skip(1).toList(),
         workingDirectory: await _getProjectRoot(),
       );
-      
+
       buildLog.writeln('Exit code: ${result.exitCode}');
       buildLog.writeln('Output: ${result.stdout}');
-      
+
       if (result.exitCode != 0) {
         buildLog.writeln('Error: ${result.stderr}');
         throw Exception('Build failed: ${result.stderr}');
       }
     }
-    
+
     final apkPath = await _findGeneratedApk(config);
-    
+
     return _BuildProcessResult(
       apkPath: apkPath,
       buildLog: buildLog.toString(),
@@ -99,42 +101,50 @@ class ApkBuildService {
   /// Generate build commands based on configuration
   List<List<String>> _generateBuildCommands(ApkBuildConfig config) {
     final commands = <List<String>>[];
-    
+
     // Clean previous builds
     commands.add(['flutter', 'clean']);
-    
+
     // Get dependencies
     commands.add(['flutter', 'pub', 'get']);
-    
+
     // Generate code if needed
-    commands.add(['flutter', 'packages', 'pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs']);
-    
+    commands.add([
+      'flutter',
+      'packages',
+      'pub',
+      'run',
+      'build_runner',
+      'build',
+      '--delete-conflicting-outputs'
+    ]);
+
     // Build APK
     final buildCommand = ['flutter', 'build', 'apk', '--release'];
-    
+
     if (config.splitPerAbi) {
       buildCommand.addAll(['--split-per-abi']);
     }
-    
+
     if (config.obfuscate) {
       buildCommand.addAll([
         '--obfuscate',
         '--split-debug-info=build/app/outputs/symbols',
       ]);
     }
-    
+
     if (config.shrinkResources) {
       buildCommand.addAll(['--shrink']);
     }
-    
+
     // Add target platforms
     buildCommand.addAll([
       '--target-platform',
       'android-arm,android-arm64,android-x64',
     ]);
-    
+
     commands.add(buildCommand);
-    
+
     return commands;
   }
 
@@ -142,20 +152,20 @@ class ApkBuildService {
   Future<String> _findGeneratedApk(ApkBuildConfig config) async {
     final projectRoot = await _getProjectRoot();
     final apkDir = Directory('$projectRoot/build/app/outputs/flutter-apk');
-    
+
     if (!await apkDir.exists()) {
       throw Exception('APK output directory not found');
     }
-    
+
     final apkFiles = await apkDir
         .list()
         .where((file) => file.path.endsWith('.apk'))
         .toList();
-    
+
     if (apkFiles.isEmpty) {
       throw Exception('No APK files found');
     }
-    
+
     // Prefer arm64 APK if split per ABI
     if (config.splitPerAbi) {
       final arm64Apk = apkFiles.firstWhere(
@@ -164,30 +174,32 @@ class ApkBuildService {
       );
       return arm64Apk.path;
     }
-    
+
     return apkFiles.first.path;
   }
 
   /// Copy APK to downloads folder
-  Future<String> _copyApkToDownloads(String sourcePath, ApkBuildConfig config) async {
+  Future<String> _copyApkToDownloads(
+      String sourcePath, ApkBuildConfig config) async {
     // Request storage permission
     final permission = await Permission.storage.request();
     if (!permission.isGranted) {
       throw Exception('Storage permission required to save APK');
     }
-    
+
     // Get downloads directory
     final downloadsDir = await _getDownloadsDirectory();
-    
+
     // Generate APK filename
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final filename = 'GST_Invoice_v${config.version}_build${config.buildNumber}_$timestamp.apk';
+    final filename =
+        'GST_Invoice_v${config.version}_build${config.buildNumber}_$timestamp.apk';
     final destinationPath = '${downloadsDir.path}/$filename';
-    
+
     // Copy file
     final sourceFile = File(sourcePath);
     await sourceFile.copy(destinationPath);
-    
+
     return destinationPath;
   }
 
@@ -196,7 +208,8 @@ class ApkBuildService {
     if (Platform.isAndroid) {
       return Directory('/storage/emulated/0/Download');
     } else {
-      return await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
+      return await getDownloadsDirectory() ??
+          await getApplicationDocumentsDirectory();
     }
   }
 
@@ -211,7 +224,7 @@ class ApkBuildService {
   Future<int> _getFileSize(String filePath) async {
     final file = File(filePath);
     if (await file.exists()) {
-      return await file.length();
+      return file.length();
     }
     return 0;
   }
@@ -236,9 +249,12 @@ class ApkBuildService {
       // Open APK file for installation
       await Process.run('am', [
         'start',
-        '-a', 'android.intent.action.VIEW',
-        '-d', 'file://$apkPath',
-        '-t', 'application/vnd.android.package-archive',
+        '-a',
+        'android.intent.action.VIEW',
+        '-d',
+        'file://$apkPath',
+        '-t',
+        'application/vnd.android.package-archive',
       ]);
     }
   }
@@ -248,7 +264,7 @@ class ApkBuildService {
     final packageInfo = await PackageInfo.fromPlatform();
     final deviceInfo = DeviceInfoPlugin();
     final androidInfo = await deviceInfo.androidInfo;
-    
+
     return BuildInfo(
       appName: packageInfo.appName,
       packageName: packageInfo.packageName,
@@ -263,14 +279,6 @@ class ApkBuildService {
 
 // Data classes
 class ApkBuildConfig {
-  final String appName;
-  final String version;
-  final String buildNumber;
-  final bool splitPerAbi;
-  final bool obfuscate;
-  final bool shrinkResources;
-  final int targetSdk;
-
   ApkBuildConfig({
     required this.appName,
     required this.version,
@@ -280,18 +288,16 @@ class ApkBuildConfig {
     required this.shrinkResources,
     required this.targetSdk,
   });
+  final String appName;
+  final String version;
+  final String buildNumber;
+  final bool splitPerAbi;
+  final bool obfuscate;
+  final bool shrinkResources;
+  final int targetSdk;
 }
 
 class ApkBuildResult {
-  final bool success;
-  final String? apkPath;
-  final ApkBuildConfig? buildConfig;
-  final Duration? buildDuration;
-  final int? fileSize;
-  final String? buildLog;
-  final String? error;
-  final String? stackTrace;
-
   ApkBuildResult({
     required this.success,
     this.apkPath,
@@ -302,27 +308,26 @@ class ApkBuildResult {
     this.error,
     this.stackTrace,
   });
+  final bool success;
+  final String? apkPath;
+  final ApkBuildConfig? buildConfig;
+  final Duration? buildDuration;
+  final int? fileSize;
+  final String? buildLog;
+  final String? error;
+  final String? stackTrace;
 }
 
 class _BuildProcessResult {
-  final String apkPath;
-  final String buildLog;
-
   _BuildProcessResult({
     required this.apkPath,
     required this.buildLog,
   });
+  final String apkPath;
+  final String buildLog;
 }
 
 class BuildInfo {
-  final String appName;
-  final String packageName;
-  final String version;
-  final String buildNumber;
-  final String deviceModel;
-  final String androidVersion;
-  final int sdkVersion;
-
   BuildInfo({
     required this.appName,
     required this.packageName,
@@ -332,4 +337,11 @@ class BuildInfo {
     required this.androidVersion,
     required this.sdkVersion,
   });
+  final String appName;
+  final String packageName;
+  final String version;
+  final String buildNumber;
+  final String deviceModel;
+  final String androidVersion;
+  final int sdkVersion;
 }

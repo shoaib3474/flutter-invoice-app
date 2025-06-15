@@ -1,14 +1,17 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: use_decorated_box, deprecated_member_use, avoid_redundant_argument_values
+
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+
 import '../services/real_time_build_service.dart';
 
 class RealTimeBuildScreen extends StatefulWidget {
-  final BuildConfiguration buildConfig;
-
   const RealTimeBuildScreen({
-    Key? key,
     required this.buildConfig,
+    Key? key,
   }) : super(key: key);
+  final BuildConfiguration buildConfig;
 
   @override
   State<RealTimeBuildScreen> createState() => _RealTimeBuildScreenState();
@@ -17,29 +20,28 @@ class RealTimeBuildScreen extends StatefulWidget {
 class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
     with TickerProviderStateMixin {
   final RealTimeBuildService _buildService = RealTimeBuildService();
-  
+
   // Animation controllers
   late AnimationController _progressController;
   late AnimationController _pulseController;
   late AnimationController _successController;
-  
+
   // Animations
   late Animation<double> _progressAnimation;
   late Animation<double> _pulseAnimation;
   late Animation<double> _successAnimation;
-  
+
   // Stream subscriptions
   StreamSubscription<BuildProgress>? _progressSubscription;
   StreamSubscription<String>? _logSubscription;
   StreamSubscription<BuildMetrics>? _metricsSubscription;
-  
+
   // State
   BuildProgress? _currentProgress;
   BuildMetrics? _currentMetrics;
   final List<String> _buildLogs = [];
   final ScrollController _logScrollController = ScrollController();
   bool _showLogs = false;
-  bool _buildStarted = false;
 
   @override
   void initState() {
@@ -54,29 +56,29 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     _successController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
+
     _progressAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
     );
-    
+
     _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
-    
+
     _successAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _successController, curve: Curves.elasticOut),
     );
-    
+
     _pulseController.repeat(reverse: true);
   }
 
@@ -85,10 +87,10 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
       setState(() {
         _currentProgress = progress;
       });
-      
+
       // Update progress animation
       _progressController.animateTo(progress.percentage / 100);
-      
+
       // Handle build completion
       if (progress.status == BuildStatus.completed) {
         _successController.forward();
@@ -97,12 +99,12 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
         _pulseController.stop();
       }
     });
-    
+
     _logSubscription = _buildService.logStream.listen((log) {
       setState(() {
         _buildLogs.add(log);
       });
-      
+
       // Auto-scroll to bottom
       if (_logScrollController.hasClients) {
         _logScrollController.animateTo(
@@ -112,7 +114,7 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
         );
       }
     });
-    
+
     _metricsSubscription = _buildService.metricsStream.listen((metrics) {
       setState(() {
         _currentMetrics = metrics;
@@ -121,15 +123,13 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
   }
 
   Future<void> _startBuild() async {
-    setState(() {
-      _buildStarted = true;
-    });
-    
+    setState(() {});
+
     try {
       final result = await _buildService.startRealTimeBuild(
         config: widget.buildConfig,
       );
-      
+
       if (result.success) {
         _showBuildSuccessDialog(result);
       } else {
@@ -196,7 +196,7 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
               flex: _showLogs ? 1 : 2,
               child: _buildProgressSection(),
             ),
-            
+
             // Logs Section
             if (_showLogs)
               Expanded(
@@ -217,12 +217,11 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
           // Main Progress Card
           _buildMainProgressCard(),
           const SizedBox(height: 16),
-          
+
           // Metrics Card
-          if (_currentMetrics != null)
-            _buildMetricsCard(),
+          if (_currentMetrics != null) _buildMetricsCard(),
           const SizedBox(height: 16),
-          
+
           // Step Progress
           _buildStepProgress(),
         ],
@@ -265,7 +264,7 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
                       color: Colors.grey[200],
                     ),
                   ),
-                  
+
                   // Progress circle
                   AnimatedBuilder(
                     animation: _progressAnimation,
@@ -284,15 +283,15 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
                       );
                     },
                   ),
-                  
+
                   // Center content
                   AnimatedBuilder(
-                    animation: _currentProgress?.status == BuildStatus.running 
-                        ? _pulseAnimation 
+                    animation: _currentProgress?.status == BuildStatus.running
+                        ? _pulseAnimation
                         : _successAnimation,
                     builder: (context, child) {
                       Widget centerWidget;
-                      
+
                       if (_currentProgress?.status == BuildStatus.completed) {
                         centerWidget = Transform.scale(
                           scale: _successAnimation.value,
@@ -302,7 +301,8 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
                             size: 48,
                           ),
                         );
-                      } else if (_currentProgress?.status == BuildStatus.failed) {
+                      } else if (_currentProgress?.status ==
+                          BuildStatus.failed) {
                         centerWidget = const Icon(
                           Icons.error,
                           color: Colors.red,
@@ -332,7 +332,7 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
                           ),
                         );
                       }
-                      
+
                       return centerWidget;
                     },
                   ),
@@ -340,26 +340,26 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Step Information
             Text(
               _currentProgress?.stepName ?? 'Preparing...',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: _getProgressColor(),
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: _getProgressColor(),
+                  ),
             ),
             const SizedBox(height: 8),
-            
+
             Text(
               _currentProgress?.message ?? 'Getting ready to build...',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.grey[600],
-              ),
+                    color: Colors.grey[600],
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            
+
             // Progress Bar
             AnimatedBuilder(
               animation: _progressAnimation,
@@ -367,19 +367,20 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
                 return LinearProgressIndicator(
                   value: _progressAnimation.value,
                   backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(_getProgressColor()),
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(_getProgressColor()),
                   minHeight: 6,
                 );
               },
             ),
             const SizedBox(height: 8),
-            
+
             // Step Counter
             Text(
               'Step ${_currentProgress?.step ?? 0} of ${_currentProgress?.totalSteps ?? 8}',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
-              ),
+                    color: Colors.grey[600],
+                  ),
             ),
           ],
         ),
@@ -399,11 +400,10 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
             Text(
               'Build Metrics',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 12),
-            
             Row(
               children: [
                 Expanded(
@@ -425,7 +425,6 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
               ],
             ),
             const SizedBox(height: 12),
-            
             Row(
               children: [
                 Expanded(
@@ -452,7 +451,8 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
     );
   }
 
-  Widget _buildMetricItem(String label, String value, IconData icon, Color color) {
+  Widget _buildMetricItem(
+      String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -507,21 +507,20 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
             Text(
               'Build Steps',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 12),
-            
             ...steps.asMap().entries.map((entry) {
               final index = entry.key;
               final step = entry.value;
               final stepNumber = index + 1;
               final currentStep = _currentProgress?.step ?? 0;
-              
+
               final isCompleted = stepNumber < currentStep;
               final isCurrent = stepNumber == currentStep;
               final isPending = stepNumber > currentStep;
-              
+
               return _buildStepItem(
                 step,
                 stepNumber,
@@ -606,15 +605,15 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
                 Text(
                   'Build Logs',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 const Spacer(),
                 Text(
                   '${_buildLogs.length} entries',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[600],
-                  ),
+                        color: Colors.grey[600],
+                      ),
                 ),
               ],
             ),
@@ -667,7 +666,8 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Cancel Build'),
-        content: const Text('Are you sure you want to cancel the build process?'),
+        content:
+            const Text('Are you sure you want to cancel the build process?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -706,7 +706,8 @@ class _RealTimeBuildScreenState extends State<RealTimeBuildScreen>
             const Text('Your APK has been built successfully!'),
             const SizedBox(height: 12),
             Text('Build Time: ${_formatDuration(result.buildDuration!)}'),
-            Text('APK Size: ${(result.fileSize! / (1024 * 1024)).toStringAsFixed(1)} MB'),
+            Text(
+                'APK Size: ${(result.fileSize! / (1024 * 1024)).toStringAsFixed(1)} MB'),
             Text('Location: ${result.apkPath}'),
           ],
         ),
