@@ -17,3 +17,44 @@ extension ReconciliationItemExtensions on ReconciliationItem {
   double get sgstInSource1 => sgstSource1 ?? 0;
   double get sgstInSource2 => sgstSource2 ?? 0;
 }
+
+// class
+class ReconciliationSummary {
+  ReconciliationSummary({
+    required this.mismatchedInvoices,
+    required this.totalTaxDifference,
+    this.totalTaxableValueSource1,
+    this.totalTaxableValueSource2,
+    this.totalTaxSource1,
+    this.totalTaxSource2,
+  });
+  final int mismatchedInvoices;
+  final double? totalTaxableValueSource1;
+  final double? totalTaxableValueSource2;
+  final double? totalTaxSource1;
+  final double? totalTaxSource2;
+  final double totalTaxDifference;
+}
+
+// class
+
+class ReconciliationItem {
+  ReconciliationItem({
+    this.taxableValueSource1,
+    this.taxableValueSource2,
+    this.igstSource1,
+    this.igstSource2,
+    this.cgstSource1,
+    this.cgstSource2,
+    this.sgstSource1,
+    this.sgstSource2,
+  });
+  final double? taxableValueSource1;
+  final double? taxableValueSource2;
+  final double? igstSource1;
+  final double? igstSource2;
+  final double? cgstSource1;
+  final double? cgstSource2;
+  final double? sgstSource1;
+  final double? sgstSource2;
+}

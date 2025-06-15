@@ -1,25 +1,28 @@
-class SyncQueueItem {
-  final String id;
-  final String entityType;
-  final String entityId;
-  final String operation;
-  final Map<String, dynamic>? data;
-  final DateTime createdAt;
-  final int attempts;
-  final DateTime? lastAttempt;
-  final SyncStatus status;
+import 'package:flutter_invoice_app/models/sync/sync_operation.dart';
+import 'package:flutter_invoice_app/models/sync/sync_status.dart';
 
+class SyncQueueItem {
   const SyncQueueItem({
     required this.id,
     required this.entityType,
     required this.entityId,
     required this.operation,
-    this.data,
     required this.createdAt,
+    required this.status,
+    this.data,
     this.attempts = 0,
     this.lastAttempt,
-    required this.status,
   });
+
+  final String id;
+  final String entityType;
+  final String entityId;
+  final SyncOperation operation;
+  final Map<String, dynamic>? data;
+  final DateTime createdAt;
+  final int attempts;
+  final DateTime? lastAttempt;
+  final SyncStatus status;
 
   factory SyncQueueItem.fromJson(Map<String, dynamic> json) {
     return SyncQueueItem(
@@ -30,7 +33,7 @@ class SyncQueueItem {
       data: json['data'] as Map<String, dynamic>?,
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at'] as int),
       attempts: json['attempts'] as int? ?? 0,
-      lastAttempt: json['last_attempt'] != null 
+      lastAttempt: json['last_attempt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(json['last_attempt'] as int)
           : null,
       status: SyncStatusExtension.fromString(json['status'] as String),
@@ -47,7 +50,7 @@ class SyncQueueItem {
       'created_at': createdAt.millisecondsSinceEpoch,
       'attempts': attempts,
       'last_attempt': lastAttempt?.millisecondsSinceEpoch,
-      'status': status.value,
+      'status': status,
     };
   }
 

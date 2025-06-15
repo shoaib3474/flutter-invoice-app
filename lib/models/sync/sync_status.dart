@@ -1,3 +1,7 @@
+// ignore_for_file: always_declare_return_types
+
+import 'package:flutter/material.dart';
+
 enum SyncStatus {
   idle,
   syncing,
@@ -31,4 +35,6 @@ extension SyncStatusExtension on SyncStatus {
         return Colors.orange;
     }
   }
+
+  static fromString(String json) {}
 }
