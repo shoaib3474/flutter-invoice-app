@@ -1,12 +1,4 @@
 class StripePaymentIntent {
-  final String id;
-  final String clientSecret;
-  final int amount;
-  final String currency;
-  final String status;
-  final String invoiceId;
-  final DateTime createdAt;
-
   const StripePaymentIntent({
     required this.id,
     required this.clientSecret,
@@ -28,6 +20,13 @@ class StripePaymentIntent {
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
+  final String id;
+  final String clientSecret;
+  final int amount;
+  final String currency;
+  final String status;
+  final String invoiceId;
+  final DateTime createdAt;
 
   Map<String, dynamic> toJson() {
     return {
@@ -43,24 +42,15 @@ class StripePaymentIntent {
 }
 
 class StripePaymentResult {
-  final String paymentIntentId;
-  final String status;
-  final int amount;
-  final String currency;
-  final String invoiceId;
-  final String? paymentMethodId;
-  final String? receiptUrl;
-  final DateTime processedAt;
-
   const StripePaymentResult({
     required this.paymentIntentId,
     required this.status,
     required this.amount,
     required this.currency,
     required this.invoiceId,
+    required this.processedAt,
     this.paymentMethodId,
     this.receiptUrl,
-    required this.processedAt,
   });
 
   factory StripePaymentResult.fromJson(Map<String, dynamic> json) {
@@ -75,6 +65,14 @@ class StripePaymentResult {
       processedAt: DateTime.parse(json['processed_at'] as String),
     );
   }
+  final String paymentIntentId;
+  final String status;
+  final int amount;
+  final String currency;
+  final String invoiceId;
+  final String? paymentMethodId;
+  final String? receiptUrl;
+  final DateTime processedAt;
 
   Map<String, dynamic> toJson() {
     return {
@@ -91,18 +89,12 @@ class StripePaymentResult {
 }
 
 class StripeCustomer {
-  final String id;
-  final String name;
-  final String email;
-  final String? phone;
-  final DateTime createdAt;
-
   const StripeCustomer({
     required this.id,
     required this.name,
     required this.email,
-    this.phone,
     required this.createdAt,
+    this.phone,
   });
 
   factory StripeCustomer.fromJson(Map<String, dynamic> json) {
@@ -111,9 +103,15 @@ class StripeCustomer {
       name: json['name'] as String,
       email: json['email'] as String,
       phone: json['phone'] as String?,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['created'] as int * 1000),
+      createdAt:
+          DateTime.fromMillisecondsSinceEpoch((json['created'] as int) * 1000),
     );
   }
+  final String id;
+  final String name;
+  final String email;
+  final String? phone;
+  final DateTime createdAt;
 
   Map<String, dynamic> toJson() {
     return {
@@ -127,18 +125,6 @@ class StripeCustomer {
 }
 
 class StripeInvoice {
-  final String id;
-  final String number;
-  final String status;
-  final int amountDue;
-  final int amountPaid;
-  final String currency;
-  final String customerId;
-  final String? hostedInvoiceUrl;
-  final String? invoicePdf;
-  final DateTime dueDate;
-  final DateTime createdAt;
-
   const StripeInvoice({
     required this.id,
     required this.number,
@@ -147,10 +133,10 @@ class StripeInvoice {
     required this.amountPaid,
     required this.currency,
     required this.customerId,
-    this.hostedInvoiceUrl,
-    this.invoicePdf,
     required this.dueDate,
     required this.createdAt,
+    this.hostedInvoiceUrl,
+    this.invoicePdf,
   });
 
   factory StripeInvoice.fromJson(Map<String, dynamic> json) {
@@ -164,10 +150,23 @@ class StripeInvoice {
       customerId: json['customer'] as String,
       hostedInvoiceUrl: json['hosted_invoice_url'] as String?,
       invoicePdf: json['invoice_pdf'] as String?,
-      dueDate: DateTime.fromMillisecondsSinceEpoch(json['due_date'] as int * 1000),
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['created'] as int * 1000),
+      dueDate:
+          DateTime.fromMillisecondsSinceEpoch((json['due_date'] as int) * 1000),
+      createdAt:
+          DateTime.fromMillisecondsSinceEpoch((json['created'] as int) * 1000),
     );
   }
+  final String id;
+  final String number;
+  final String status;
+  final int amountDue;
+  final int amountPaid;
+  final String currency;
+  final String customerId;
+  final String? hostedInvoiceUrl;
+  final String? invoicePdf;
+  final DateTime dueDate;
+  final DateTime createdAt;
 
   Map<String, dynamic> toJson() {
     return {
@@ -187,22 +186,14 @@ class StripeInvoice {
 }
 
 class StripeRefund {
-  final String id;
-  final int amount;
-  final String currency;
-  final String paymentIntentId;
-  final String status;
-  final String? reason;
-  final DateTime createdAt;
-
   const StripeRefund({
     required this.id,
     required this.amount,
     required this.currency,
     required this.paymentIntentId,
     required this.status,
-    this.reason,
     required this.createdAt,
+    this.reason,
   });
 
   factory StripeRefund.fromJson(Map<String, dynamic> json) {
@@ -213,9 +204,17 @@ class StripeRefund {
       paymentIntentId: json['payment_intent_id'] as String,
       status: json['status'] as String,
       reason: json['reason'] as String?,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['created'] as int * 1000),
+      createdAt:
+          DateTime.fromMillisecondsSinceEpoch((json['created'] as int) * 1000),
     );
   }
+  final String id;
+  final int amount;
+  final String currency;
+  final String paymentIntentId;
+  final String status;
+  final String? reason;
+  final DateTime createdAt;
 
   Map<String, dynamic> toJson() {
     return {
