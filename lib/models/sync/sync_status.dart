@@ -7,6 +7,7 @@ enum SyncStatus {
   syncing,
   error,
   offline,
+  pending, // <-- You added this
 }
 
 extension SyncStatusExtension on SyncStatus {
@@ -20,6 +21,8 @@ extension SyncStatusExtension on SyncStatus {
         return 'Error';
       case SyncStatus.offline:
         return 'Offline';
+      case SyncStatus.pending:
+        return 'Pending'; // <-- FIXED
     }
   }
 
@@ -33,8 +36,40 @@ extension SyncStatusExtension on SyncStatus {
         return Colors.red;
       case SyncStatus.offline:
         return Colors.orange;
+      case SyncStatus.pending:
+        return Colors.grey; // <-- FIXED
     }
   }
 
-  static fromString(String json) {}
+  static SyncStatus fromString(String json) {
+    switch (json.toLowerCase()) {
+      case 'idle':
+        return SyncStatus.idle;
+      case 'syncing':
+        return SyncStatus.syncing;
+      case 'error':
+        return SyncStatus.error;
+      case 'offline':
+        return SyncStatus.offline;
+      case 'pending':
+        return SyncStatus.pending;
+      default:
+        throw ArgumentError('Invalid SyncStatus string: $json');
+    }
+  }
+
+  String get value {
+    switch (this) {
+      case SyncStatus.idle:
+        return 'idle';
+      case SyncStatus.syncing:
+        return 'syncing';
+      case SyncStatus.error:
+        return 'error';
+      case SyncStatus.offline:
+        return 'offline';
+      case SyncStatus.pending:
+        return 'pending';
+    }
+  }
 }

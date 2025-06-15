@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:convert';
 import 'package:flutter_invoice_app/database/database_helper.dart';
 import 'package:flutter_invoice_app/models/sync/sync_operation.dart';
@@ -9,22 +11,22 @@ abstract class OfflineRepository<T> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   final SyncService _syncService = SyncService();
   final Uuid _uuid = Uuid();
-  
+
   // Table name in the database
   String get tableName;
-  
+
   // Entity type for sync
   String get entityType;
-  
+
   // Convert entity to map
   Map<String, dynamic> entityToMap(T entity);
-  
+
   // Convert map to entity
   T mapToEntity(Map<String, dynamic> map);
-  
+
   // Get entity ID
   String getEntityId(T entity);
-  
+
   // Create entity
   Future<T> create(T entity) async {
     // Generate ID if needed
@@ -32,19 +34,19 @@ abstract class OfflineRepository<T> {
     if (id.isEmpty) {
       id = _uuid.v4();
     }
-    
+
     // Convert entity to map
     Map<String, dynamic> map = entityToMap(entity);
-    
+
     // Add metadata
     map['id'] = id;
     map['sync_status'] = SyncStatus.pending.toString();
     map['last_modified'] = DateTime.now().millisecondsSinceEpoch;
     map['is_deleted'] = 0;
-    
+
     // Insert into database
     await _dbHelper.insert(tableName, map);
-    
+
     // Add to sync queue
     await _syncService.addToSyncQueue(
       entityType,
@@ -52,49 +54,51 @@ abstract class OfflineRepository<T> {
       SyncOperation.create,
       map,
     );
-    
+
     // Return updated entity
     return mapToEntity(map);
   }
-  
+
   // Get entity by ID
   Future<T?> getById(String id) async {
     final List<Map<String, dynamic>> maps = await _dbHelper.query(
       tableName,
       where: 'id = ? AND is_deleted = 0',
       whereArgs: [id],
+      columns: [],
     );
-    
+
     if (maps.isEmpty) {
       return null;
     }
-    
+
     return mapToEntity(maps.first);
   }
-  
+
   // Get all entities
   Future<List<T>> getAll() async {
     final List<Map<String, dynamic>> maps = await _dbHelper.query(
       tableName,
       where: 'is_deleted = 0',
+      columns: [],
     );
-    
-    return maps.map((map) => mapToEntity(map)).toList();
+
+    return maps.map(mapToEntity).toList();
   }
-  
+
   // Update entity
   Future<T> update(T entity) async {
     // Get entity ID
     String id = getEntityId(entity);
-    
+
     // Convert entity to map
     Map<String, dynamic> map = entityToMap(entity);
-    
+
     // Add metadata
     map['id'] = id;
     map['sync_status'] = SyncStatus.pending.toString();
     map['last_modified'] = DateTime.now().millisecondsSinceEpoch;
-    
+
     // Update in database
     await _dbHelper.update(
       tableName,
@@ -102,7 +106,7 @@ abstract class OfflineRepository<T> {
       'id = ?',
       [id],
     );
-    
+
     // Add to sync queue
     await _syncService.addToSyncQueue(
       entityType,
@@ -110,11 +114,11 @@ abstract class OfflineRepository<T> {
       SyncOperation.update,
       map,
     );
-    
+
     // Return updated entity
     return mapToEntity(map);
   }
-  
+
   // Delete entity
   Future<bool> delete(String id) async {
     // Mark as deleted
@@ -128,7 +132,7 @@ abstract class OfflineRepository<T> {
       'id = ?',
       [id],
     );
-    
+
     // Add to sync queue
     await _syncService.addToSyncQueue(
       entityType,
@@ -136,10 +140,10 @@ abstract class OfflineRepository<T> {
       SyncOperation.delete,
       null,
     );
-    
+
     return true;
   }
-  
+
   // Get entities by query
   Future<List<T>> query({
     String? where,
@@ -151,14 +155,14 @@ abstract class OfflineRepository<T> {
     // Add is_deleted = 0 to where clause
     String finalWhere = 'is_deleted = 0';
     List<dynamic> finalWhereArgs = [];
-    
+
     if (where != null && where.isNotEmpty) {
       finalWhere = '$finalWhere AND $where';
       if (whereArgs != null) {
         finalWhereArgs.addAll(whereArgs);
       }
     }
-    
+
     final List<Map<String, dynamic>> maps = await _dbHelper.query(
       tableName,
       where: finalWhere,
@@ -166,11 +170,12 @@ abstract class OfflineRepository<T> {
       orderBy: orderBy,
       limit: limit,
       offset: offset,
+      columns: [],
     );
-    
-    return maps.map((map) => mapToEntity(map)).toList();
+
+    return maps.map(mapToEntity).toList();
   }
-  
+
   // Get sync status
   Future<SyncStatus> getSyncStatus(String id) async {
     final List<Map<String, dynamic>> maps = await _dbHelper.query(
@@ -179,38 +184,39 @@ abstract class OfflineRepository<T> {
       where: 'id = ?',
       whereArgs: [id],
     );
-    
+
     if (maps.isEmpty) {
       return SyncStatus.error;
     }
-    
+
     return SyncStatusExtension.fromString(maps.first['sync_status']);
   }
-  
+
   // Get entities with pending sync
   Future<List<T>> getPendingSync() async {
     final List<Map<String, dynamic>> maps = await _dbHelper.query(
       tableName,
       where: 'sync_status = ? AND is_deleted = 0',
       whereArgs: [SyncStatus.pending.toString()],
+      columns: [],
     );
-    
-    return maps.map((map) => mapToEntity(map)).toList();
+
+    return maps.map(mapToEntity).toList();
   }
-  
+
   // Import data from JSON
   Future<List<T>> importFromJson(String json) async {
     final List<dynamic> data = jsonDecode(json);
     final List<T> entities = [];
-    
-    for (var item in data) {
+
+    for (final item in data) {
       final entity = mapToEntity(item);
       entities.add(await create(entity));
     }
-    
+
     return entities;
   }
-  
+
   // Export data to JSON
   Future<String> exportToJson() async {
     final List<T> entities = await getAll();

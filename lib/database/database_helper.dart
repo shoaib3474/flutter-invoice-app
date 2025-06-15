@@ -99,7 +99,12 @@ class DatabaseHelper {
   }
 
   Future<List<Map<String, dynamic>>> query(String table,
-      {String? where, List<dynamic>? whereArgs}) async {
+      {String? where,
+      List<dynamic>? whereArgs,
+      String? orderBy,
+      int? limit,
+      int? offset,
+      required List<String> columns}) async {
     final db = await database;
     return db.query(table, where: where, whereArgs: whereArgs);
   }
