@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_invoice_app/models/gstin/gstin_filing_history.dart';
 import 'package:provider/provider.dart';
 import '../providers/gstin_tracking_provider.dart';
 import '../widgets/gstin/gstin_search_widget.dart';
@@ -34,7 +35,8 @@ class _GstinTrackingScreenState extends State<GstinTrackingScreen> {
     });
 
     try {
-      final provider = Provider.of<GstinTrackingProvider>(context, listen: false);
+      final provider =
+          Provider.of<GstinTrackingProvider>(context, listen: false);
       final details = await provider.getGstinDetails(gstin);
       setState(() {
         _gstinDetails = details;
@@ -57,7 +59,8 @@ class _GstinTrackingScreenState extends State<GstinTrackingScreen> {
     });
 
     try {
-      final provider = Provider.of<GstinTrackingProvider>(context, listen: false);
+      final provider =
+          Provider.of<GstinTrackingProvider>(context, listen: false);
       await provider.trackGstin(_selectedGstin!);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -102,7 +105,8 @@ class _GstinTrackingScreenState extends State<GstinTrackingScreen> {
                         Text('• Track filing status'),
                         Text('• View jurisdiction information'),
                         SizedBox(height: 16),
-                        Text('To start, enter a valid GSTIN in the search box.'),
+                        Text(
+                            'To start, enter a valid GSTIN in the search box.'),
                       ],
                     ),
                   ),
@@ -190,8 +194,9 @@ class _GstinTrackingScreenState extends State<GstinTrackingScreen> {
                       );
                     }
 
-                    final filingHistory = provider.getFilingHistory(_selectedGstin!);
-                    if (filingHistory == null || filingHistory.isEmpty) {
+                    final filingHistory =
+                        provider.getFilingHistory(_selectedGstin!);
+                    if (filingHistory.isEmpty) {
                       return const Card(
                         child: Padding(
                           padding: EdgeInsets.all(16.0),
@@ -204,10 +209,10 @@ class _GstinTrackingScreenState extends State<GstinTrackingScreen> {
                       children: [
                         FilingStatusLegendWidget(),
                         const SizedBox(height: 16),
-                        GstrFilingChartWidget(
-                          gstin: _selectedGstin!,
-                          filingHistory: filingHistory,
-                        ),
+                        // GstrFilingChartWidget(
+                        //   gstin: _selectedGstin!,
+                        //   filingHistory:  filingHistory, returnType: '',
+                        // ),
                       ],
                     );
                   },
@@ -219,4 +224,8 @@ class _GstinTrackingScreenState extends State<GstinTrackingScreen> {
       ),
     );
   }
+}
+
+extension on Future<GstinFilingHistory> {
+  bool get isEmpty => false;
 }

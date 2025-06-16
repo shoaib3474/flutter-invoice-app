@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter_invoice_app/models/gstr1_model.dart';
 
 import '../../models/gst_returns/gstr1_model.dart';
 import '../../services/gstr1_service.dart';
@@ -11,6 +12,8 @@ class GSTR1FormWidget extends StatefulWidget {
     required this.gstin,
     required this.returnPeriod,
     Key? key,
+    required GSTR1Model gstr1Data,
+    required Future<void> Function(GSTR1Model data) onSave,
   }) : super(key: key);
   final String gstin;
   final String returnPeriod;

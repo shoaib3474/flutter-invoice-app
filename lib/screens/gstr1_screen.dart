@@ -14,7 +14,8 @@ class GSTR1Screen extends StatefulWidget {
   _GSTR1ScreenState createState() => _GSTR1ScreenState();
 }
 
-class _GSTR1ScreenState extends State<GSTR1Screen> with SingleTickerProviderStateMixin {
+class _GSTR1ScreenState extends State<GSTR1Screen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GSTR1Service _gstr1Service = GSTR1Service();
   GSTR1Model? _gstr1Data;
@@ -34,9 +35,9 @@ class _GSTR1ScreenState extends State<GSTR1Screen> with SingleTickerProviderStat
         _isLoading = true;
         _errorMessage = null;
       });
-      
+
       final data = await _gstr1Service.getLatestGSTR1Data();
-      
+
       setState(() {
         _gstr1Data = data;
         _isLoading = false;
@@ -56,13 +57,13 @@ class _GSTR1ScreenState extends State<GSTR1Screen> with SingleTickerProviderStat
         _isLoading = true;
         _errorMessage = null;
       });
-      
+
       await _gstr1Service.saveGSTR1Data(data);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('GSTR-1 data saved successfully')),
       );
-      
+
       await _loadGSTR1Data();
     } catch (e, stackTrace) {
       ErrorHandler.handleError(e, stackTrace);
@@ -79,14 +80,14 @@ class _GSTR1ScreenState extends State<GSTR1Screen> with SingleTickerProviderStat
         _isLoading = true;
         _errorMessage = null;
       });
-      
+
       final data = await _gstr1Service.importFromJson(jsonData);
-      
+
       setState(() {
         _gstr1Data = data;
         _isLoading = false;
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('GSTR-1 data imported successfully')),
       );
@@ -101,7 +102,7 @@ class _GSTR1ScreenState extends State<GSTR1Screen> with SingleTickerProviderStat
 
   Future<void> _exportGSTR1Data() async {
     if (_gstr1Data == null) return;
-    
+
     try {
       final jsonData = await _gstr1Service.exportToJson(_gstr1Data!);
       // Handle the exported JSON data (e.g., share, save to file, etc.)
@@ -111,7 +112,8 @@ class _GSTR1ScreenState extends State<GSTR1Screen> with SingleTickerProviderStat
     } catch (e, stackTrace) {
       ErrorHandler.handleError(e, stackTrace);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to export GSTR-1 data: ${e.toString()}')),
+        SnackBar(
+            content: Text('Failed to export GSTR-1 data: ${e.toString()}')),
       );
     }
   }
@@ -167,23 +169,23 @@ class _GSTR1ScreenState extends State<GSTR1Screen> with SingleTickerProviderStat
                   controller: _tabController,
                   children: [
                     // Form Tab
-                    _gstr1Data != null
-                        ? GSTR1FormWidget(
-                            gstr1Data: _gstr1Data!,
-                            onSave: _saveGSTR1Data,
-                          )
-                        : const Center(child: Text('No GSTR-1 data available')),
-                    
-                    // Summary Tab
-                    _gstr1Data != null
-                        ? GSTR1SummaryWidget(gstr1Data: _gstr1Data!)
-                        : const Center(child: Text('No GSTR-1 data available')),
-                    
-                    // Import/Export Tab
-                    GSTR1ImportExportWidget(
-                      onImport: _importGSTR1Data,
-                      onExport: _gstr1Data != null ? _exportGSTR1Data : null,
-                    ),
+                    // _gstr1Data != null
+                    //     ? GSTR1FormWidget(
+                    //         gstr1Data: _gstr1Data!,
+                    //         onSave: _saveGSTR1Data,
+                    //       )
+                    //     : const Center(child: Text('No GSTR-1 data available')),
+
+                    // // Summary Tab
+                    // _gstr1Data != null
+                    //     ? GSTR1SummaryWidget(gstr1Data: _gstr1Data!)
+                    //     : const Center(child: Text('No GSTR-1 data available')),
+
+                    // // Import/Export Tab
+                    // GSTR1ImportExportWidget(
+                    //   onImport: _importGSTR1Data,
+                    //   onExport: _gstr1Data != null ? _exportGSTR1Data : null,
+                    // ),
                   ],
                 ),
     );

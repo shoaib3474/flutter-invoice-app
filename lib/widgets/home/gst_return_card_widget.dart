@@ -14,13 +14,15 @@ class GstReturnCardWidget extends StatelessWidget {
     required this.onTap,
     required this.onToggleFavorite,
     this.isFavorite = false,
+    required String title,
+    required MaterialColor color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('dd MMM yyyy');
     final currencyFormat = NumberFormat.currency(symbol: '₹', decimalDigits: 2);
-    
+
     return Card(
       elevation: 3,
       child: InkWell(
@@ -156,7 +158,7 @@ class GstReturnCardWidget extends StatelessWidget {
   Widget _buildStatusBadge(GstReturnStatus status) {
     Color color;
     String text = status.toString().split('.').last;
-    
+
     switch (status) {
       case GstReturnStatus.notDue:
         color = Colors.blue;
@@ -175,7 +177,7 @@ class GstReturnCardWidget extends StatelessWidget {
         text = 'Error';
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -197,7 +199,7 @@ class GstReturnCardWidget extends StatelessWidget {
   Color _getDueDateColor(DateTime dueDate) {
     final now = DateTime.now();
     final difference = dueDate.difference(now).inDays;
-    
+
     if (difference < 0) {
       return Colors.red;
     } else if (difference <= 7) {

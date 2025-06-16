@@ -92,4 +92,10 @@ class GstinTrackingProvider with ChangeNotifier {
   void addToRecentPanSearches(String pan) {}
 
   Future getRecentPanSearches() async {}
+
+  Future getGstinDetails(String gstin) async {}
+
+  Future<void> trackGstin(String s) async {}
+
+  isGstinTracked(String s) {}
 }

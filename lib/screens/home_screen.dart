@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/home/quick_build_widget.dart';
-import '../widgets/home/quick_actions_widget.dart';
+
 import '../widgets/home/gst_return_card_widget.dart';
+import '../widgets/home/quick_actions_widget.dart';
+import '../widgets/home/quick_build_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -46,15 +47,15 @@ class HomeScreen extends StatelessWidget {
               Text(
                 'Welcome to GST Invoice App',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Manage your GST returns, invoices, and compliance',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                      color: Colors.grey[600],
+                    ),
               ),
               const SizedBox(height: 24),
 
@@ -70,17 +71,17 @@ class HomeScreen extends StatelessWidget {
               Text(
                 'GST Returns',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               const SizedBox(height: 12),
-              
+
               // GST Return Cards
               const GstReturnCardWidget(
                 title: 'GSTR-1',
                 subtitle: 'Outward supplies',
                 icon: Icons.upload,
-                color: Colors.green,
+                color: Color.fromARGB(255, 234, 245, 234),
               ),
               const SizedBox(height: 8),
               const GstReturnCardWidget(

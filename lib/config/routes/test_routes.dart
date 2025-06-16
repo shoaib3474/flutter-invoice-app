@@ -17,21 +17,21 @@ class TestRoutes {
             name: 'test',
             builder: (context, state) => const TestScreensMenuScreen(),
             routes: [
-              GoRoute(
-                path: 'pdf',
-                name: 'pdf-test',
-                builder: (context, state) => const PdfTestScreen(),
-              ),
-              GoRoute(
-                path: 'migration',
-                name: 'migration-test',
-                builder: (context, state) => const MigrationTestScreen(),
-              ),
-              GoRoute(
-                path: 'firebase-setup',
-                name: 'firebase-setup-test',
-                builder: (context, state) => const FirebaseSetupTestScreen(),
-              ),
+              // GoRoute(
+              //   path: 'pdf',
+              //   name: 'pdf-test',
+              //   builder: (context, state) => const PdfTestScreen(),
+              // ),
+              // GoRoute(
+              //   path: 'migration',
+              //   name: 'migration-test',
+              //   builder: (context, state) => const MigrationTestScreen(),
+              // ),
+              // GoRoute(
+              //   path: 'firebase-setup',
+              //   name: 'firebase-setup-test',
+              //   builder: (context, state) => const FirebaseSetupTestScreen(),
+              // ),
               GoRoute(
                 path: 'firebase-troubleshooting',
                 name: 'firebase-troubleshooting',
